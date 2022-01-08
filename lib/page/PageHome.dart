@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scuffed_wordle/bloc/counter_cubit.dart';
+import 'package:scuffed_wordle/bloc/letter/board_bloc.dart';
 import 'package:scuffed_wordle/page/PageSettings.dart';
 import 'package:scuffed_wordle/widget/WidgetKeyboard.dart';
 import 'package:scuffed_wordle/widget/WidgetWordBoard.dart';
@@ -58,44 +61,45 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return RawKeyboardListener(
-      autofocus: true,
-      focusNode: FocusNode(),
-      onKey: (event) {
-        final key = event.logicalKey;
-        if (event is RawKeyDownEvent) {
-          print(key.keyLabel);
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the PageHome object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-              onPressed: () => _doNavigate(),
-              icon: const Icon(Icons.settings),
+    return BlocProvider(
+      create: (_) => BoardBloc(),
+      child: BlocBuilder<BoardBloc, String>(
+        builder: (context, count) => RawKeyboardListener(
+          autofocus: true,
+          focusNode: FocusNode(),
+          onKey: (event) {
+            final key = event.logicalKey;
+            if (event is RawKeyUpEvent) {
+              context.read<BoardBloc>().add(BoardAdd(letter: key.keyLabel));
+              print(key.keyLabel);
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              // Here we take the value from the PageHome object that was created by
+              // the App.build method, and use it to set our appbar title.
+              title: Text(widget.title),
+              actions: [
+                IconButton(
+                  onPressed: () => _doNavigate(),
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
             ),
-          ],
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('$count'),
+                WidgetWordBoard(rows: 6, cols: 5),
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  color: Theme.of(context).colorScheme.secondary,
+                  child: WidgetKeyboard(),
+                )
+              ],
+            ),
+          ), // This trailing comma makes auto-formatting nicer for build methods.
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            WidgetWordBoard(rows: 6, cols: 5),
-            Container(
-              alignment: Alignment.bottomCenter,
-              color: Theme.of(context).colorScheme.secondary,
-              child: WidgetKeyboard(),
-            )
-          ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
