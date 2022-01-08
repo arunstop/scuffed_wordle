@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scuffed_wordle/page/PageSettings.dart';
+import 'package:scuffed_wordle/widget/WidgetKeyboard.dart';
 import 'package:scuffed_wordle/widget/WidgetWordBoard.dart';
 
 class PageHome extends StatefulWidget {
@@ -62,29 +64,39 @@ class _PageHomeState extends State<PageHome> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the PageHome object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            onPressed: () => _doNavigate(),
-            icon: const Icon(Icons.settings),
-          ),
-        ],
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (event) {
+        final key = event.logicalKey;
+        if (event is RawKeyDownEvent) {
+          print(key.keyLabel);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          // Here we take the value from the PageHome object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+          actions: [
+            IconButton(
+              onPressed: () => _doNavigate(),
+              icon: const Icon(Icons.settings),
+            ),
+          ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            WidgetWordBoard(rows: 6, cols: 5),
+            Container(
+              alignment: Alignment.bottomCenter,
+              color: Theme.of(context).colorScheme.secondary,
+              child: WidgetKeyboard(),
+            )
+          ],
+        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
-      body: Align(
-        alignment: Alignment.center,
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: WidgetWordBoard(rows: 6, cols: 5)
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

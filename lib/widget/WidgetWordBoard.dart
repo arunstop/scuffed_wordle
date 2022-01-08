@@ -43,22 +43,13 @@ class _WidgetWordBoardState extends State<WidgetWordBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ...wordBoard,
-        // Container(
-        //     color: Theme.of(context).colorScheme.secondary,
-        //     child: Text(
-        //       'Text with a background color',
-        //       style: Theme.of(context).textTheme.headline6,
-        //     ),
-        //   ),
-        //   Card(
-        //           child: Text('123'),
-        //           // color: Theme.of(context).colorScheme.secondary,
-        //           color: Theme.of(context).colorScheme.secondary,
-        //         )
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+      child: Column(
+        children: [
+          ...wordBoard,
+        ],
+      ),
     );
   }
 }
