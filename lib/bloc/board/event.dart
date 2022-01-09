@@ -1,4 +1,4 @@
-part of 'package:scuffed_wordle/bloc/letter/board_bloc.dart';
+part of 'package:scuffed_wordle/bloc/board/bloc.dart';
 
 abstract class BoardEvent extends Equatable {
   const BoardEvent();
@@ -16,7 +16,11 @@ class BoardAdd extends BoardEvent {
   List<Object> get props => [letter];
 }
 
-class Remove extends BoardEvent {
+class BoardRemove extends BoardEvent {
+  final String letter;
+
+  const BoardRemove({required this.letter});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [letter];
 }

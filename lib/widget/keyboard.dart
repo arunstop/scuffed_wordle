@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class WidgetKeyboard extends StatefulWidget {
-  WidgetKeyboard({Key? key}) : super(key: key);
+class Keyboard extends StatefulWidget {
+  Keyboard({Key? key}) : super(key: key);
 
   @override
-  _WidgetKeyboardState createState() => _WidgetKeyboardState();
+  _KeyboardState createState() => _KeyboardState();
 }
 
-class _WidgetKeyboardState extends State<WidgetKeyboard> {
+class _KeyboardState extends State<Keyboard> {
   List<List<String>> _keyboardKeys = [
     [
       'Q',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scuffed_wordle/page/PageSettings.dart';
-import 'page/PageHome.dart';
+import 'package:scuffed_wordle/screens/screen_home.dart';
+import 'package:scuffed_wordle/screens/screen_settings.dart';
 
 void main() {
   runApp(const MyApp());

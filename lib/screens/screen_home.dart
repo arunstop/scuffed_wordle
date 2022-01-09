@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/counter_cubit.dart';
-import 'package:scuffed_wordle/bloc/letter/board_bloc.dart';
-import 'package:scuffed_wordle/page/PageSettings.dart';
-import 'package:scuffed_wordle/widget/WidgetKeyboard.dart';
-import 'package:scuffed_wordle/widget/WidgetWordBoard.dart';
+import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/widget/keyboard.dart';
+import 'package:scuffed_wordle/widget/board.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({Key? key, required this.title}) : super(key: key);
@@ -59,21 +57,35 @@ class _PageHomeState extends State<PageHome> {
     });
   }
 
+  // String _lbl(BoardState state) {
+  //   if (state is BoardValue) {
+  //     return state.word;
+  //   }
+  //   return '';
+  // }
+
   @override
   Widget build(BuildContext context) {
+    void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
+      final key = event.logicalKey;
+      if (event is RawKeyDownEvent) {
+        // LogicalKeyboardKey.backspace;
+        if (event.logicalKey == LogicalKeyboardKey.enter) {
+          ctx.read<BoardBloc>().add(const BoardAdd(letter: "GONE"));
+        } else {
+          ctx.read<BoardBloc>().add(BoardAdd(letter: key.keyLabel));
+        }
+      }
+      // print(key.keyLabel);
+    }
+
     return BlocProvider(
       create: (_) => BoardBloc(),
-      child: BlocBuilder<BoardBloc, String>(
-        builder: (context, count) => RawKeyboardListener(
+      child: BlocBuilder<BoardBloc, BoardState>(
+        builder: (context, state) => RawKeyboardListener(
           autofocus: true,
           focusNode: FocusNode(),
-          onKey: (event) {
-            final key = event.logicalKey;
-            if (event is RawKeyUpEvent) {
-              context.read<BoardBloc>().add(BoardAdd(letter: key.keyLabel));
-              print(key.keyLabel);
-            }
-          },
+          onKey: (event) => _onKeyboardPressed(context, event),
           child: Scaffold(
             appBar: AppBar(
               // Here we take the value from the PageHome object that was created by
@@ -89,12 +101,12 @@ class _PageHomeState extends State<PageHome> {
             body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$count'),
-                WidgetWordBoard(rows: 6, cols: 5),
+                Text('${state.word}'),
+                Board(rows: 6, cols: 5),
                 Container(
                   alignment: Alignment.bottomCenter,
                   color: Theme.of(context).colorScheme.secondary,
-                  child: WidgetKeyboard(),
+                  child: Keyboard(),
                 )
               ],
             ),

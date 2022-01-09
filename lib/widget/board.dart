@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class WidgetWordBoard extends StatefulWidget {
-  WidgetWordBoard({Key? key, required this.rows, required this.cols})
+class Board extends StatefulWidget {
+  Board({Key? key, required this.rows, required this.cols})
       : super(key: key);
 
   final int rows;
   final int cols;
 
   @override
-  _WidgetWordBoardState createState() => _WidgetWordBoardState();
+  _BoardState createState() => _BoardState();
 }
 
-class _WidgetWordBoardState extends State<WidgetWordBoard> {
+class _BoardState extends State<Board> {
   List<Widget> wordBoard = [];
 
   @override
