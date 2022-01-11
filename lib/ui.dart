@@ -16,7 +16,7 @@ class UiController {
     final _colorScheme = Theme.of(context).colorScheme;
     Text _btnLabel(String label) => Text(
           label,
-          style: const TextStyle(fontWeight: _bold,fontSize: 16),
+          style: const TextStyle(fontWeight: _bold, fontSize: 16),
         );
 
     showDialog(
@@ -69,4 +69,42 @@ class UiController {
       ),
     ));
   }
+
+  static List<List<String>> keyboardTemplate = [
+    [
+      'Q',
+      'W',
+      'E',
+      'R',
+      'T',
+      'Y',
+      'U',
+      'I',
+      'O',
+      'P',
+    ],
+    [
+      'A',
+      'S',
+      'D',
+      'F',
+      'G',
+      'H',
+      'J',
+      'K',
+      'L',
+    ],
+    [
+      'ENTER',
+      'Z',
+      'X',
+      'C',
+      'V',
+      'B',
+      'N',
+      'M',
+      'BACKSPACE',
+    ]
+  ];
+  static List<String> keyboardKeys = keyboardTemplate.expand((element) => element).toList();
 }

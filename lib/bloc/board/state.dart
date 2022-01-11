@@ -2,36 +2,31 @@ part of 'package:scuffed_wordle/bloc/board/bloc.dart';
 
 // enum PostStatus { initial, success, failure }
 
-class PostState extends Equatable {
-  const PostState({
-    this.posts = const <String>[],
-    this.hasReachedMax = false,
-  });
-
-  final List<String> posts;
-  final bool hasReachedMax;
-
-  PostState copyWith({
-    List<String>? posts,
-    bool? hasReachedMax,
-  }) {
-    return PostState(
-      posts: posts ?? this.posts,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-    );
-  }
-
-  @override
-  List<Object> get props => [posts, hasReachedMax];
-}
-
 class BoardState extends Equatable {
   final List<String> word;
+  final List<List<String>> wordList;
+  final int attempt;
+  final int attemptLimit;
 
-  const BoardState({this.word = const []});
+  const BoardState({
+    required this.word,
+    required this.wordList,
+    required this.attempt,
+    required this.attemptLimit,
+  });
 
-  BoardState copywith({List<String>? word}) {
-    return BoardState(word: word ?? this.word);
+  BoardState copywith({
+    List<String>? word,
+    List<List<String>>? wordList,
+    int? attempt,
+    int? attemptLimit,
+  }) {
+    return BoardState(
+      word: word ?? this.word,
+      wordList: wordList ?? this.wordList,
+      attempt: attempt ?? this.attempt,
+      attemptLimit: attemptLimit ?? this.attemptLimit,
+    );
   }
 
   @override
@@ -40,8 +35,20 @@ class BoardState extends Equatable {
 
 class BoardInit extends BoardState {
   final List<String> word;
+  final List<List<String>> wordList;
+  final int attempt;
+  final int attemptLimit;
 
-  BoardInit({required this.word}) : super(word: word);
+  BoardInit({
+    this.word = const [],
+    this.wordList = const [],
+    this.attempt = 1,
+    this.attemptLimit = 6,
+  }) : super(
+            word: word,
+            wordList: wordList,
+            attempt: attempt,
+            attemptLimit: attemptLimit);
 }
 
 // class BoardValue extends BoardState {

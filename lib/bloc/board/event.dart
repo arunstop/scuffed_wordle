@@ -7,20 +7,23 @@ abstract class BoardEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class BoardAdd extends BoardEvent {
+class BoardAddLetter extends BoardEvent {
   final String letter;
 
-  const BoardAdd({required this.letter});
+  const BoardAddLetter({required this.letter});
 
   @override
   List<Object> get props => [letter];
 }
 
-class BoardRemove extends BoardEvent {
+class BoardRemoveLetter extends BoardEvent {
   final String letter;
 
-  const BoardRemove({required this.letter});
+  const BoardRemoveLetter({required this.letter});
 
   @override
   List<Object> get props => [letter];
 }
+
+
+class BoardSubmitWord extends BoardEvent {}
