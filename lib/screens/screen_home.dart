@@ -43,32 +43,49 @@ class PageHome extends StatelessWidget {
         builder: (context, state) => RawKeyboardListener(
           autofocus: true,
           focusNode: FocusNode(),
-          onKey: (event) => _onKeyboardPressed(context, event),
-          child: Scaffold(
-            appBar: AppBar(
-              // Here we take the value from the PageHome object that was created by
-              // the App.build method, and use it to set our appbar title.
-              title: Text(title),
-              actions: [
-                IconButton(
-                  onPressed: () => _doNavigate(),
-                  icon: const Icon(Icons.settings),
-                ),
-              ],
-            ),
-            body: Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Text('${state.wordList}'),
-                // Text('${state.word}'),
-                // Text('${state.attempt}'),
-                Board(rows: 6, cols: 5),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  color: Theme.of(context).colorScheme.secondary,
-                  // child: Keyboard(),
-                )
-              ],
+          onKey: (event) {
+            // Keep typing if attempt is below its limit
+            if (state is! BoardSubmitted) {
+              _onKeyboardPressed(context, event);
+            }
+          },
+          child: BlocListener<BoardBloc, BoardState>(
+            listener: (context, state) {
+              // Finish the game if attempt has reached its limit
+              if (state is BoardSubmitted) {
+                UiController.showSnackbar(
+                  context: context,
+                  message: "Submitted",
+                  actionLabel: 'OK',
+                );
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                // Here we take the value from the PageHome object that was created by
+                // the App.build method, and use it to set our appbar title.
+                title: Text(title),
+                actions: [
+                  IconButton(
+                    onPressed: () => _doNavigate(),
+                    icon: const Icon(Icons.settings),
+                  ),
+                ],
+              ),
+              body: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Text('${state.wordList}'),
+                  // Text('${state.word}'),
+                  // Text('${state.attempt}'),
+                  Board(rows: 6, cols: 5),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    color: Theme.of(context).colorScheme.secondary,
+                    // child: Keyboard(),
+                  )
+                ],
+              ),
             ),
           ),
         ),

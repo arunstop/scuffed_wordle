@@ -107,4 +107,12 @@ class UiController {
     ]
   ];
   static List<String> keyboardKeys = keyboardTemplate.expand((element) => element).toList();
+  static String keyWord = "KEKWL";
+}
+
+class BoardColors{
+  static var base = Colors.grey[800];
+  static var activeRow = Colors.blue[800];
+  static var okLetter = Colors.orangeAccent[700];
+  static var pinpoint = Colors.green;
 }

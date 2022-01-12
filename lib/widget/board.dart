@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/ui.dart';
 
 class Board extends StatelessWidget {
   Board({Key? key, required this.rows, required this.cols}) : super(key: key);
@@ -13,22 +14,27 @@ class Board extends StatelessWidget {
     var bloc = context.read<BoardBloc>();
     var _wordList = bloc.state.wordList;
     String _getLetter(int row, int column) {
-      if (bloc.state.attempt == row) {
-        return bloc.state.word[column - 1];
+      var state = bloc.state;
+      if (state.attempt == row && column <= state.word.length) {
+        // if(column == state.word.length) {
+        return state.word[column - 1];
+        // } else if(column < state.word.length) {
+        // return state.word[column - 1];
+        // }
       }
-      return bloc.state.wordList[row - 1][column - 1];
+      return state.wordList[row - 1][column - 1];
     }
 
     Color? _getColor(int row, int column) {
       var letter = bloc.state.wordList[row - 1][column - 1].toLowerCase();
       if (letter == 'k') {
-        return Colors.green;
+        return BoardColors.pinpoint;
       } else if (letter == 'w') {
-        return Colors.orangeAccent[200];
+        return BoardColors.okLetter;
       } else if (bloc.state.attempt == row) {
-        return Colors.blue[800];
+        return BoardColors.activeRow;
       }
-      return Colors.grey[800];
+      return BoardColors.base;
     }
 
     List<Widget> wordBoard = [

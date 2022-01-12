@@ -51,6 +51,24 @@ class BoardInit extends BoardState {
             attemptLimit: attemptLimit);
 }
 
+class BoardSubmitted extends BoardState {
+  final List<String> word;
+  final List<List<String>> wordList;
+  final int attempt;
+  final int attemptLimit;
+
+  BoardSubmitted({
+    this.word = const [],
+    this.wordList = const [],
+    this.attempt = 1,
+    this.attemptLimit = 6,
+  }) : super(
+            word: word,
+            wordList: wordList,
+            attempt: attempt,
+            attemptLimit: attemptLimit);
+}
+
 // class BoardValue extends BoardState {
 //   final String word;
 //   BoardValue({
