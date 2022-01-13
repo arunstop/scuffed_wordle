@@ -6,7 +6,7 @@ class UiController {
   static void showConfirmationDialog({
     required BuildContext context,
     required String title,
-    required String content,
+    required dynamic content,
     String labelActionN = 'Cancel',
     Function actionN = _doNothing,
     String labelActionY = 'OK',
@@ -14,24 +14,37 @@ class UiController {
   }) {
     const _bold = FontWeight.bold;
     final _colorScheme = Theme.of(context).colorScheme;
+    Widget _getContent() {
+      if (content is String) {
+        return Text(content);
+      } else if (content is Widget) {
+        return content;
+      }
+      return const SizedBox();
+    }
+
     Text _btnLabel(String label) => Text(
           label,
           style: const TextStyle(fontWeight: _bold, fontSize: 16),
         );
 
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(
           title,
           style: TextStyle(fontWeight: _bold, color: _colorScheme.primary),
         ),
-        content: Text(content),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[_getContent()],
+        ),
         actions: <Widget>[
           OutlinedButton(
             onPressed: () {
-              actionN();
               Navigator.pop(context, 'Cancel');
+              actionN();
             },
             child: _btnLabel(labelActionN),
             style: ButtonStyle(
@@ -40,8 +53,8 @@ class UiController {
           ),
           ElevatedButton(
             onPressed: () {
-              actionY();
               Navigator.pop(context, 'OK');
+              actionY();
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(_colorScheme.primary),
@@ -61,15 +74,15 @@ class UiController {
     Function action = _doNothing,
   }) {
     ScaffoldMessenger.of(context)
-    ..clearSnackBars()
-    ..showSnackBar(SnackBar(
-      content: Text(message),
-      action: SnackBarAction(
-        label: actionLabel,
-        onPressed: () => action,
-        textColor: Theme.of(context).colorScheme.primary,
-      ),
-    ));
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: actionLabel,
+          onPressed: () => action,
+          textColor: Theme.of(context).colorScheme.primary,
+        ),
+      ));
   }
 
   static List<List<String>> keyboardTemplate = [
@@ -108,11 +121,12 @@ class UiController {
       'BACKSPACE',
     ]
   ];
-  static List<String> keyboardKeys = keyboardTemplate.expand((element) => element).toList();
+  static List<String> keyboardKeys =
+      keyboardTemplate.expand((element) => element).toList();
   static String keyWord = "KEKWL";
 }
 
-class BoardColors{
+class BoardColors {
   static var base = Colors.grey[800];
   static var activeRow = Colors.blue[800];
   static var okLetter = Colors.orange[700];

@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/bloc.dart';
 import 'package:scuffed_wordle/ui.dart';
-import 'package:scuffed_wordle/widget/widget_keyboard.dart';
-import 'package:scuffed_wordle/widget/widget_board.dart';
+import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
+import 'package:scuffed_wordle/widgets/widget_board.dart';
+import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 
 class PageHome extends StatelessWidget {
   const PageHome({Key? key, required this.title}) : super(key: key);
@@ -13,10 +14,12 @@ class PageHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var bloc = context.watch<BoardBloc>();
+    // late var state123 = bloc.state;
     print('build');
-    BoardBloc bloc(BuildContext ctx) {
-      return ctx.read<BoardBloc>();
-    }
+    // BoardBloc bloc(BuildContext ctx) {
+    //   return ctx.read<BoardBloc>();
+    // }
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
       if (event is RawKeyDownEvent) {
@@ -24,77 +27,81 @@ class PageHome extends StatelessWidget {
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
           if (event.logicalKey == LogicalKeyboardKey.backspace) {
-            bloc(ctx).add(BoardRemoveLetter());
+            bloc.add(BoardRemoveLetter());
           } else if (event.logicalKey == LogicalKeyboardKey.enter ||
               event.logicalKey == LogicalKeyboardKey.numpadEnter) {
-            bloc(ctx).add(BoardSubmitWord());
+            bloc.add(BoardSubmitWord());
           } else {
-            bloc(ctx).add(BoardAddLetter(letter: letter));
+            bloc.add(BoardAddLetter(letter: letter));
           }
         }
       }
       // print(key.keyLabel);
     }
 
+    void _blocListener(BuildContext listenerCtx, BoardState listenerState) {
+      // Finish the game if attempt has reached its limit
+      if (listenerState is BoardSubmitted) {
+        // UiController.showSnackbar(
+        //   context: context,
+        //   message: "Submitted",
+        //   actionLabel: 'OK',
+        // );
+        UiController.showConfirmationDialog(
+          context: listenerCtx,
+          title: 'Game over',
+          content: DialogResult(),
+          actionN: () => bloc.add(BoardRestart()),
+          actionY: () => bloc.add(BoardRestart()),
+        );
+      }
+    }
+
     void _doNavigate() {
       Navigator.pushNamed(context, '/settings');
     }
 
-    return BlocProvider(
-      create: (_) => BoardBloc(),
-      child: BlocBuilder<BoardBloc, BoardState>(
-        builder: (context, state) => RawKeyboardListener(
-          autofocus: true,
-          focusNode: FocusNode(),
-          onKey: (event) {
-            // Keep typing if attempt is below its limit
-            if (state is! BoardSubmitted) {
-              _onKeyboardPressed(context, event);
-            }
-          },
-          child: BlocListener<BoardBloc, BoardState>(
-            listener: (context, state) {
-              // Finish the game if attempt has reached its limit
-              if (state is BoardSubmitted) {
-                UiController.showSnackbar(
-                  context: context,
-                  message: "Submitted",
-                  actionLabel: 'OK',
-                );
-              }
-            },
-            child: Scaffold(
-              appBar: AppBar(
-                // Here we take the value from the PageHome object that was created by
-                // the App.build method, and use it to set our appbar title.
-                title: Text(title),
-                actions: [
-                  IconButton(
-                    onPressed: () => _doNavigate(),
-                    icon: const Icon(Icons.settings),
-                  ),
-                ],
+    return BlocListener<BoardBloc, BoardState>(
+      listener: _blocListener,
+      child: RawKeyboardListener(
+        autofocus: true,
+        focusNode: FocusNode(),
+        onKey: (event) {
+          // Keep typing if attempt is below its limit
+          if (bloc.state is! BoardSubmitted) {
+            _onKeyboardPressed(context, event);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            // Here we take the value from the PageHome object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Text(title),
+            actions: [
+              IconButton(
+                onPressed: () => _doNavigate(),
+                icon: const Icon(Icons.settings),
               ),
-              body: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('${state.wordList}'),
-                  // Text('${state.word}'),
-                  if (state is BoardSubmitted)
-                    IconButton(
-                      onPressed: () => bloc(context).add(BoardRestart()),
-                      icon: const Icon(Icons.refresh_outlined),
-                    ),
-                  Text('${state.attempt}'),
-                  Board(rows: 6, cols: 5),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    color: Theme.of(context).colorScheme.secondary,
-                    // child: Keyboard(),
-                  )
-                ],
-              ),
-            ),
+            ],
+          ),
+          body: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Text('${bloc.state.wordList}'),
+              // // Text('${state.word}'),
+              // if (bloc.state is BoardSubmitted)
+              //   IconButton(
+              //     onPressed: () => bloc.add(BoardRestart()),
+              //     icon: const Icon(Icons.refresh_outlined),
+              //   ),
+              // Text('${bloc.state.attempt}'),
+              Board(rows: 6, cols: 5),
+              Container(
+                alignment: Alignment.bottomCenter,
+                color: Theme.of(context).colorScheme.secondary,
+                // child: Keyboard(),
+              )
+            ],
           ),
         ),
       ),
