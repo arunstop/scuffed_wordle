@@ -4,7 +4,7 @@ part of 'package:scuffed_wordle/bloc/board/bloc.dart';
 
 class BoardState extends Equatable {
   final List<String> word;
-  final List<List<String>> wordList;
+  final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
 
@@ -17,7 +17,7 @@ class BoardState extends Equatable {
 
   BoardState copywith({
     List<String>? word,
-    List<List<String>>? wordList,
+    List<List<BoardLetter>>? wordList,
     int? attempt,
     int? attemptLimit,
   }) {
@@ -35,7 +35,7 @@ class BoardState extends Equatable {
 
 class BoardInit extends BoardState {
   final List<String> word;
-  final List<List<String>> wordList;
+  final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
 
@@ -53,7 +53,7 @@ class BoardInit extends BoardState {
 
 class BoardSubmitted extends BoardState {
   final List<String> word;
-  final List<List<String>> wordList;
+  final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
 

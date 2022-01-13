@@ -22,25 +22,28 @@ class Board extends StatelessWidget {
         // return state.word[column - 1];
         // }
       }
-      return state.wordList[row - 1][column - 1];
+      return state.wordList[row - 1][column - 1].letter;
     }
 
     Color? _getColor(int row, int column) {
       var state = bloc.state;
-      var letter = state.wordList[row - 1][column - 1];
-      var keyWord = UiController.keyWord.toUpperCase().split('');
-      if (state is BoardSubmitted &&
-          state.wordList[row - 1].join() == keyWord.join()) {
-        return BoardColors.pinpoint;
-      }
-      if (letter == keyWord[column - 1]) {
-        return BoardColors.pinpoint;
-      } else if (keyWord.contains(letter)) {
-        return BoardColors.okLetter;
-      } else if (state.attempt == row && state is! BoardSubmitted) {
-        return BoardColors.activeRow;
-      }
-      return BoardColors.base;
+      // var letter = state.wordList[row - 1][column - 1].letter;
+      // var keyWord = UiController.keyWord.toUpperCase().split('');
+      // if (state is BoardSubmitted &&
+      //     state.wordList[row - 1].join() == keyWord.join()) {
+      //   return BoardColors.pinpoint;
+      // }
+      // if (letter == keyWord[column - 1]) {
+      //   return BoardColors.pinpoint;
+      // } else if (keyWord.contains(letter)) {
+      //   return BoardColors.okLetter;
+      // } else if (state.attempt == row && state is! BoardSubmitted) {
+      //   return BoardColors.activeRow;
+      // }
+      // return BoardColors.base;
+      return state.attempt == row
+          ? BoardColors.activeRow
+          : state.wordList[row - 1][column - 1].color;
     }
 
     List<Widget> wordBoard = [
