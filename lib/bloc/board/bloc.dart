@@ -63,20 +63,21 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           wordList: submittedWord,
           attempt: attempt + 1,
         ));
+        // If the submitted word is corrent, end the game
         var strWord = submittedWord[attempt - 1].join();
-        if (strWord.toLowerCase() == UiController.keyWord.toLowerCase()) {
-          emit(BoardSubmitted(wordList: state.wordList));
+        if (strWord.toLowerCase() == UiController.keyWord.toLowerCase() ||
+            state.attempt > state.attemptLimit) {
+          emit(BoardSubmitted(
+              wordList: state.wordList, attempt: state.attempt - 1));
           return;
-        }
-        // Restart if board is full
-        if (state.attempt > state.attemptLimit) {
-          // print(state.wordList);
-          // emit(_boardInit);
-          // print('submit');
         }
       } else {
         print('Need more');
       }
+    });
+
+    on<BoardRestart>((event, emit) {
+      emit(_boardInit);
     });
   }
 }

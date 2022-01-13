@@ -60,7 +60,9 @@ class UiController {
     String actionLabel = 'OK',
     Function action = _doNothing,
   }) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context)
+    ..clearSnackBars()
+    ..showSnackBar(SnackBar(
       content: Text(message),
       action: SnackBarAction(
         label: actionLabel,
@@ -113,6 +115,6 @@ class UiController {
 class BoardColors{
   static var base = Colors.grey[800];
   static var activeRow = Colors.blue[800];
-  static var okLetter = Colors.orangeAccent[700];
+  static var okLetter = Colors.orange[700];
   static var pinpoint = Colors.green;
 }

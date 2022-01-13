@@ -16,14 +16,6 @@ class BoardAddLetter extends BoardEvent {
   List<Object> get props => [letter];
 }
 
-class BoardRemoveLetter extends BoardEvent {
-  final String letter;
-
-  const BoardRemoveLetter({required this.letter});
-
-  @override
-  List<Object> get props => [letter];
-}
-
-
+class BoardRemoveLetter extends BoardEvent {}
 class BoardSubmitWord extends BoardEvent {}
+class BoardRestart extends BoardEvent {}

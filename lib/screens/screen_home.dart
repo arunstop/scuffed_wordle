@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/bloc.dart';
 import 'package:scuffed_wordle/ui.dart';
-import 'package:scuffed_wordle/widget/keyboard.dart';
-import 'package:scuffed_wordle/widget/board.dart';
+import 'package:scuffed_wordle/widget/widget_keyboard.dart';
+import 'package:scuffed_wordle/widget/widget_board.dart';
 
 class PageHome extends StatelessWidget {
   const PageHome({Key? key, required this.title}) : super(key: key);
@@ -14,6 +14,9 @@ class PageHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build');
+    BoardBloc bloc(BuildContext ctx) {
+      return ctx.read<BoardBloc>();
+    }
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
       if (event is RawKeyDownEvent) {
@@ -21,12 +24,12 @@ class PageHome extends StatelessWidget {
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
           if (event.logicalKey == LogicalKeyboardKey.backspace) {
-            ctx.read<BoardBloc>().add(BoardRemoveLetter(letter: letter));
+            bloc(ctx).add(BoardRemoveLetter());
           } else if (event.logicalKey == LogicalKeyboardKey.enter ||
               event.logicalKey == LogicalKeyboardKey.numpadEnter) {
-            ctx.read<BoardBloc>().add(BoardSubmitWord());
+            bloc(ctx).add(BoardSubmitWord());
           } else {
-            ctx.read<BoardBloc>().add(BoardAddLetter(letter: letter));
+            bloc(ctx).add(BoardAddLetter(letter: letter));
           }
         }
       }
@@ -75,9 +78,14 @@ class PageHome extends StatelessWidget {
               body: Column(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Text('${state.wordList}'),
+                  Text('${state.wordList}'),
                   // Text('${state.word}'),
-                  // Text('${state.attempt}'),
+                  if (state is BoardSubmitted)
+                    IconButton(
+                      onPressed: () => bloc(context).add(BoardRestart()),
+                      icon: const Icon(Icons.refresh_outlined),
+                    ),
+                  Text('${state.attempt}'),
                   Board(rows: 6, cols: 5),
                   Container(
                     alignment: Alignment.bottomCenter,
