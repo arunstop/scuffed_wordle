@@ -12,7 +12,6 @@ class Board extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var bloc = context.read<BoardBloc>();
-    var _wordList = bloc.state.wordList;
     String _getLetter(int row, int column) {
       var state = bloc.state;
       if (state.attempt == row && column <= state.word.length) {
@@ -27,23 +26,28 @@ class Board extends StatelessWidget {
 
     Color? _getColor(int row, int column) {
       var state = bloc.state;
-      // var letter = state.wordList[row - 1][column - 1].letter;
-      // var keyWord = UiController.keyWord.toUpperCase().split('');
-      // if (state is BoardSubmitted &&
-      //     state.wordList[row - 1].join() == keyWord.join()) {
-      //   return BoardColors.pinpoint;
-      // }
-      // if (letter == keyWord[column - 1]) {
-      //   return BoardColors.pinpoint;
-      // } else if (keyWord.contains(letter)) {
-      //   return BoardColors.okLetter;
-      // } else if (state.attempt == row && state is! BoardSubmitted) {
-      //   return BoardColors.activeRow;
-      // }
-      // return BoardColors.base;
       return state.attempt == row
           ? BoardColors.activeRow
           : state.wordList[row - 1][column - 1].color;
+    }
+
+    String _getText2(int index) {
+      var flattenWordList = bloc.state.wordList.expand((e) => e).toList();
+      var state = bloc.state;
+      var colIndex = (index % cols);
+      var rowIndex = ((index + 1) / cols).ceil();
+      if (state.attempt == rowIndex && colIndex < state.word.length) {
+        // if(column == state.word.length) {
+        return state.word[colIndex];
+      }
+      return flattenWordList[index].letter;
+    }
+
+    Color? _getColor2(int index) {
+      var flattenWordList = bloc.state.wordList.expand((e) => e).toList();
+      var rowIndex = ((index + 1) / cols).ceil();
+      if (rowIndex == bloc.state.attempt) return BoardColors.activeRow;
+      return flattenWordList[index].color;
     }
 
     List<Widget> wordBoard = [
@@ -53,6 +57,7 @@ class Board extends StatelessWidget {
           children: [
             for (var c = 1; c <= cols; c++)
               SizedBox(
+                // key: UniqueKey(),
                 height: 60,
                 width: 60,
                 child: Card(
@@ -102,6 +107,38 @@ class Board extends StatelessWidget {
         children: [
           // Text('${bloc.state.word}'),
           ...wordBoard,
+          Text(
+              '${bloc.state.wordList.expand((e) => e).map((e) => e.letter).toList()}'),
+          GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: cols,
+            children: List.generate(
+              rows * cols,
+              (index) => AnimatedSwitcher(
+                duration: Duration(milliseconds: 1),
+                child: SizedBox(
+                  // key: UniqueKey(),
+                  // height: 60,
+                  // width: 60,
+                  child: Card(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        _getText2(index),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
+                    // color: Theme.of(context).colorScheme.secondary,
+                    color: _getColor2(index),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

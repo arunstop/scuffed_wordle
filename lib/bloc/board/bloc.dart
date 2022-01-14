@@ -66,6 +66,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   static final BoardInit _boardInit =
       BoardInit(word: _initWord, wordList: _initWordList);
+  
   BoardBloc() : super(_boardInit) {
     // Add letter whenever an alphabet key is pressed
     on<BoardAddLetter>((event, emit) {

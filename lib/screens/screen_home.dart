@@ -16,7 +16,7 @@ class PageHome extends StatelessWidget {
   Widget build(BuildContext context) {
     var bloc = context.watch<BoardBloc>();
     // late var state123 = bloc.state;
-    print('build');
+    // print('build');
     // BoardBloc bloc(BuildContext ctx) {
     //   return ctx.read<BoardBloc>();
     // }
@@ -84,24 +84,26 @@ class PageHome extends StatelessWidget {
               ),
             ],
           ),
-          body: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Text('${bloc.state.wordList}'),
-              // // Text('${state.word}'),
-              // if (bloc.state is BoardSubmitted)
-              //   IconButton(
-              //     onPressed: () => bloc.add(BoardRestart()),
-              //     icon: const Icon(Icons.refresh_outlined),
-              //   ),
-              // Text('${bloc.state.attempt}'),
-              Board(rows: 6, cols: 5),
-              Container(
-                alignment: Alignment.bottomCenter,
-                color: Theme.of(context).colorScheme.secondary,
-                // child: Keyboard(),
-              )
-            ],
+          body: SingleChildScrollView(
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Text('${bloc.state.wordList}'),
+                // // Text('${state.word}'),
+                // if (bloc.state is BoardSubmitted)
+                //   IconButton(
+                //     onPressed: () => bloc.add(BoardRestart()),
+                //     icon: const Icon(Icons.refresh_outlined),
+                //   ),
+                // Text('${bloc.state.attempt}'),
+                Board(rows: 6, cols: 5),
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  color: Theme.of(context).colorScheme.secondary,
+                  // child: Keyboard(),
+                )
+              ],
+            ),
           ),
         ),
       ),
