@@ -19,11 +19,11 @@ flutter_native_splash:
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  #image: assets/splash.png
+  image: assets/icon.png
 
   # This property allows you to specify an image used as branding in the splash screen. It must be
   # a png file. Currently, it is only supported for Android and iOS.
-  branding: assets/dart.png
+  # branding: asset/icon.png
 
   # Specify your branding image for dark mode.
   #branding_dark: assets/dart_dark.png
@@ -33,7 +33,7 @@ flutter_native_splash:
   #
   # Make sure this content mode value should not be similar to android_gravity value and ios_content_mode
   # value.
-  branding_mode: bottom
+  # branding_mode: bottom
 
   # The color_dark, background_image_dark, and image_dark are parameters that set the background
   # and image when the device is in dark mode. If they are not specified, the app will use the
@@ -46,8 +46,8 @@ flutter_native_splash:
 
   # The android, ios and web parameters can be used to disable generating a splash screen on a given
   # platform.
-  #android: false
-  #ios: false
+  android: false
+  ios: false
   #web: false
 
   # The position of the splash image can be set with android_gravity, ios_content_mode, and
@@ -66,7 +66,7 @@ flutter_native_splash:
   #ios_content_mode: center
   #
   # web_image_mode can be one of the following modes: center, contain, stretch, and cover.
-  #web_image_mode: center
+  web_image_mode: center
 
   # To hide the notification bar, use the fullscreen parameter.  Has no affect in web since web
   # has no notification bar.  Defaults to false.
