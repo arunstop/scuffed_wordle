@@ -37,6 +37,10 @@ dependencies:
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
   collection: ^1.15.0
+  # TO REMOVE DANGLING # in url
+  url_strategy: ^0.2.0
+  # SPLASH SCREEN
+  flutter_native_splash: ^1.3.3
 
 dev_dependencies:
   flutter_test:

@@ -12,26 +12,31 @@ class PageSettings extends StatefulWidget {
 class _PageSettingsState extends State<PageSettings> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-        actions: [
-          IconButton(
-              onPressed: () => UiController.showConfirmationDialog(
-                  context: context,
-                  title: 'Reset Settings',
-                  content:
-                      'Do you wish to restore all your settings to default?',
-                  actionY: () {
-                    UiController.showSnackbar(
+    return Center(
+      child: SizedBox(
+        width: 480,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.title),
+            backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+            actions: [
+              IconButton(
+                  onPressed: () => UiController.showConfirmationDialog(
                       context: context,
-                      message: 'Settings has been reset to default',
-                      actionLabel: 'Done',
-                    );
-                  }),
-              icon: const Icon(Icons.refresh))
-        ],
+                      title: 'Reset Settings',
+                      content:
+                          'Do you wish to restore all your settings to default?',
+                      actionY: () {
+                        UiController.showSnackbar(
+                          context: context,
+                          message: 'Settings has been reset to default',
+                          actionLabel: 'Done',
+                        );
+                      }),
+                  icon: const Icon(Icons.refresh))
+            ],
+          ),
+        ),
       ),
     );
   }

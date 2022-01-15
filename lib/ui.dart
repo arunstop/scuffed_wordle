@@ -34,7 +34,10 @@ class UiController {
       builder: (BuildContext context) => AlertDialog(
         title: Text(
           title,
-          style: TextStyle(fontWeight: _bold, color: _colorScheme.primary),
+          style: TextStyle(
+            fontWeight: _bold,
+            color: _colorScheme.primary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,

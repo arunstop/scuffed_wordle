@@ -74,7 +74,10 @@ class PageHome extends StatelessWidget {
             }).join();
             Clipboard.setData(ClipboardData(text: resultClipBoard));
             UiController.showSnackbar(
-                context: context, message: 'Copied to clipboard');
+              context: context,
+              message: 'Copied to clipboard',
+            );
+            bloc.add(BoardRestart()); 
           },
         );
       }
@@ -84,48 +87,53 @@ class PageHome extends StatelessWidget {
       Navigator.pushNamed(context, '/settings');
     }
 
-    return BlocListener<BoardBloc, BoardState>(
-      listener: _blocListener,
-      child: RawKeyboardListener(
-        autofocus: true,
-        focusNode: FocusNode(),
-        onKey: (event) {
-          // Keep typing if attempt is below its limit
-          if (bloc.state is! BoardSubmitted) {
-            _onKeyboardPressed(context, event);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            // Here we take the value from the PageHome object that was created by
-            // the App.build method, and use it to set our appbar title.
-            title: Text(title),
-            actions: [
-              IconButton(
-                onPressed: () => _doNavigate(),
-                icon: const Icon(Icons.settings),
+    return Center(
+      child: SizedBox(
+        width: 480,
+        child: BlocListener<BoardBloc, BoardState>(
+          listener: _blocListener,
+          child: RawKeyboardListener(
+            autofocus: true,
+            focusNode: FocusNode(),
+            onKey: (event) {
+              // Keep typing if attempt is below its limit
+              if (bloc.state is! BoardSubmitted) {
+                _onKeyboardPressed(context, event);
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                // Here we take the value from the PageHome object that was created by
+                // the App.build method, and use it to set our appbar title.
+                title: Text(title),
+                actions: [
+                  IconButton(
+                    onPressed: () => _doNavigate(),
+                    icon: const Icon(Icons.settings),
+                  ),
+                ],
               ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Text('${bloc.state.wordList}'),
-                // // Text('${state.word}'),
-                // if (bloc.state is BoardSubmitted)
-                //   IconButton(
-                //     onPressed: () => bloc.add(BoardRestart()),
-                //     icon: const Icon(Icons.refresh_outlined),
-                //   ),
-                // Text('${bloc.state.attempt}'),
-                Board(rows: 6, cols: 5),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  color: Theme.of(context).colorScheme.secondary,
-                  // child: Keyboard(),
-                )
-              ],
+              body: SizedBox.expand(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Text('${bloc.state.wordList}'),
+                    // // Text('${state.word}'),
+                    // if (bloc.state is BoardSubmitted)
+                    //   IconButton(
+                    //     onPressed: () => bloc.add(BoardRestart()),
+                    //     icon: const Icon(Icons.refresh_outlined),
+                    //   ),
+                    // Text('${bloc.state.attempt}'),
+                    Board(rows: 6, cols: 5),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      // color: Theme.of(context).colorScheme.secondary,
+                      child: Keyboard(),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
