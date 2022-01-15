@@ -61,15 +61,20 @@ class PageHome extends StatelessWidget {
               return word.mapIndexed((letterIndex, letter) {
                 String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
                 if (letter.color == BoardColors.base) {
-                  return "BL$lineBreak";
+                  // Black
+                  return "⬛$lineBreak";
                 } else if (letter.color == BoardColors.okLetter) {
-                  return "YE$lineBreak";
+                  // Yellow
+                  return "🟨$lineBreak";
                 } else if (letter.color == BoardColors.pinpoint) {
-                  return "GR$lineBreak";
+                  // Green
+                  return "🟩$lineBreak";
                 }
               }).join();
             }).join();
-            print(resultClipBoard);
+            Clipboard.setData(ClipboardData(text: resultClipBoard));
+            UiController.showSnackbar(
+                context: context, message: 'Copied to clipboard');
           },
         );
       }
