@@ -18,7 +18,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
     [
       _boardLetter,
@@ -26,7 +25,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
     [
       _boardLetter,
@@ -34,7 +32,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
     [
       _boardLetter,
@@ -42,7 +39,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
     [
       _boardLetter,
@@ -50,7 +46,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
     [
       _boardLetter,
@@ -58,7 +53,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       _boardLetter,
       _boardLetter,
       _boardLetter,
-      _boardLetter
     ],
   ];
   // static const _initWord = ['', '', '', '', ''];

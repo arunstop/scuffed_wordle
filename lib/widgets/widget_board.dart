@@ -107,34 +107,31 @@ class Board extends StatelessWidget {
         children: [
           // Text('${bloc.state.word}'),
           ...wordBoard,
-          Text(
-              '${bloc.state.wordList.expand((e) => e).map((e) => e.letter).toList()}'),
+          // Text(
+          //     '${bloc.state.wordList.expand((e) => e).map((e) => e.letter).toList()}'),
           GridView.count(
             shrinkWrap: true,
             crossAxisCount: cols,
             children: List.generate(
               rows * cols,
-              (index) => AnimatedSwitcher(
-                duration: Duration(milliseconds: 1),
-                child: SizedBox(
-                  // key: UniqueKey(),
-                  // height: 60,
-                  // width: 60,
-                  child: Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        _getText2(index),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+              (index) => SizedBox(
+                // key: UniqueKey(),
+                // height: 60,
+                // width: 60,
+                child: Card(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      _getText2(index),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
                       ),
                     ),
-                    // color: Theme.of(context).colorScheme.secondary,
-                    color: _getColor2(index),
                   ),
+                  // color: Theme.of(context).colorScheme.secondary,
+                  color: _getColor2(index),
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +53,24 @@ class PageHome extends StatelessWidget {
           title: 'Game over',
           content: DialogResult(),
           actionN: () => bloc.add(BoardRestart()),
-          actionY: () => bloc.add(BoardRestart()),
+          actionY: () {
+            var state = bloc.state;
+            var resultWordList = state.wordList.sublist(0, state.attempt);
+            // Turn the submitted boad into string format
+            var resultClipBoard = resultWordList.map((word) {
+              return word.mapIndexed((letterIndex, letter) {
+                String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
+                if (letter.color == BoardColors.base) {
+                  return "BL$lineBreak";
+                } else if (letter.color == BoardColors.okLetter) {
+                  return "YE$lineBreak";
+                } else if (letter.color == BoardColors.pinpoint) {
+                  return "GR$lineBreak";
+                }
+              }).join();
+            }).join();
+            print(resultClipBoard);
+          },
         );
       }
     }
