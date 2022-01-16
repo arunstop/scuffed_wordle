@@ -5,7 +5,6 @@ import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-
 void main() {
   setPathUrlStrategy();
   runApp(const MyApp());
@@ -28,23 +27,46 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: title,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch().copyWith(
+          brightness: Brightness.light,
+          // primaryColor: Colors.teal,
+          // primaryColorDark: Colors.teal,
+          // primarySwatch: Colors.teal,
+          scaffoldBackgroundColor: Colors.grey[50],
+          // colorScheme: ColorScheme.fromSwatch().copyWith(
+          //   primary: Colors.teal,
+          //   primaryVariant: Colors.teal[800],
+          //   secondary: Colors.orange,
+          //   secondaryVariant: Colors.orange[800],
+          // ),
+          colorScheme: ColorScheme.light(
             primary: Colors.teal,
-            primaryVariant: Colors.teal[800],
+            primaryVariant: Colors.teal,
             secondary: Colors.orange,
-            secondaryVariant: Colors.orange[800],
+            secondaryVariant: Colors.orange,
           ),
-          // brightness: Brightness.light,
         ),
-        // darkTheme: ThemeData(
-        //   primarySwatch: Colors.red,
-        //   primaryColor: Colors.red[300],
-        //   // brightness: Brightness.dark,
-        // ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          colorScheme: ColorScheme.dark(
+            primary: Colors.teal,
+          ),
+          // primaryColorDark: Colors.teal[300],
+          // primarySwatch: Colors.teal,
+          // scaffoldBackgroundColor: Colors.grey[50],
+          // primaryColor: Colors.teal,
+          // primaryColorDark: Colors.teal,
+          // primarySwatch: Colors.teal,
+          // colorScheme: ColorScheme.light(
+          //   // primary: Colors.teal,
+          //   // primaryVariant: Colors.teal[800],
+          //   // secondary: Colors.orange,
+          //   // secondaryVariant: Colors.orange[800],
+          // ),
+        ),
+        themeMode: ThemeMode.system,
         // home: PageHome(title: title),
         initialRoute: '/',
         routes: _routes,
-       
       ),
     );
   }

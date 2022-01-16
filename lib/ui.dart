@@ -25,7 +25,11 @@ class UiController {
 
     Text _btnLabel(String label) => Text(
           label,
-          style: const TextStyle(fontWeight: _bold, fontSize: 16),
+          style: TextStyle(
+            fontWeight: _bold,
+            fontSize: 16,
+            color: label == labelActionY ? Colors.white : Theme.of(context).colorScheme.primary,
+          ),
         );
 
     showDialog(
@@ -130,8 +134,8 @@ class UiController {
 }
 
 class BoardColors {
-  static var base = Colors.grey[800];
+  static var base = Colors.grey[400];
   static var activeRow = Colors.blue[800];
-  static var okLetter = Colors.orange[700];
+  static var okLetter = Colors.yellow[700];
   static var pinpoint = Colors.green;
 }
