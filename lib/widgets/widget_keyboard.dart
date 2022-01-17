@@ -22,7 +22,7 @@ class Keyboard extends StatelessWidget {
           color: Colors.white,
         );
 
-    Color? _getColor(String key) {
+    Color? getColor(String key) {
       var letterTarget =
           submittedWordList.where((element) => element.letter == key).toList();
       if (letterTarget.isNotEmpty) {
@@ -31,7 +31,18 @@ class Keyboard extends StatelessWidget {
       return Colors.blueGrey;
     }
 
-    Widget _getKey(String key) {
+    void onTap(String key) {
+      if (key == "BACKSPACE") {
+        bloc.add(BoardRemoveLetter());
+      } else if (key == "ENTER") {
+        bloc.add(BoardSubmitWord());
+      } else {
+        bloc.add(BoardAddLetter(letter: key));
+      }
+      // print(key);
+    }
+
+    Widget getKey(String key) {
       double width = 60;
       double height = 36;
       Widget label = Text(key, style: getTextStyle());
@@ -45,15 +56,13 @@ class Keyboard extends StatelessWidget {
               )
             : label;
       }
-      return InkWell(
-        onTap: () {
-          
-        },
-        child: SizedBox(
-          height: width,
-          width: height,
-          child: Card(
-            color: _getColor(key),
+      return SizedBox(
+        height: width,
+        width: height,
+        child: Card(
+          color: getColor(key),
+          child: InkWell(
+            onTap: () => onTap(key),
             child: Center(
               child: label,
             ),
@@ -67,7 +76,7 @@ class Keyboard extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [for (var key in kbRow) _getKey(key)],
+              children: [for (var key in kbRow) getKey(key)],
             ))
         .toList();
 
