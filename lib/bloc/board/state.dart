@@ -30,7 +30,14 @@ class BoardState extends Equatable {
   }
 
   @override
-  List<Object> get props => [word];
+  List<Object> get props => [
+        word,
+        wordList,
+        attempt,
+        attemptLimit,
+      ];
+
+  List<List<BoardLetter>> get submittedWordList => wordList.sublist(0, attempt);
 }
 
 class BoardInit extends BoardState {

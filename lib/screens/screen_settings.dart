@@ -18,6 +18,7 @@ class _PageSettingsState extends State<PageSettings> {
         child: SizedBox(
           width: 520,
           child: Card(
+            margin: EdgeInsets.all(0),
             elevation: 6,
             child: Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,

@@ -93,6 +93,7 @@ class PageHome extends StatelessWidget {
         child: SizedBox(
           width: 520,
           child: Card(
+            margin: EdgeInsets.all(0),
             elevation: 6,
             child: BlocListener<BoardBloc, BoardState>(
               listener: _blocListener,

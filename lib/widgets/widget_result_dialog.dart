@@ -39,7 +39,7 @@ class BoardResult extends StatelessWidget {
     //   return strWord.isNotEmpty;
     // });
 
-    var submittedWordList = state.wordList.sublist(0, state.attempt);
+    // var submittedWordList = state.wordList.sublist(0, state.attempt);
     // print(submittedWordList);
 
     return Column(
@@ -49,7 +49,7 @@ class BoardResult extends StatelessWidget {
         SizedBox(
           height: 12,
         ),
-        for (var word in submittedWordList)
+        for (var word in state.submittedWordList)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

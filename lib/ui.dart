@@ -134,7 +134,7 @@ class UiController {
 }
 
 class BoardColors {
-  static var base = Colors.grey[400];
+  static var base = Colors.grey[800];
   static var activeRow = Colors.blue[800];
   static var okLetter = Colors.yellow[700];
   static var pinpoint = Colors.green;

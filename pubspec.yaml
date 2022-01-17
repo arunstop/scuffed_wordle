@@ -41,6 +41,8 @@ dependencies:
   url_strategy: ^0.2.0
   # SPLASH SCREEN
   flutter_native_splash: ^1.3.3
+  # Lodash-like list manager
+  dartx: ^1.0.0
 
 dev_dependencies:
   flutter_test:
