@@ -43,6 +43,8 @@ dependencies:
   flutter_native_splash: ^1.3.3
   # Lodash-like list manager
   dartx: ^1.0.0
+  # Toast
+  fluttertoast: ^8.0.8
 
 dev_dependencies:
   flutter_test:

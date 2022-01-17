@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scuffed_wordle/models/model__board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/event.dart';
@@ -60,7 +61,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   static final BoardInit _boardInit =
       BoardInit(word: _initWord, wordList: _initWordList);
-  
+
   BoardBloc() : super(_boardInit) {
     // Add letter whenever an alphabet key is pressed
     on<BoardAddLetter>((event, emit) {
@@ -129,10 +130,30 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
             wordList: state.wordList,
             attempt: state.attempt - 1,
           ));
+          Fluttertoast.showToast(
+            msg: "KEKWL",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            webPosition: 'center',
+            timeInSecForIosWeb: 3,
+            backgroundColor: Colors.green,
+            webBgColor: "#4caf50",
+            textColor: Colors.white,
+          );
           return;
         }
       } else {
-        // print('Need more');
+        // Fluttertoast.cancel();
+        Fluttertoast.showToast(
+          msg: "Not enough letter",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          webPosition: 'center',
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.red,
+          webBgColor: "#f44336",
+          textColor: Colors.white,
+        );
       }
     });
 
