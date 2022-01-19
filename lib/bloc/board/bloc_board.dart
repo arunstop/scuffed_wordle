@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'package:collection/collection.dart';
@@ -5,10 +6,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
 import 'package:scuffed_wordle/models/model__board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
-part 'package:scuffed_wordle/bloc/board/event.dart';
-part 'package:scuffed_wordle/bloc/board/state.dart';
+part 'package:scuffed_wordle/bloc/board/event_board.dart';
+part 'package:scuffed_wordle/bloc/board/state_board.dart';
 
 class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardLetter _boardLetter = BoardLetter('', BoardColors.base);
@@ -62,7 +64,22 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardInit _boardInit =
       BoardInit(word: _initWord, wordList: _initWordList);
 
-  BoardBloc() : super(_boardInit) {
+  final DictionaryBloc dictionaryBloc;
+  late final StreamSubscription DictionarySub;
+  List<String> dictionaryList = [];
+  String keyword = "";
+
+  BoardBloc({required this.dictionaryBloc}) : super(_boardInit) {
+    // Listen to dictionaryBloc
+    DictionarySub = dictionaryBloc.stream.listen((state) {
+      // Set the word list
+      dictionaryList = state.list.map((e) => e.toLowerCase()).toList();
+      dictionaryList.sortBy((element) => element);
+      // Set the keyword
+      keyword = state.keyword;
+
+      // print(dictionaryList.toSet().map((e) => '"$e"').toList());
+    });
     // Add letter whenever an alphabet key is pressed
     on<BoardAddLetter>((event, emit) {
       // Count typed letters
@@ -94,13 +111,28 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     on<BoardSubmitWord>((event, emit) {
       // Submit word when the count is 5 letter
       if (state.word.length == 5) {
+        var strWord = state.word.join().toLowerCase();
+        // If the word is not in word list
+        if (!dictionaryList.contains(strWord)) {
+          Fluttertoast.showToast(
+            msg: "$strWord is not in word list",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            webPosition: 'center',
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            webBgColor: "#f44336",
+            textColor: Colors.white,
+          );
+          return;
+        }
         // Copy the wordList state value
         var wordList = [...state.wordList];
         // Change the value based on index/attempt
         var attempt = state.attempt;
 
         Color? getColor(int index, String letter) {
-          var keyWord = UiController.keyWord.toUpperCase().split('');
+          var keyWord = keyword.toUpperCase().split('');
           if (letter == keyWord[index]) {
             return BoardColors.pinpoint;
           } else if (keyWord.contains(letter)) {
@@ -123,19 +155,19 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           attempt: attempt + 1,
         ));
         // If the submitted word is corrent, end the game
-        var strWord = wordList[attempt - 1].map((e) => e.letter).join();
-        if (strWord.toLowerCase() == UiController.keyWord.toLowerCase() ||
+        strWord = wordList[attempt - 1].map((e) => e.letter).join();
+        if (strWord.toLowerCase() == keyword.toLowerCase() ||
             state.attempt > state.attemptLimit) {
           emit(BoardSubmitted(
             wordList: state.wordList,
             attempt: state.attempt - 1,
           ));
           Fluttertoast.showToast(
-            msg: "KEKWL",
+            msg: keyword.toUpperCase(),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.TOP,
             webPosition: 'center',
-            timeInSecForIosWeb: 3,
+            timeInSecForIosWeb: 2,
             backgroundColor: Colors.green,
             webBgColor: "#4caf50",
             textColor: Colors.white,
@@ -149,7 +181,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP,
           webPosition: 'center',
-          timeInSecForIosWeb: 3,
+          timeInSecForIosWeb: 2,
           backgroundColor: Colors.red,
           webBgColor: "#f44336",
           textColor: Colors.white,
@@ -160,5 +192,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     on<BoardRestart>((event, emit) {
       emit(_boardInit);
     });
+  }
+  @override
+  Future<void> close() {
+    DictionarySub.cancel();
+    return super.close();
   }
 }

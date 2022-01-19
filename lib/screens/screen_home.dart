@@ -2,7 +2,8 @@ import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
@@ -15,7 +16,8 @@ class PageHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var bloc = context.watch<BoardBloc>();
+    var boardBloc = context.watch<BoardBloc>();
+    var dictionaryBloc = context.watch<DictionaryBloc>();
     // late var state123 = bloc.state;
     // print('build');
     // BoardBloc bloc(BuildContext ctx) {
@@ -28,12 +30,12 @@ class PageHome extends StatelessWidget {
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
           if (event.logicalKey == LogicalKeyboardKey.backspace) {
-            bloc.add(BoardRemoveLetter());
+            boardBloc.add(BoardRemoveLetter());
           } else if (event.logicalKey == LogicalKeyboardKey.enter ||
               event.logicalKey == LogicalKeyboardKey.numpadEnter) {
-            bloc.add(BoardSubmitWord());
+            boardBloc.add(BoardSubmitWord());
           } else {
-            bloc.add(BoardAddLetter(letter: letter));
+            boardBloc.add(BoardAddLetter(letter: letter));
           }
         }
       }
@@ -52,9 +54,9 @@ class PageHome extends StatelessWidget {
           context: listenerCtx,
           title: 'Game over',
           content: DialogResult(),
-          actionN: () => bloc.add(BoardRestart()),
+          actionN: () => boardBloc.add(BoardRestart()),
           actionY: () {
-            var state = bloc.state;
+            var state = boardBloc.state;
             var resultWordList = state.wordList.sublist(0, state.attempt);
             // Turn the submitted boad into string format
             var resultClipBoard = resultWordList.map((word) {
@@ -77,7 +79,7 @@ class PageHome extends StatelessWidget {
               context: context,
               message: 'Copied to clipboard',
             );
-            bloc.add(BoardRestart()); 
+            boardBloc.add(BoardRestart());
           },
         );
       }
@@ -102,7 +104,7 @@ class PageHome extends StatelessWidget {
                 focusNode: FocusNode(),
                 onKey: (event) {
                   // Keep typing if attempt is below its limit
-                  if (bloc.state is! BoardSubmitted) {
+                  if (boardBloc.state is! BoardSubmitted) {
                     _onKeyboardPressed(context, event);
                   }
                 },
@@ -124,7 +126,7 @@ class PageHome extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Text('${bloc.state.wordList}'),
+                        Text('${dictionaryBloc.state.keyword}'),
                         // // Text('${state.word}'),
                         // if (bloc.state is BoardSubmitted)
                         //   IconButton(

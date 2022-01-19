@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 dynamic _doNothing() {}
@@ -28,7 +30,9 @@ class UiController {
           style: TextStyle(
             fontWeight: _bold,
             fontSize: 16,
-            color: label == labelActionY ? Colors.white : Theme.of(context).colorScheme.primary,
+            color: label == labelActionY
+                ? Colors.white
+                : Theme.of(context).colorScheme.primary,
           ),
         );
 
@@ -130,7 +134,6 @@ class UiController {
   ];
   static List<String> keyboardKeys =
       keyboardTemplate.expand((element) => element).toList();
-  static String keyWord = "KEKWL";
 }
 
 class BoardColors {
@@ -138,4 +141,27 @@ class BoardColors {
   static var activeRow = Colors.blue[800];
   static var okLetter = Colors.yellow[700];
   static var pinpoint = Colors.green;
+}
+
+class Dictionary {
+  static Future<List<String>> getList(BuildContext context) async {
+    var data = await DefaultAssetBundle.of(context)
+        .loadString("assets/5LettersOxford5000.json");
+    // print(jsonDecode(data));
+    // Cast the jsonDecode result which is 
+    // List<dynamic> into List<String>
+    return Future<List<String>>.value(
+        (jsonDecode(data) as List<dynamic>).cast<String>());
+    // return DefaultAssetBundle.of(context)
+    //     .loadString("assets/valid5LetterWordList.json")
+    //     .then((value) => jsonDecode(value));
+  }
+  // static String keyWord = "KEKWL";
+
+
+  // List<dynamic> list(BuildContext context) {
+  //   List<dynamic> slk = (() async {
+  //     return await getList(context);
+  //   });
+  // }
 }

@@ -1,4 +1,4 @@
-part of 'package:scuffed_wordle/bloc/board/bloc.dart';
+part of 'package:scuffed_wordle/bloc/board/bloc_board.dart';
 
 abstract class BoardEvent extends Equatable {
   const BoardEvent();

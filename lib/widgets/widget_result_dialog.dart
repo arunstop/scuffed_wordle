@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
-import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
@@ -8,16 +9,17 @@ class DialogResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var bloc = context.watch<BoardBloc>();
+    var boardBloc = context.read<BoardBloc>();
+    var dictionaryBloc = context.read<DictionaryBloc>();
 
     return Center(
       child: Column(
         children: [
-          Text('The word was : ${UiController.keyWord}'),
+          Text('The word was : ${dictionaryBloc.state.keyword}'),
           const SizedBox(
             height: 12,
           ),
-          Text('You guessed in ${bloc.state.attempt} attempts! Be proud!'),
+          Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
           const BoardResult(),
         ],
       ),

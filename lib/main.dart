@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
+import 'package:scuffed_wordle/ui.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() {
+  // Remove '#' dangle on url
   setPathUrlStrategy();
-  runApp(const MyApp());
+  runApp(const ScuffedWordleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ScuffedWordleApp extends StatelessWidget {
+  const ScuffedWordleApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -22,8 +25,15 @@ class MyApp extends StatelessWidget {
       '/settings': (context) => const PageSettings(title: 'Settings'),
     };
 
-    return BlocProvider(
-      create: (_) => BoardBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => DictionaryBloc(),
+        ),
+        BlocProvider(
+          create: (context) => BoardBloc(dictionaryBloc: BlocProvider.of<DictionaryBloc>(context)),
+        ),
+      ],
       child: MaterialApp(
         title: title,
         theme: ThemeData(

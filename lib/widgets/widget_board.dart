@@ -1,19 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc.dart';
+import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
+import 'package:scuffed_wordle/bloc/dictionary/event_dictionary.dart';
 import 'package:scuffed_wordle/ui.dart';
 
-class Board extends StatelessWidget {
+class Board extends StatefulWidget {
   Board({Key? key, required this.rows, required this.cols}) : super(key: key);
 
   final int rows;
   final int cols;
 
   @override
+  _BoardState createState() => _BoardState();
+}
+
+class _BoardState extends State<Board> {
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // context.bloc<DictionaryBloc>.add(DictionaryInit());
+    _loadDictionarys();
+
+    super.initState();
+  }
+
+  _loadDictionarys()  async {
+    context.read<DictionaryBloc>().add(DictionaryInit(list : await Dictionary.getList(context)));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var bloc = context.read<BoardBloc>();
+    print('build');
+    // Dictionary.list(context).then((value) => print(value));
+    var boardBloc = context.read<BoardBloc>();
+    var dictionaryBloc = context.watch<DictionaryBloc>();
     String _getLetter(int row, int column) {
-      var state = bloc.state;
+      var state = boardBloc.state;
       if (state.attempt == row && column <= state.word.length) {
         // if(column == state.word.length) {
         return state.word[column - 1];
@@ -25,17 +49,17 @@ class Board extends StatelessWidget {
     }
 
     Color? _getColor(int row, int column) {
-      var state = bloc.state;
+      var state = boardBloc.state;
       return state.attempt == row
-          ? BoardColors.activeRow
+          ? BoardColors.activeRow 
           : state.wordList[row - 1][column - 1].color;
     }
 
     String _getText2(int index) {
-      var flattenWordList = bloc.state.wordList.expand((e) => e).toList();
-      var state = bloc.state;
-      var colIndex = (index % cols);
-      var rowIndex = ((index + 1) / cols).ceil();
+      var flattenWordList = boardBloc.state.wordList.expand((e) => e).toList();
+      var state = boardBloc.state;
+      var colIndex = (index % widget.cols);
+      var rowIndex = ((index + 1) / widget.cols).ceil();
       if (state.attempt == rowIndex && colIndex < state.word.length) {
         // if(column == state.word.length) {
         return state.word[colIndex];
@@ -44,18 +68,18 @@ class Board extends StatelessWidget {
     }
 
     Color? _getColor2(int index) {
-      var flattenWordList = bloc.state.wordList.expand((e) => e).toList();
-      var rowIndex = ((index + 1) / cols).ceil();
-      if (rowIndex == bloc.state.attempt) return BoardColors.activeRow;
+      var flattenWordList = boardBloc.state.wordList.expand((e) => e).toList();
+      var rowIndex = ((index + 1) / widget.cols).ceil();
+      if (rowIndex == boardBloc.state.attempt) return BoardColors.activeRow;
       return flattenWordList[index].color;
     }
 
     List<Widget> wordBoard = [
-      for (var r = 1; r <= rows; r++)
+      for (var r = 1; r <= widget.rows; r++)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            for (var c = 1; c <= cols; c++)
+            for (var c = 1; c <= widget.cols; c++)
               SizedBox(
                 // key: UniqueKey(),
                 height: 60,
@@ -105,8 +129,17 @@ class Board extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       child: Column(
         children: [
-          // Text('${bloc.state.word}'),
+          // Text('${DictionaryBloc.state.list.length}'),
           ...wordBoard,
+          // FutureBuilder<List<dynamic>>(
+          //   future: Dictionary.list(
+          //       context), // a previously-obtained Future<String> or null
+          //   builder:
+          //       (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          //     return Text('${snapshot.data?.length}');
+          //   },
+          // ),
+
           // Text(
           //     '${bloc.state.wordList.expand((e) => e).map((e) => e.letter).toList()}'),
           // GridView.count(
@@ -136,7 +169,6 @@ class Board extends StatelessWidget {
           //     ),
           //   ),
           // ),
-        
         ],
       ),
     );
