@@ -77,7 +77,9 @@ class PageHome extends StatelessWidget {
                 }
               }).join();
             }).join();
-            Clipboard.setData(ClipboardData(text: resultClipBoard));
+            var text =
+                "SCUFFED WORDLE ${state.attempt}/${state.attemptLimit}\n${resultClipBoard}\n";
+            Clipboard.setData(ClipboardData(text: text));
             UiController.showSnackbar(
               context: context,
               message: 'Copied to clipboard',
@@ -88,7 +90,7 @@ class PageHome extends StatelessWidget {
             var keywordList = await Dictionary.getKeywordList(context);
             var randomKeyword =
                 keywordList[Random().nextInt(keywordList.length)];
-                
+
             context.read<DictionaryBloc>().add(DictionaryRefreshKeyword(
                   keyword: randomKeyword,
                 ));
