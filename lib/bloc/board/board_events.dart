@@ -1,4 +1,4 @@
-part of 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+part of 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 
 abstract class BoardEvent extends Equatable {
   const BoardEvent();
@@ -19,3 +19,4 @@ class BoardAddLetter extends BoardEvent {
 class BoardRemoveLetter extends BoardEvent {}
 class BoardSubmitWord extends BoardEvent {}
 class BoardRestart extends BoardEvent {}
+class BoardTest extends BoardEvent {}

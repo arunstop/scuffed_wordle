@@ -1,4 +1,4 @@
-part of 'package:scuffed_wordle/bloc/board/bloc_board.dart';
+part of 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 
 // enum PostStatus { initial, success, failure }
 

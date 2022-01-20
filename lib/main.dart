@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
-import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
+import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';

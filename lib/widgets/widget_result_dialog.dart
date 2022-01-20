@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
-import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
-import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
+import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {

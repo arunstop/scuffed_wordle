@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/models/model__board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
-part 'package:scuffed_wordle/bloc/board/event_board.dart';
-part 'package:scuffed_wordle/bloc/board/state_board.dart';
+part 'package:scuffed_wordle/bloc/board/board_events.dart';
+part 'package:scuffed_wordle/bloc/board/board_states.dart';
 
 class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardLetter _boardLetter = BoardLetter('', BoardColors.base);
@@ -115,7 +116,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         // If the word is not in word list
         if (!dictionaryList.contains(strWord)) {
           Fluttertoast.showToast(
-            msg: "$strWord is not in word list",
+            msg: "${strWord.toUpperCase()} is not in word list",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.TOP,
             webPosition: 'center',
@@ -191,6 +192,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
     on<BoardRestart>((event, emit) {
       emit(_boardInit);
+    });
+    on<BoardTest>((event, emit) {
+      emit(state.copywith(attemptLimit: Random().nextInt(51)));
     });
   }
   @override

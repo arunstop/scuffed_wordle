@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
-import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
-import 'package:scuffed_wordle/bloc/dictionary/event_dictionary.dart';
+import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class Board extends StatefulWidget {
@@ -26,8 +26,8 @@ class _BoardState extends State<Board> {
     super.initState();
   }
 
-  _loadDictionarys()  async {
-    context.read<DictionaryBloc>().add(DictionaryInit(list : await Dictionary.getList(context)));
+  _loadDictionarys() async {
+        context.read<DictionaryBloc>().add(DictionaryInitialize(list : await Dictionary.getList(context)));
   }
 
   @override
@@ -51,7 +51,7 @@ class _BoardState extends State<Board> {
     Color? _getColor(int row, int column) {
       var state = boardBloc.state;
       return state.attempt == row
-          ? BoardColors.activeRow 
+          ? BoardColors.activeRow
           : state.wordList[row - 1][column - 1].color;
     }
 

@@ -2,8 +2,9 @@ import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/board/bloc_board.dart';
-import 'package:scuffed_wordle/bloc/dictionary/bloc_dictionary.dart';
+import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
@@ -80,6 +81,7 @@ class PageHome extends StatelessWidget {
               message: 'Copied to clipboard',
             );
             boardBloc.add(BoardRestart());
+            dictionaryBloc.add(DictionaryRefreshKeyword());
           },
         );
       }
@@ -126,13 +128,29 @@ class PageHome extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${dictionaryBloc.state.keyword}'),
+                        // Text('${dictionaryBloc.state.keyword}'),
                         // // Text('${state.word}'),
                         // if (bloc.state is BoardSubmitted)
-                        //   IconButton(
-                        //     onPressed: () => bloc.add(BoardRestart()),
-                        //     icon: const Icon(Icons.refresh_outlined),
-                        //   ),
+                        // IconButton(
+                        //   onPressed: () =>
+                        //       //     dictionaryBloc.add(DictionaryInit(list: [
+                        //       //   "wrist",
+                        //       //   "write",
+                        //       //   "wrong",
+                        //       //   "yield",
+                        //       //   "young",
+                        //       //   "yours",
+                        //       //   "youth",
+                        //       // ],)),
+                        //       dictionaryBloc.add(DictionaryRefreshKeyword()),
+                        //   icon: const Icon(Icons.refresh_outlined),
+                        // ),
+                        // IconButton(
+                        //   onPressed: () =>
+                        //       // dictionaryBloc.add(DictionaryRefreshKeyword()),
+                        //       boardBloc.add(BoardTest()),
+                        //   icon: const Icon(Icons.adb),
+                        // ),
                         // Text('${bloc.state.attempt}'),
                         Board(rows: 6, cols: 5),
                         Container(
