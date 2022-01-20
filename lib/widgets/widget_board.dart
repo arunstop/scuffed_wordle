@@ -30,7 +30,9 @@ class _BoardState extends State<Board> {
 
   _loadWordList() async {
     var validWordList = await Dictionary.getValidWordList(context);
+    print(validWordList.length);
     var keywordList =  await Dictionary.getKeywordList(context);
+    print(keywordList.length);
     var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
     context.read<DictionaryBloc>().add(DictionaryInitialize(
           list: validWordList,
