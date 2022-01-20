@@ -72,6 +72,8 @@ flutter:
   assets:
     - assets/valid5LetterWordList.json
     - assets/5LettersOxford5000.json
+    - assets/5LetterWordList.json
+    
   # - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

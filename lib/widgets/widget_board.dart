@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
@@ -21,13 +23,19 @@ class _BoardState extends State<Board> {
     // TODO: implement initState
 
     // context.bloc<DictionaryBloc>.add(DictionaryInit());
-    _loadDictionarys();
+    _loadWordList();
 
     super.initState();
   }
 
-  _loadDictionarys() async {
-        context.read<DictionaryBloc>().add(DictionaryInitialize(list : await Dictionary.getList(context)));
+  _loadWordList() async {
+    var validWordList = await Dictionary.getValidWordList(context);
+    var keywordList =  await Dictionary.getKeywordList(context);
+    var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
+    context.read<DictionaryBloc>().add(DictionaryInitialize(
+          list: validWordList,
+          keyword: randomKeyword,
+        ));
   }
 
   @override

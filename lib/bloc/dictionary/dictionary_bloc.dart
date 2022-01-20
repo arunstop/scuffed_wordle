@@ -11,8 +11,8 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     on<DictionaryInitialize>((event, emit) {
       // print('vwinit');
 
-      var randomWord = event.list[Random().nextInt(event.list.length)];
-      emit(state.copyWith(list: event.list, keyword: randomWord));
+      // var randomWord = event.list[Random().nextInt(event.list.length)];
+      emit(state.copyWith(list: event.list, keyword: event.keyword));
       // print(state.list);
     });
 

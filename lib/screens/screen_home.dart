@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +58,7 @@ class PageHome extends StatelessWidget {
           title: 'Game over',
           content: DialogResult(),
           actionN: () => boardBloc.add(BoardRestart()),
-          actionY: () {
+          actionY: () async {
             var state = boardBloc.state;
             var resultWordList = state.wordList.sublist(0, state.attempt);
             // Turn the submitted boad into string format
@@ -80,8 +82,18 @@ class PageHome extends StatelessWidget {
               context: context,
               message: 'Copied to clipboard',
             );
+            // Restart game
             boardBloc.add(BoardRestart());
-            dictionaryBloc.add(DictionaryRefreshKeyword());
+
+            var keywordList = await Dictionary.getKeywordList(context);
+            var randomKeyword =
+                keywordList[Random().nextInt(keywordList.length)];
+                
+            context.read<DictionaryBloc>().add(DictionaryRefreshKeyword(
+                  keyword: randomKeyword,
+                ));
+
+            // dictionaryBloc.add(DictionaryRefreshKeyword());
           },
         );
       }
