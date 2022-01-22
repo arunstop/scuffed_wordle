@@ -142,13 +142,52 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           return BoardColors.base;
         }
 
+        // check the greens
+        // then the yellows
+
+        List<BoardLetter> cbl = [];
+        var kw = keyword.toUpperCase().split('');
+        var stateWord = state.word;
+        // stateWord.forEachIndexed((idx, typedLetter) {
+        //   if (typedLetter == kw[idx]) {
+        //     kw[idx] = '-';
+        //     return cbl.add(BoardLetter(typedLetter, BoardColors.pinpoint));
+        //   } else if (kw
+        //       .firstWhere(
+        //         (letter) => letter == typedLetter,
+        //         orElse: () => '',
+        //       )
+        //       .isNotEmpty) {
+        //     kw[idx] = '-';
+        //     return cbl.add(BoardLetter(typedLetter, BoardColors.okLetter));
+        //   }
+        //   return cbl.add(BoardLetter(typedLetter, BoardColors.base));
+        // });
+
+        List<BoardLetter> coloredWordList =
+            stateWord.mapIndexed((idx, typedLetter) {
+          // Find the right letter/right place first
+          if (typedLetter == kw[idx]) {
+            kw[idx] = '-';
+            return BoardLetter(typedLetter, BoardColors.pinpoint);
+          } 
+          // Then find the right letter/wrong place second
+          else if (kw.indexOf(typedLetter) > -1) {
+            kw[kw.indexOf(typedLetter)] = '-';
+            return BoardLetter(typedLetter, BoardColors.okLetter);
+          }
+          return BoardLetter(typedLetter, BoardColors.base);
+        }).toList();
+
         // Give the submitted word color property
-        List<BoardLetter> coloredWord = state.word
-            .mapIndexed((index, element) =>
-                BoardLetter(element, getColor(index, element)))
-            .toList();
-        // Change the value based on attempt
-        wordList[attempt - 1] = coloredWord;
+        // List<BoardLetter> coloredWordList = state.word
+        //     .mapIndexed((index, element) =>
+        //         BoardLetter(element, getColor(index, element)))
+        //     .toList();
+
+        // Change wordList value based on attempt
+        wordList[attempt - 1] = coloredWordList;
+
         // Apply changes on the bloc
         emit(state.copywith(
           word: _initWord,
