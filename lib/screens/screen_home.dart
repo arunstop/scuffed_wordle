@@ -11,6 +11,7 @@ import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
+import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 
 class PageHome extends StatelessWidget {
   const PageHome({Key? key, required this.title}) : super(key: key);
@@ -101,82 +102,54 @@ class PageHome extends StatelessWidget {
       }
     }
 
-    void _doNavigate() {
-      Navigator.pushNamed(context, '/settings');
-    }
-
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: Center(
-        child: SizedBox(
-          width: 520,
-          child: Card(
-            margin: EdgeInsets.all(0),
-            elevation: 6,
-            child: BlocListener<BoardBloc, BoardState>(
-              listener: _blocListener,
-              child: RawKeyboardListener(
-                autofocus: true,
-                focusNode: FocusNode(),
-                onKey: (event) {
-                  // Keep typing if attempt is below its limit
-                  if (boardBloc.state is! BoardSubmitted) {
-                    _onKeyboardPressed(context, event);
-                  }
-                },
-                child: Scaffold(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  appBar: AppBar(
-                    elevation: 0,
-                    // Here we take the value from the PageHome object that was created by
-                    // the App.build method, and use it to set our appbar title.
-                    title: Text(title),
-                    actions: [
-                      IconButton(
-                        onPressed: () => _doNavigate(),
-                        icon: const Icon(Icons.settings),
-                      ),
-                    ],
-                  ),
-                  body: SizedBox.expand(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Text('${dictionaryBloc.state.keyword}'),
-                        // // Text('${state.word}'),
-                        // if (bloc.state is BoardSubmitted)
-                        // IconButton(
-                        //   onPressed: () =>
-                        //       //     dictionaryBloc.add(DictionaryInit(list: [
-                        //       //   "wrist",
-                        //       //   "write",
-                        //       //   "wrong",
-                        //       //   "yield",
-                        //       //   "young",
-                        //       //   "yours",
-                        //       //   "youth",
-                        //       // ],)),
-                        //       dictionaryBloc.add(DictionaryRefreshKeyword()),
-                        //   icon: const Icon(Icons.refresh_outlined),
-                        // ),
-                        // IconButton(
-                        //   onPressed: () =>
-                        //       // dictionaryBloc.add(DictionaryRefreshKeyword()),
-                        //       boardBloc.add(BoardTest()),
-                        //   icon: const Icon(Icons.adb),
-                        // ),
-                        // Text('${bloc.state.attempt}'),
-                        Board(rows: 6, cols: 5),
-                        Container(
-                          alignment: Alignment.bottomCenter,
-                          // color: Theme.of(context).colorScheme.secondary,
-                          child: Keyboard(),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+    return ScreenTemplate(
+      title: title,
+      child: BlocListener<BoardBloc, BoardState>(
+        listener: _blocListener,
+        child: RawKeyboardListener(
+          autofocus: true,
+          focusNode: FocusNode(),
+          onKey: (event) {
+            // Keep typing if attempt is below its limit
+            if (boardBloc.state is! BoardSubmitted) {
+              _onKeyboardPressed(context, event);
+            }
+          },
+          child: SizedBox.expand(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Text('${dictionaryBloc.state.keyword}'),
+                // // Text('${state.word}'),
+                // if (bloc.state is BoardSubmitted)
+                // IconButton(
+                //   onPressed: () =>
+                //       //     dictionaryBloc.add(DictionaryInit(list: [
+                //       //   "wrist",
+                //       //   "write",
+                //       //   "wrong",
+                //       //   "yield",
+                //       //   "young",
+                //       //   "yours",
+                //       //   "youth",
+                //       // ],)),
+                //       dictionaryBloc.add(DictionaryRefreshKeyword()),
+                //   icon: const Icon(Icons.refresh_outlined),
+                // ),
+                // IconButton(
+                //   onPressed: () =>
+                //       // dictionaryBloc.add(DictionaryRefreshKeyword()),
+                //       boardBloc.add(BoardTest()),
+                //   icon: const Icon(Icons.adb),
+                // ),
+                // Text('${bloc.state.attempt}'),
+                Board(rows: 6, cols: 5),
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  // color: Theme.of(context).colorScheme.secondary,
+                  child: Keyboard(),
+                )
+              ],
             ),
           ),
         ),
