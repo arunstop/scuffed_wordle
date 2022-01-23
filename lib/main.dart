@@ -26,6 +26,12 @@ class ScuffedWordleApp extends StatelessWidget {
       '/': (context) => PageHome(title: title),
       '/settings': (context) => const PageSettings(title: 'Settings'),
     };
+    // final userTheme = WidgetsBinding.instance?.window.platformBrightness;
+    // if(userTheme == Brightness.dark){
+    //   print('dark');
+    // }else{
+    //   print('light');
+    // }
 
     return MultiBlocProvider(
       providers: [

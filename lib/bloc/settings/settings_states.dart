@@ -23,6 +23,16 @@ class SettingsState extends Equatable {
   List<Object> get props => [darkTheme, highContrast];
 }
 
+class SettingsInit extends SettingsState {
+  SettingsInit({
+    required bool darkTheme,
+    required bool highContrast,
+  }) : super(
+          darkTheme: darkTheme,
+          highContrast: highContrast,
+        );
+}
+
 class SettingsDefault extends SettingsState {
   SettingsDefault()
       : super(

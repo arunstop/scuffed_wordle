@@ -31,6 +31,7 @@ class _PageSettingsState extends State<PageSettings> {
         title: 'Reset Settings',
         content: 'Do you wish to restore all your settings to default?',
         actionY: () {
+          settingsBloc.add(SettingsReset());
           UiController.showSnackbar(
             context: context,
             message: 'Settings has been reset to default',

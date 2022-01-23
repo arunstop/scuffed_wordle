@@ -22,7 +22,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       icon: const Icon(Icons.flare_rounded),
     ),
   ];
-  SettingsBloc() : super(SettingsDefault()) {
+
+  static bool _isDarkTheme() {
+    Brightness? userTheme = WidgetsBinding.instance?.window.platformBrightness;
+    if (userTheme == Brightness.dark) {
+      // print('dark');
+      return true;
+    } // print('light');
+    return false;
+  }
+
+  SettingsBloc()
+      : super(SettingsInit(
+          darkTheme: _isDarkTheme(),
+          highContrast: false,
+        )) {
     // Initialize state
     on<SettingsChange>((event, emit) {
       // print('vwinit');
@@ -30,14 +44,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // var randomWord = event.list[Random().nextInt(event.list.length)];
       switch (event.type) {
         case SettingsType.darkTheme:
-          emit(state.copyWith(
-            darkTheme: event.value
-          ));
+          emit(state.copyWith(darkTheme: event.value));
           break;
         case SettingsType.highContrast:
-          emit(state.copyWith(
-            highContrast: event.value
-          ));
+          emit(state.copyWith(highContrast: event.value));
           break;
         default:
       }
@@ -45,7 +55,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsReset>((event, emit) {
-      // emit(state.copyWith(keyword: event.keyword));
+      emit(SettingsDefault());
     });
   }
 }
