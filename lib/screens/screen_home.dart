@@ -104,6 +104,12 @@ class PageHome extends StatelessWidget {
 
     return ScreenTemplate(
       title: title,
+      actions: [
+        IconButton(
+          onPressed: () => Navigator.pushNamed(context, '/settings'),
+          icon: const Icon(Icons.settings),
+        ),
+      ],
       child: BlocListener<BoardBloc, BoardState>(
         listener: _blocListener,
         child: RawKeyboardListener(

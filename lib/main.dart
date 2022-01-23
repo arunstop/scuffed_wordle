@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -31,52 +33,60 @@ class ScuffedWordleApp extends StatelessWidget {
           create: (context) => DictionaryBloc(),
         ),
         BlocProvider(
-          create: (context) => BoardBloc(dictionaryBloc: BlocProvider.of<DictionaryBloc>(context)),
+          create: (context) => BoardBloc(
+              dictionaryBloc: BlocProvider.of<DictionaryBloc>(context)),
+        ),
+        BlocProvider(
+          create: (context) => SettingsBloc(),
         ),
       ],
-      child: MaterialApp(
-        title: title,
-        theme: ThemeData(
-          brightness: Brightness.light,
-          // primaryColor: Colors.teal,
-          // primaryColorDark: Colors.teal,
-          // primarySwatch: Colors.teal,
-          scaffoldBackgroundColor: Colors.grey[50],
-          // colorScheme: ColorScheme.fromSwatch().copyWith(
-          //   primary: Colors.teal,
-          //   primaryVariant: Colors.teal[800],
-          //   secondary: Colors.orange,
-          //   secondaryVariant: Colors.orange[800],
-          // ),
-          colorScheme: ColorScheme.light(
-            primary: Colors.teal,
-            primaryVariant: Colors.teal,
-            secondary: Colors.orange,
-            secondaryVariant: Colors.orange,
+      child: BlocBuilder<SettingsBloc,SettingsState>(
+        builder: (context, state) => MaterialApp(
+          title: title,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            // primaryColor: Colors.teal,
+            // primaryColorDark: Colors.teal,
+            // primarySwatch: Colors.teal,
+            scaffoldBackgroundColor: Colors.grey[50],
+            // colorScheme: ColorScheme.fromSwatch().copyWith(
+            //   primary: Colors.teal,
+            //   primaryVariant: Colors.teal[800],
+            //   secondary: Colors.orange,
+            //   secondaryVariant: Colors.orange[800],
+            // ),
+            colorScheme: ColorScheme.light(
+              primary: Colors.teal,
+              primaryVariant: Colors.teal,
+              secondary: Colors.orange,
+              secondaryVariant: Colors.orange,
+            ),
           ),
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          colorScheme: ColorScheme.dark(
-            primary: Colors.teal,
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorScheme: ColorScheme.dark(
+              primary: Colors.teal,
+            ),
+            // primaryColorDark: Colors.teal[300],
+            // primarySwatch: Colors.teal,
+            // scaffoldBackgroundColor: Colors.grey[50],
+            // primaryColor: Colors.teal,
+            // primaryColorDark: Colors.teal,
+            // primarySwatch: Colors.teal,
+            // colorScheme: ColorScheme.light(
+            //   // primary: Colors.teal,
+            //   // primaryVariant: Colors.teal[800],
+            //   // secondary: Colors.orange,
+            //   // secondaryVariant: Colors.orange[800],
+            // ),
           ),
-          // primaryColorDark: Colors.teal[300],
-          // primarySwatch: Colors.teal,
-          // scaffoldBackgroundColor: Colors.grey[50],
-          // primaryColor: Colors.teal,
-          // primaryColorDark: Colors.teal,
-          // primarySwatch: Colors.teal,
-          // colorScheme: ColorScheme.light(
-          //   // primary: Colors.teal,
-          //   // primaryVariant: Colors.teal[800],
-          //   // secondary: Colors.orange,
-          //   // secondaryVariant: Colors.orange[800],
-          // ),
+          themeMode: state.darkTheme
+              ? ThemeMode.dark
+              : ThemeMode.light,
+          // home: PageHome(title: title),
+          initialRoute: '/',
+          routes: _routes,
         ),
-        themeMode: ThemeMode.system,
-        // home: PageHome(title: title),
-        initialRoute: '/',
-        routes: _routes,
       ),
     );
   }

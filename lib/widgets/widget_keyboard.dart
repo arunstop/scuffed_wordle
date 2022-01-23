@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
-import 'package:scuffed_wordle/models/model__board_letter.dart';
+import 'package:scuffed_wordle/models/model_board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:dartx/dartx.dart';
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
-import 'package:scuffed_wordle/models/model__board_letter.dart';
+import 'package:scuffed_wordle/models/model_board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
 part 'package:scuffed_wordle/bloc/board/board_states.dart';
