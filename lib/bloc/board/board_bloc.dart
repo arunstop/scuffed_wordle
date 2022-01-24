@@ -111,7 +111,18 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     // Submit word when enter key is pressed
     on<BoardSubmitWord>((event, emit) {
       // Submit word when the count is 5 letter
-      if (state.word.length == 5) {
+      if (state.word.length < 5) {
+        Fluttertoast.showToast(
+          msg: "Not enough letter",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          webPosition: 'center',
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.red,
+          webBgColor: "#f44336",
+          textColor: Colors.white,
+        );
+      } else {
         var strWord = state.word.join().toLowerCase();
         // If the word is not in word list
         if (!dictionaryList.contains(strWord)) {
@@ -131,59 +142,40 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         var wordList = [...state.wordList];
         // Change the value based on index/attempt
         var attempt = state.attempt;
-
-        Color? getColor(int index, String letter) {
-          var keyWord = keyword.toUpperCase().split('');
-          if (letter == keyWord[index]) {
-            return BoardColors.pinpoint;
-          } else if (keyWord.contains(letter)) {
-            return BoardColors.okLetter;
-          }
-          return BoardColors.base;
-        }
-
         // check the greens
         // then the yellows
 
-        List<BoardLetter> cbl = [];
-        var kw = keyword.toUpperCase().split('');
-        var stateWord = state.word;
-        // stateWord.forEachIndexed((idx, typedLetter) {
-        //   if (typedLetter == kw[idx]) {
-        //     kw[idx] = '-';
-        //     return cbl.add(BoardLetter(typedLetter, BoardColors.pinpoint));
-        //   } else if (kw
-        //       .firstWhere(
-        //         (letter) => letter == typedLetter,
-        //         orElse: () => '',
-        //       )
-        //       .isNotEmpty) {
-        //     kw[idx] = '-';
-        //     return cbl.add(BoardLetter(typedLetter, BoardColors.okLetter));
-        //   }
-        //   return cbl.add(BoardLetter(typedLetter, BoardColors.base));
-        // });
+        var keywordAsList = keyword.toUpperCase().split('');
+        // var stateWord = state.word;
 
-        List<BoardLetter> coloredWordList =
-            stateWord.mapIndexed((idx, typedLetter) {
-          // Find the right letter/right place first
-          if (typedLetter == kw[idx]) {
-            kw[idx] = '-';
-            return BoardLetter(typedLetter, BoardColors.pinpoint);
-          } 
-          // Then find the right letter/wrong place second
-          else if (kw.indexOf(typedLetter) > -1) {
-            kw[kw.indexOf(typedLetter)] = '-';
-            return BoardLetter(typedLetter, BoardColors.okLetter);
-          }
-          return BoardLetter(typedLetter, BoardColors.base);
-        }).toList();
-
-        // Give the submitted word color property
-        // List<BoardLetter> coloredWordList = state.word
-        //     .mapIndexed((index, element) =>
-        //         BoardLetter(element, getColor(index, element)))
-        //     .toList();
+        // Process the typed word
+        List<BoardLetter> coloredWordList = state.word
+            // Check the right-letter-right-position ones
+            .mapIndexed((index, letter) {
+              // check if it is right-letter-right-position
+              if (keywordAsList[index] == letter) {
+                // write off the letter of keyword if it is checked
+                keywordAsList[index] = '-';
+                return BoardLetter(letter, BoardColors.pinpoint);
+              }
+              return BoardLetter(letter, BoardColors.base);
+            })
+            .toList()
+            // Then check the right-letter-wrong-position ones
+            .mapIndexed((index, coloredLetter) {
+              // check if the letter is in the keyword
+              // and if the letter is not green arleady
+              if (keywordAsList.contains(coloredLetter.letter) &&
+                  coloredLetter.color != BoardColors.pinpoint) {
+                // write off the letter of keyword if it is checked
+                // by finding the index of targeted keyword letter
+                keywordAsList[keywordAsList.indexOf(coloredLetter.letter)] =
+                    '-';
+                return BoardLetter(coloredLetter.letter, BoardColors.okLetter);
+              }
+              return coloredLetter;
+            })
+            .toList();
 
         // Change wordList value based on attempt
         wordList[attempt - 1] = coloredWordList;
@@ -194,14 +186,20 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           wordList: wordList,
           attempt: attempt + 1,
         ));
+        
         // If the submitted word is corrent, end the game
-        strWord = wordList[attempt - 1].map((e) => e.letter).join();
+        // strWord = wordList[attempt - 1].map((e) => e.letter).join();
         if (strWord.toLowerCase() == keyword.toLowerCase() ||
             state.attempt > state.attemptLimit) {
+          // Not adding attempt if user guessed it right
+          var attempt = strWord.toLowerCase() == keyword.toLowerCase()
+              ? state.attempt - 1
+              : state.attempt;
           emit(BoardSubmitted(
             wordList: state.wordList,
-            attempt: state.attempt - 1,
+            attempt: attempt,
           ));
+          // Show the keyword
           Fluttertoast.showToast(
             msg: keyword.toUpperCase(),
             toastLength: Toast.LENGTH_SHORT,
@@ -214,18 +212,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           );
           return;
         }
-      } else {
-        // Fluttertoast.cancel();
-        Fluttertoast.showToast(
-          msg: "Not enough letter",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          webPosition: 'center',
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          webBgColor: "#f44336",
-          textColor: Colors.white,
-        );
       }
     });
 

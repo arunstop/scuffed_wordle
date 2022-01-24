@@ -61,9 +61,9 @@ class PageHome extends StatelessWidget {
           actionN: () => boardBloc.add(BoardRestart()),
           actionY: () async {
             var state = boardBloc.state;
-            var resultWordList = state.wordList.sublist(0, state.attempt);
+            
             // Turn the submitted boad into string format
-            var resultClipBoard = resultWordList.map((word) {
+            var resultClipBoard = state.submittedWordList.map((word) {
               return word.mapIndexed((letterIndex, letter) {
                 String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
                 if (letter.color == BoardColors.base) {
@@ -79,7 +79,7 @@ class PageHome extends StatelessWidget {
               }).join();
             }).join();
             var text =
-                "SCUFFED WORDLE ${state.attempt}/${state.attemptLimit}\n${resultClipBoard}\n";
+                "SCUFFED WORDLE ${state.attempt}/${state.attemptLimit}\n\n${resultClipBoard}";
             Clipboard.setData(ClipboardData(text: text));
             UiController.showSnackbar(
               context: context,
@@ -92,7 +92,7 @@ class PageHome extends StatelessWidget {
             var randomKeyword =
                 keywordList[Random().nextInt(keywordList.length)];
 
-            context.read<DictionaryBloc>().add(DictionaryRefreshKeyword(
+            dictionaryBloc.add(DictionaryRefreshKeyword(
                   keyword: randomKeyword,
                 ));
 

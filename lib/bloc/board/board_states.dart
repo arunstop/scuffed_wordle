@@ -36,8 +36,11 @@ class BoardState extends Equatable {
         attempt,
         attemptLimit,
       ];
-
-  List<List<BoardLetter>> get submittedWordList => wordList.sublist(0, attempt);
+  List<List<BoardLetter>> get submittedWordList => wordList.sublist(
+        0,
+        // set end index to not to go beyond wordlist Index
+        (attempt > attemptLimit ? attemptLimit : attempt),
+      );
 }
 
 class BoardInit extends BoardState {
