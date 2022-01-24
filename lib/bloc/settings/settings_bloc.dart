@@ -5,23 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
-import 'package:scuffed_wordle/models/model_settings.dart';
+
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  static final List<Settings> _defaultSettings = [
-    Settings(
-      type: SettingsType.darkTheme,
-      value: false,
-      title: 'Dark Theme',
-      icon: const Icon(Icons.dark_mode_rounded),
-    ),
-    Settings(
-      type: SettingsType.highContrast,
-      value: false,
-      title: 'High Contrast',
-      icon: const Icon(Icons.flare_rounded),
-    ),
-  ];
+  // static final List<Settings> _defaultSettings = [
+  //   Settings(
+  //     type: SettingsType.darkTheme,
+  //     value: false,
+  //     title: 'Dark Theme',
+  //     icon: const Icon(Icons.dark_mode_rounded),
+  //   ),
+  //   Settings(
+  //     type: SettingsType.highContrast,
+  //     value: false,
+  //     title: 'High Contrast',
+  //     icon: const Icon(Icons.flare_rounded),
+  //   ),
+  // ];
 
   static bool _isDarkTheme() {
     Brightness? userTheme = WidgetsBinding.instance?.window.platformBrightness;
@@ -34,6 +34,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   SettingsBloc()
       : super(SettingsInit(
+          hardMode: false,
           darkTheme: _isDarkTheme(),
           highContrast: false,
         )) {
@@ -43,10 +44,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       // var randomWord = event.list[Random().nextInt(event.list.length)];
       switch (event.type) {
-        case SettingsType.darkTheme:
+        case SettingsTypes.hardMode:
+          emit(state.copyWith(hardMode: event.value));
+          break;
+        case SettingsTypes.darkTheme:
           emit(state.copyWith(darkTheme: event.value));
           break;
-        case SettingsType.highContrast:
+        case SettingsTypes.highContrast:
           emit(state.copyWith(highContrast: event.value));
           break;
         default:
@@ -55,7 +59,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsReset>((event, emit) {
-      emit(SettingsDefault());
+      emit(SettingsInit(
+          hardMode: false,
+          darkTheme: _isDarkTheme(),
+          highContrast: false,
+        ));
     });
   }
 }

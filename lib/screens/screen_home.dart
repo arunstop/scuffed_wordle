@@ -57,8 +57,8 @@ class PageHome extends StatelessWidget {
         UiController.showConfirmationDialog(
           context: listenerCtx,
           title: 'Game over',
-          content: DialogResult(),
-          actionN: () => boardBloc.add(BoardRestart()),
+          content: const DialogResult(),
+          actionN: () => {},
           actionY: () async {
             var state = boardBloc.state;
             
@@ -78,8 +78,9 @@ class PageHome extends StatelessWidget {
                 }
               }).join();
             }).join();
+            var totalAttempt = state.attempt>state.attemptLimit ? 'X' : state.attempt;
             var text =
-                "SCUFFED WORDLE ${state.attempt}/${state.attemptLimit}\n\n${resultClipBoard}";
+                "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
             Clipboard.setData(ClipboardData(text: text));
             UiController.showSnackbar(
               context: context,
@@ -153,7 +154,7 @@ class PageHome extends StatelessWidget {
                 Container(
                   alignment: Alignment.bottomCenter,
                   // color: Theme.of(context).colorScheme.secondary,
-                  child: Keyboard(),
+                  child:const Keyboard(),
                 )
               ],
             ),

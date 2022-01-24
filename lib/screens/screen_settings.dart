@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/models/model_settings.dart';
+import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
-
-import '../ui.dart';
 
 class PageSettings extends StatefulWidget {
   const PageSettings({Key? key, required this.title}) : super(key: key);
@@ -21,7 +21,7 @@ class _PageSettingsState extends State<PageSettings> {
     var settingsBloc = context.watch<SettingsBloc>();
     var state = settingsBloc.state;
 
-    void _changeSettings(SettingsType type, bool value) {
+    void _changeSettings(SettingsTypes type, bool value) {
       settingsBloc.add(SettingsChange(type: type, value: value));
     }
 
@@ -53,14 +53,21 @@ class _PageSettingsState extends State<PageSettings> {
         // padding: const EdgeInsets.all(8),
         children: [
           SwitchListTile.adaptive(
+            value: state.hardMode,
+            onChanged: (val) => _changeSettings(SettingsTypes.hardMode, val),
+            title: const Text('Hard Mode'),
+            subtitle: const Text('User must use the green letters they found'),
+            secondary: Icon(Icons.whatshot_rounded),
+          ),
+          SwitchListTile.adaptive(
             value: state.darkTheme,
-            onChanged: (val) => _changeSettings(SettingsType.darkTheme, val),
+            onChanged: (val) => _changeSettings(SettingsTypes.darkTheme, val),
             title: const Text('Dark Theme'),
             secondary: Icon(Icons.dark_mode),
           ),
           SwitchListTile.adaptive(
             value: state.highContrast,
-            onChanged: (val) => _changeSettings(SettingsType.highContrast, val),
+            onChanged: (val) => _changeSettings(SettingsTypes.highContrast, val),
             title: const Text('High Contrast'),
             secondary: Icon(Icons.flare_outlined),
           ),

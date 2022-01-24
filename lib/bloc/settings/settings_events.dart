@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:scuffed_wordle/models/model_settings.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 
 class SettingsEvent extends Equatable {
   const SettingsEvent();
@@ -9,7 +9,7 @@ class SettingsEvent extends Equatable {
 }
 
 class SettingsChange extends SettingsEvent {
-  final SettingsType type;
+  final SettingsTypes type;
   final bool value;
 
   const SettingsChange({required this.type, required this.value});
