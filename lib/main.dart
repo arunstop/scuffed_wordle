@@ -39,11 +39,13 @@ class ScuffedWordleApp extends StatelessWidget {
           create: (context) => DictionaryBloc(),
         ),
         BlocProvider(
-          create: (context) => BoardBloc(
-              dictionaryBloc: BlocProvider.of<DictionaryBloc>(context)),
+          create: (context) => SettingsBloc(),
         ),
         BlocProvider(
-          create: (context) => SettingsBloc(),
+          create: (context) => BoardBloc(
+              dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
+              settingsBloc: BlocProvider.of<SettingsBloc>(context),
+              ),
         ),
       ],
       child: BlocBuilder<SettingsBloc,SettingsState>(

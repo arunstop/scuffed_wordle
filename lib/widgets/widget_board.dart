@@ -30,9 +30,9 @@ class _BoardState extends State<Board> {
 
   _loadWordList() async {
     var validWordList = await Dictionary.getValidWordList(context);
-    print(validWordList.length);
+    // print(validWordList.length);
     var keywordList =  await Dictionary.getKeywordList(context);
-    print(keywordList.length);
+    // print(keywordList.length);
     var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
     context.read<DictionaryBloc>().add(DictionaryInitialize(
           list: validWordList,
@@ -63,25 +63,6 @@ class _BoardState extends State<Board> {
       return state.attempt == row
           ? BoardColors.activeRow
           : state.wordList[row - 1][column - 1].color;
-    }
-
-    String _getText2(int index) {
-      var flattenWordList = boardBloc.state.wordList.expand((e) => e).toList();
-      var state = boardBloc.state;
-      var colIndex = (index % widget.cols);
-      var rowIndex = ((index + 1) / widget.cols).ceil();
-      if (state.attempt == rowIndex && colIndex < state.word.length) {
-        // if(column == state.word.length) {
-        return state.word[colIndex];
-      }
-      return flattenWordList[index].letter;
-    }
-
-    Color? _getColor2(int index) {
-      var flattenWordList = boardBloc.state.wordList.expand((e) => e).toList();
-      var rowIndex = ((index + 1) / widget.cols).ceil();
-      if (rowIndex == boardBloc.state.attempt) return BoardColors.activeRow;
-      return flattenWordList[index].color;
     }
 
     List<Widget> wordBoard = [

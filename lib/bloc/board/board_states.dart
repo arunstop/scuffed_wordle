@@ -35,6 +35,7 @@ class BoardState extends Equatable {
         wordList,
         attempt,
         attemptLimit,
+        submittedWordList
       ];
   List<List<BoardLetter>> get submittedWordList => wordList.sublist(
         0,

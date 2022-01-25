@@ -41,6 +41,14 @@ class _PageSettingsState extends State<PageSettings> {
       );
     }
 
+    Widget _getTitle(String title) => Text(
+          title,
+          // style: Theme.of(context).textTheme.bodyText1
+          style: const TextStyle(
+            fontSize: 18,
+          ),
+        );
+
     return ScreenTemplate(
       title: widget.title,
       actions: [
@@ -55,21 +63,22 @@ class _PageSettingsState extends State<PageSettings> {
           SwitchListTile.adaptive(
             value: state.hardMode,
             onChanged: (val) => _changeSettings(SettingsTypes.hardMode, val),
-            title: const Text('Hard Mode'),
+            title: _getTitle('Hard Mode'),
             subtitle: const Text('User must use the green letters they found'),
-            secondary: Icon(Icons.whatshot_rounded),
+            secondary: const Icon(Icons.whatshot_rounded),
           ),
           SwitchListTile.adaptive(
             value: state.darkTheme,
             onChanged: (val) => _changeSettings(SettingsTypes.darkTheme, val),
-            title: const Text('Dark Theme'),
-            secondary: Icon(Icons.dark_mode),
+            title: _getTitle('Dark Theme'),
+            secondary: const Icon(Icons.dark_mode),
           ),
           SwitchListTile.adaptive(
             value: state.highContrast,
-            onChanged: (val) => _changeSettings(SettingsTypes.highContrast, val),
-            title: const Text('High Contrast'),
-            secondary: Icon(Icons.flare_outlined),
+            onChanged: (val) =>
+                _changeSettings(SettingsTypes.highContrast, val),
+            title: _getTitle('High Contrast'),
+            secondary: const Icon(Icons.flare_outlined),
           ),
         ],
       ),

@@ -41,14 +41,21 @@ class SettingsInit extends SettingsState {
         );
 }
 
-// class SettingsDefault extends SettingsState {
-//   SettingsDefault()
-//       : super(
-//           hardMode: false,
-//           darkTheme: false,
-//           highContrast: false,
-//         );
-// }
+class SettingsDefault extends SettingsState {
+  final bool hardMode;
+  final bool darkTheme;
+  final bool highContrast;
+
+  SettingsDefault({
+    this.hardMode = false,
+    this.darkTheme = false,
+    this.highContrast = false,
+  }) : super(
+          hardMode: hardMode,
+          darkTheme: darkTheme,
+          highContrast: highContrast,
+        );
+}
 
 // class SettingsInit extends SettingsState {
 //   final List<Settings> initList;
