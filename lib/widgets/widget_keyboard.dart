@@ -11,20 +11,67 @@ class Keyboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
-    var submittedWordList = boardBloc.state.submittedWordList
-        .expand((element) => element)
-        .distinctBy((element) => element.letter)
-        .toSet()
-        .toList();
+    List<BoardLetter> uniqTypedLetterList = [];
+    var typedLetterList = boardBloc.state.submittedWordList.flatten().toList();
+    // process the unqList
+    typedLetterList.forEach((element) {
+      // do nothing, if the board letter already there
+      var inUniqList = uniqTypedLetterList.contains(element);
+      if (inUniqList) {
+        return;
+      }
+      // check if the letter is already in the uniqList aka [found-letter]
+      var letterInUniqList = uniqTypedLetterList
+          .filter((unEl) => unEl.letter == element.letter)
+          .toList();
+      // if there is no [found-letter], add [current-checked-letter]
+      if (letterInUniqList.isEmpty) {
+        uniqTypedLetterList.add(element);
+      }
+      // if there is one, process the [current-checked-letter]
+      else {
+        // if the [current-checked-letter] is black
+        // if the [found-letter] is green
+        // do nothing
+        if (element.color == BoardColors.base ||
+            letterInUniqList[0].color == BoardColors.pinpoint) {
+          return;
+        }
+        // if the [found-letter] is not green (yellow/black)
+        // --------
+        // if the the [current-checked-letter] is green
+        else if (element.color == BoardColors.pinpoint) {
+          // remove the non green [found-letter] and add the [current-checked-letter] (green)
+          uniqTypedLetterList.remove(letterInUniqList[0]);
+          uniqTypedLetterList.add(element);
+        }
+        // if the [current-checked-letter] is yellow
+        // and the [found-letter] is black
+        // remove the black [found-letter] and add the [current-checked-letter] (yellow)
+        else if (element.color == BoardColors.okLetter &&
+            letterInUniqList[0].color == BoardColors.base) {
+          uniqTypedLetterList.remove(letterInUniqList[0]);
+          uniqTypedLetterList.add(element);
+        }
+      }
+    });
+    // add yellow ones
+    // typedLetterList.forEach((element) {
+    //   if () {
+    //     uniqTypedLetterList.add(element);
+    //   }
+    // });
 
+    // var
     TextStyle getTextStyle() => const TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.white,
         );
 
     Color? _getColor(String key) {
-      var letterTarget =
-          submittedWordList.where((element) => element.letter == key).toList();
+      var letterTarget = uniqTypedLetterList
+          .where((element) => element.letter == key)
+          .toList();
       if (letterTarget.isNotEmpty) {
         return letterTarget[0].color;
       }

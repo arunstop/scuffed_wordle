@@ -74,8 +74,8 @@ class _BoardState extends State<Board> {
       // not changing shape if color blind is turned off
       if (settingsBloc.state.colorBlindMode == false) {
         return BoxShape.rectangle;
-      } else if (boardState.attempt == row + 1) {
-        return BoxShape.rectangle;
+      // } else if (boardState.attempt == row + 1) {
+      //   return BoxShape.rectangle;
       } else if (color == BoardColors.pinpoint) {
         return BoxShape.circle;
       }
@@ -145,15 +145,16 @@ class _BoardState extends State<Board> {
     List<Widget> wordBoard = boardBloc.state.wordList
         .mapIndexed(
           (row, word) => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: word
-                  .mapIndexed(
-                    (col, letter) => Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: _getLetterShape(row, col, letter),
-                    ),
-                  )
-                  .toList()),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: word
+                .mapIndexed(
+                  (col, letter) => Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: _getLetterShape(row, col, letter),
+                  ),
+                )
+                .toList(),
+          ),
         )
         .toList();
 
