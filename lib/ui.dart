@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 dynamic _doNothing() {}
 
@@ -96,6 +97,19 @@ class UiController {
       ));
   }
 
+  static void showToast({String title = '', String strColor= '#00b09b'}) {
+    Fluttertoast.showToast(
+      msg: title,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      webPosition: 'center',
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.red,
+      webBgColor: strColor,
+      textColor: Colors.white,
+    );
+  }
+
   static List<List<String>> keyboardTemplate = [
     [
       'Q',
@@ -134,6 +148,7 @@ class UiController {
   ];
   static List<String> keyboardKeys =
       keyboardTemplate.expand((element) => element).toList();
+      
 }
 
 class BoardColors {

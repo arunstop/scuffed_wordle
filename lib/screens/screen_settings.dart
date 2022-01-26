@@ -1,5 +1,7 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
+import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
@@ -19,6 +21,7 @@ class _PageSettingsState extends State<PageSettings> {
   @override
   Widget build(BuildContext context) {
     var settingsBloc = context.watch<SettingsBloc>();
+    var boardBloc = context.watch<BoardBloc>();
     var state = settingsBloc.state;
 
     void _changeSettings(SettingsTypes type, bool value) {
@@ -41,6 +44,12 @@ class _PageSettingsState extends State<PageSettings> {
       );
     }
 
+    // check if user is currently playing by checking submitted word
+    bool _isPlaying = boardBloc.state is! BoardSubmitted &&
+        boardBloc.state.submittedWordList[0]
+            .filter((element) => element.letter.isNotEmpty)
+            .isNotEmpty;
+
     Widget _getTitle(String title) => Text(
           title,
           // style: Theme.of(context).textTheme.bodyText1
@@ -60,9 +69,15 @@ class _PageSettingsState extends State<PageSettings> {
       child: ListView(
         // padding: const EdgeInsets.all(8),
         children: [
+          // Text('$_isPlaying'),
           SwitchListTile.adaptive(
             value: state.hardMode,
-            onChanged: (val) => _changeSettings(SettingsTypes.hardMode, val),
+            onChanged: (val) => _isPlaying
+                ? UiController.showToast(
+                    title: 'Cannot change hard mode when playing',
+                    strColor: "#f44336",
+                  )
+                : _changeSettings(SettingsTypes.hardMode, val),
             title: _getTitle('Hard Mode'),
             subtitle: const Text('User must use the green letters they found'),
             secondary: const Icon(Icons.whatshot_rounded),
@@ -75,7 +90,8 @@ class _PageSettingsState extends State<PageSettings> {
           ),
           SwitchListTile.adaptive(
             value: state.colorBlindMode,
-            onChanged: (val) => _changeSettings(SettingsTypes.colorBlindMode, val),
+            onChanged: (val) =>
+                _changeSettings(SettingsTypes.colorBlindMode, val),
             title: _getTitle('Color Blind Mode'),
             subtitle: const Text(
                 'Give each letter in answer a shape to make it more visible to the one who needs'),

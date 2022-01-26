@@ -100,19 +100,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     emit(state.copywith(word: typedLetters));
   }
 
-  void _showToast({required String title, required String strColor}) {
-    Fluttertoast.showToast(
-      msg: title,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
-      webPosition: 'center',
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.red,
-      webBgColor: strColor,
-      textColor: Colors.white,
-    );
-  }
-
   void _onBoardSubmitWord(BoardSubmitWord event, Emitter<BoardState> emit) {
     // Submit word when the count is 5 letter
     if (state.word.length < 5) {
@@ -145,7 +132,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           if (element.color == BoardColors.pinpoint) {
             // if not show error and call don't proceed
             if (element.letter != state.word[idx]) {
-              _showToast(
+              UiController.showToast(
                 title: 'Letter no. ${idx + 1} must be ${element.letter}',
                 strColor: "#f44336",
               );
@@ -159,7 +146,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           if (element.color == BoardColors.okLetter) {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
-              _showToast(
+              UiController.showToast(
                 title: 'Letter ${element.letter} must be included',
                 strColor: "#f44336",
               );
@@ -171,7 +158,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       }
       // If the word is not in word list
       if (!dictionaryList.contains(strWord)) {
-        _showToast(
+        UiController.showToast(
           title: "${strWord.toUpperCase()} is not in word list",
           strColor: "#f44336",
         );
@@ -235,7 +222,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           attempt: attempt,
         ));
         // Show the keyword
-        _showToast(
+        UiController.showToast(
           title: keyword.toUpperCase(),
           strColor: "#4caf50",
         );
