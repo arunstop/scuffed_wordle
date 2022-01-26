@@ -111,6 +111,12 @@ class PageHome extends StatelessWidget {
     return ScreenTemplate(
       title: title,
       actions: [
+         IconButton(
+          onPressed: () => boardBloc.state is BoardSubmitted
+              ? _showResultDialog(context)
+              : null,
+          icon: const Icon(Icons.help_outline_rounded),
+        ),
         IconButton(
           onPressed: () => boardBloc.state is BoardSubmitted
               ? _showResultDialog(context)

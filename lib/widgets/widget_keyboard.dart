@@ -79,10 +79,10 @@ class Keyboard extends StatelessWidget {
     }
 
     void _onTap(String key) {
-      if (boardBloc.state is BoardSubmitted) {
-        // print('submitted');
-        return;
-      }
+      // if (boardBloc.state is BoardSubmitted) {
+      //   // print('submitted');
+      //   return;
+      // }
       if (key == "BACKSPACE") {
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
@@ -113,7 +113,8 @@ class Keyboard extends StatelessWidget {
         child: Card(
           color: _getColor(key),
           child: InkWell(
-            onTap: () => _onTap(key),
+            onTap:
+                boardBloc.state is! BoardSubmitted ? () => _onTap(key) : null,
             child: Center(
               child: label,
             ),
