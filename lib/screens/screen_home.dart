@@ -46,6 +46,55 @@ class PageHome extends StatelessWidget {
       // print(key.keyLabel);
     }
 
+    void _showResultDialog(BuildContext ctx) {
+      UiController.showConfirmationDialog(
+        context: ctx,
+        title: 'Game over',
+        content: const DialogResult(),
+        actionN: () => {},
+        actionY: () async {
+          var state = boardBloc.state;
+
+          // Turn the submitted boad into string format
+          var resultClipBoard = state.submittedWordList.map((word) {
+            return word.mapIndexed((letterIndex, letter) {
+              String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
+              if (letter.color == BoardColors.base) {
+                // Black
+                return "⬛$lineBreak";
+              } else if (letter.color == BoardColors.okLetter) {
+                // Yellow
+                return "🟨$lineBreak";
+              } else if (letter.color == BoardColors.pinpoint) {
+                // Green
+                return "🟩$lineBreak";
+              }
+            }).join();
+          }).join();
+          var totalAttempt =
+              state.attempt > state.attemptLimit ? 'X' : state.attempt;
+          var text =
+              "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
+          Clipboard.setData(ClipboardData(text: text));
+          UiController.showSnackbar(
+            context: context,
+            message: 'Copied to clipboard',
+          );
+          // Restart game
+          boardBloc.add(BoardRestart());
+
+          var keywordList = await Dictionary.getKeywordList(context);
+          var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
+
+          dictionaryBloc.add(DictionaryRefreshKeyword(
+            keyword: randomKeyword,
+          ));
+
+          // dictionaryBloc.add(DictionaryRefreshKeyword());
+        },
+      );
+    }
+
     void _blocListener(BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
       // print(listenerState);
@@ -55,58 +104,19 @@ class PageHome extends StatelessWidget {
         //   message: "Submitted",
         //   actionLabel: 'OK',
         // );
-        UiController.showConfirmationDialog(
-          context: listenerCtx,
-          title: 'Game over',
-          content: const DialogResult(),
-          actionN: () => {},
-          actionY: () async {
-            var state = boardBloc.state;
-            
-            // Turn the submitted boad into string format
-            var resultClipBoard = state.submittedWordList.map((word) {
-              return word.mapIndexed((letterIndex, letter) {
-                String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
-                if (letter.color == BoardColors.base) {
-                  // Black
-                  return "⬛$lineBreak";
-                } else if (letter.color == BoardColors.okLetter) {
-                  // Yellow
-                  return "🟨$lineBreak";
-                } else if (letter.color == BoardColors.pinpoint) {
-                  // Green
-                  return "🟩$lineBreak";
-                }
-              }).join();
-            }).join();
-            var totalAttempt = state.attempt>state.attemptLimit ? 'X' : state.attempt;
-            var text =
-                "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
-            Clipboard.setData(ClipboardData(text: text));
-            UiController.showSnackbar(
-              context: context,
-              message: 'Copied to clipboard',
-            );
-            // Restart game
-            boardBloc.add(BoardRestart());
-
-            var keywordList = await Dictionary.getKeywordList(context);
-            var randomKeyword =
-                keywordList[Random().nextInt(keywordList.length)];
-
-            dictionaryBloc.add(DictionaryRefreshKeyword(
-                  keyword: randomKeyword,
-                ));
-
-            // dictionaryBloc.add(DictionaryRefreshKeyword());
-          },
-        );
+        _showResultDialog(listenerCtx);
       }
     }
 
     return ScreenTemplate(
       title: title,
       actions: [
+        IconButton(
+          onPressed: () => boardBloc.state is BoardSubmitted
+              ? _showResultDialog(context)
+              : null,
+          icon: const Icon(Icons.bar_chart_rounded),
+        ),
         IconButton(
           onPressed: () => Navigator.pushNamed(context, '/settings'),
           icon: const Icon(Icons.settings),
@@ -155,7 +165,7 @@ class PageHome extends StatelessWidget {
                 Container(
                   alignment: Alignment.bottomCenter,
                   // color: Theme.of(context).colorScheme.secondary,
-                  child:const Keyboard(),
+                  child: const Keyboard(),
                 )
               ],
             ),

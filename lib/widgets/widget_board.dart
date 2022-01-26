@@ -40,7 +40,7 @@ class _BoardState extends State<Board> {
     var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
     context.read<DictionaryBloc>().add(DictionaryInitialize(
           list: validWordList,
-          keyword: 'silly',
+          keyword: randomKeyword,
         ));
   }
 
