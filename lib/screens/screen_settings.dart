@@ -74,11 +74,19 @@ class _PageSettingsState extends State<PageSettings> {
             secondary: const Icon(Icons.dark_mode),
           ),
           SwitchListTile.adaptive(
+            value: state.colorBlindMode,
+            onChanged: (val) => _changeSettings(SettingsTypes.colorBlindMode, val),
+            title: _getTitle('Color Blind Mode'),
+            subtitle: const Text(
+                'Give each letter in answer a shape to make it more visible to the one who needs'),
+            secondary: const Icon(Icons.remove_red_eye_rounded),
+          ),
+          SwitchListTile.adaptive(
             value: state.highContrast,
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.highContrast, val),
             title: _getTitle('High Contrast'),
-            secondary: const Icon(Icons.flare_outlined),
+            secondary: const Icon(Icons.flashlight_on_rounded),
           ),
         ],
       ),

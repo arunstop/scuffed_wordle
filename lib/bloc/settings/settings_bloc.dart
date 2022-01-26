@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 
-
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   // static final List<Settings> _defaultSettings = [
   //   Settings(
@@ -37,6 +36,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           hardMode: false,
           darkTheme: _isDarkTheme(),
           highContrast: false,
+          colorBlindMode: true,
         )) {
     // Initialize state
     on<SettingsChange>((event, emit) {
@@ -53,17 +53,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         case SettingsTypes.highContrast:
           emit(state.copyWith(highContrast: event.value));
           break;
+        case SettingsTypes.colorBlindMode:
+          emit(state.copyWith(colorBlindMode: event.value));
+          break;
         default:
       }
       // print(state.list);
     });
 
     on<SettingsReset>((event, emit) {
-      emit(SettingsInit(
-          hardMode: false,
-          darkTheme: _isDarkTheme(),
-          highContrast: false,
-        ));
+      emit(SettingsDefault().copyWith(
+        darkTheme: _isDarkTheme(),
+      ));
     });
   }
 }

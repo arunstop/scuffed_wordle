@@ -1,10 +1,14 @@
 import 'dart:math';
 
+import 'package:dartx/dartx.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/models/model_board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class Board extends StatefulWidget {
@@ -31,7 +35,7 @@ class _BoardState extends State<Board> {
   _loadWordList() async {
     var validWordList = await Dictionary.getValidWordList(context);
     // print(validWordList.length);
-    var keywordList =  await Dictionary.getKeywordList(context);
+    var keywordList = await Dictionary.getKeywordList(context);
     // print(keywordList.length);
     var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
     context.read<DictionaryBloc>().add(DictionaryInitialize(
@@ -44,78 +48,134 @@ class _BoardState extends State<Board> {
   Widget build(BuildContext context) {
     print('build');
     // Dictionary.list(context).then((value) => print(value));
-    var boardBloc = context.read<BoardBloc>();
-    var dictionaryBloc = context.watch<DictionaryBloc>();
-    String _getLetter(int row, int column) {
-      var state = boardBloc.state;
-      if (state.attempt == row && column <= state.word.length) {
-        // if(column == state.word.length) {
-        return state.word[column - 1];
-        // } else if(column < state.word.length) {
-        // return state.word[column - 1];
-        // }
+    var boardBloc = context.watch<BoardBloc>();
+    var settingsBloc = context.watch<SettingsBloc>();
+
+    var boardState = context.watch<BoardBloc>().state;
+
+    String _getLetter(int row, int col, String letter) {
+      // Show the typed letter based on attempts's row
+      if (boardState.attempt == row + 1) {
+        return boardState.word.length > col ? boardState.word[col] : '';
       }
-      return state.wordList[row - 1][column - 1].letter;
+      return letter;
     }
 
-    Color? _getColor(int row, int column) {
-      var state = boardBloc.state;
-      return state.attempt == row
-          ? BoardColors.activeRow
-          : state.wordList[row - 1][column - 1].color;
+    Color? _getColor(int row, Color? color) {
+      // Change current attempt row's color
+      return boardState.attempt == row + 1 ? BoardColors.activeRow : color;
     }
 
-    List<Widget> wordBoard = [
-      for (var r = 1; r <= widget.rows; r++)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var c = 1; c <= widget.cols; c++)
-              SizedBox(
-                // key: UniqueKey(),
-                height: 60,
-                width: 60,
-                child: Card(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      _getLetter(r, c),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
+    BoxShape _getShape(int row, Color? color) {
+      if (boardState.attempt == row + 1) {
+        return BoxShape.rectangle;
+      } else if (color == BoardColors.pinpoint) {
+        return BoxShape.circle;
+      }
+      return BoxShape.rectangle;
+    }
+
+    BoxDecoration _getDecoration(int row, Color? color) {
+      BoxShape shape = _getShape(row, color);
+      return BoxDecoration(
+        shape: shape,
+        color: _getColor(row, color),
+        borderRadius: shape == BoxShape.rectangle
+            ? BorderRadius.all(Radius.circular(8.0))
+            : null,
+      );
+    }
+
+    Widget _getLetterShape(int row, int col, BoardLetter letter) {
+      // Check if the letter is yellow
+      bool yellowLetter = letter.color != BoardColors.okLetter;
+      // Check if colorblind is on
+      bool isColorBlind = settingsBloc.state.colorBlindMode;
+      bool yellowAndColorBlind = yellowLetter && isColorBlind;
+      
+      double degree45 = -math.pi / 4;
+      double rotation = yellowAndColorBlind ? 0 : degree45;
+      double size = yellowAndColorBlind ? 60 : 48;
+      return Container(
+        // key: UniqueKey(),
+        height: 60,
+        width: 60,
+        decoration: yellowAndColorBlind
+            ? _getDecoration(row, letter.color)
+            : null,
+        alignment: Alignment.center,
+        // Rotate it yellow and color blind
+        child: Transform.rotate(
+          angle: rotation,
+          child: Container(
+            height: size,
+            width: size,
+            // color: Colors.red,
+            alignment: Alignment.center,
+            decoration: yellowAndColorBlind
+                ? null
+                : _getDecoration(row, letter.color),
+            child: Center(
+              // Rotate it yellow and color blind
+              child: Transform.rotate(
+                angle: -rotation,
+                child: Text(
+                  _getLetter(row, col, letter.letter),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
                   ),
-                  // color: Theme.of(context).colorScheme.secondary,
-                  color: _getColor(r, c),
                 ),
-              )
-          ],
-        )
-    ];
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
-    // print('build');
-    // List<Widget> wordBoard = [
-    //   for (var word in bloc.state.wordList)
-    //     Row(
+    List<Widget> wordBoard = boardBloc.state.wordList
+        .mapIndexed(
+          (row, word) => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: word
+                  .mapIndexed(
+                    (col, letter) => Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: _getLetterShape(row, col, letter),
+                    ),
+                  )
+                  .toList()),
+        )
+        .toList();
+
+    //  Row(
+    //       mainAxisAlignment: MainAxisAlignment.center,
     //       children: [
-    //         for (var letter in word)
+    //         for (var col in row)
     //           SizedBox(
+    //             // key: UniqueKey(),
     //             height: 60,
     //             width: 60,
     //             child: Card(
     //               child: Container(
     //                 alignment: Alignment.center,
-    //                 child: Text('$letter'),
+    //                 child: Text(
+    //                   _getLetter(row, col),
+    //                   style: const TextStyle(
+    //                     color: Colors.white,
+    //                     fontWeight: FontWeight.bold,
+    //                     fontSize: 30,
+    //                   ),
+    //                 ),
     //               ),
     //               // color: Theme.of(context).colorScheme.secondary,
-    //               color: Colors.red,
+    //               color: _getColor(row, col),
     //             ),
     //           )
     //       ],
     //     ),
-    // ];
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       child: Column(
