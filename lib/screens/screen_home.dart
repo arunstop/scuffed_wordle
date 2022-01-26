@@ -29,7 +29,7 @@ class PageHome extends StatelessWidget {
     // }
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
-      if (event is RawKeyDownEvent) {
+      if (event is RawKeyDownEvent && boardBloc.state is! BoardSubmitted) {
         final letter = event.logicalKey.keyLabel;
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
@@ -48,6 +48,7 @@ class PageHome extends StatelessWidget {
 
     void _blocListener(BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
+      // print(listenerState);
       if (listenerState is BoardSubmitted) {
         // UiController.showSnackbar(
         //   context: context,

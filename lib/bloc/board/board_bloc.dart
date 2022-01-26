@@ -152,8 +152,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
               err = true;
             }
           } 
+        });
+        latestSubmittedWord.forEachIndexed((element, index) {
+          if (err == true) return;
           // Yellow hint should be included in the current answer
-          else if (element.color == BoardColors.okLetter) {
+          if (element.color == BoardColors.okLetter) {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
               _showToast(

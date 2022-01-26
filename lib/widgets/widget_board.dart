@@ -40,7 +40,7 @@ class _BoardState extends State<Board> {
     var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
     context.read<DictionaryBloc>().add(DictionaryInitialize(
           list: validWordList,
-          keyword: randomKeyword,
+          keyword: 'silly',
         ));
   }
 
@@ -54,8 +54,9 @@ class _BoardState extends State<Board> {
     var boardState = context.watch<BoardBloc>().state;
 
     String _getLetter(int row, int col, String letter) {
-      // Show the typed letter based on attempts's row
-      if (boardState.attempt == row + 1) {
+      // Show the letter of the current answer if the based on attempt
+      // when the board is not submitted
+      if (boardState.attempt == row + 1 && boardState is! BoardSubmitted) {
         return boardState.word.length > col ? boardState.word[col] : '';
       }
       return letter;
@@ -63,11 +64,17 @@ class _BoardState extends State<Board> {
 
     Color? _getColor(int row, Color? color) {
       // Change current attempt row's color
-      return boardState.attempt == row + 1 ? BoardColors.activeRow : color;
+      // when the board is not submitted
+      return boardState.attempt == row + 1 && boardState is! BoardSubmitted
+          ? BoardColors.activeRow
+          : color;
     }
 
     BoxShape _getShape(int row, Color? color) {
-      if (boardState.attempt == row + 1) {
+      // not changing shape if color blind is turned off
+      if (settingsBloc.state.colorBlindMode == false) {
+        return BoxShape.rectangle;
+      } else if (boardState.attempt == row + 1) {
         return BoxShape.rectangle;
       } else if (color == BoardColors.pinpoint) {
         return BoxShape.circle;
@@ -88,21 +95,23 @@ class _BoardState extends State<Board> {
 
     Widget _getLetterShape(int row, int col, BoardLetter letter) {
       // Check if the letter is yellow
-      bool yellowLetter = letter.color != BoardColors.okLetter;
+      bool yellowLetter = letter.color == BoardColors.okLetter;
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.colorBlindMode;
       bool yellowAndColorBlind = yellowLetter && isColorBlind;
-      
+
       double degree45 = -math.pi / 4;
-      double rotation = yellowAndColorBlind ? 0 : degree45;
-      double size = yellowAndColorBlind ? 60 : 48;
+      double rotation = yellowAndColorBlind ? degree45 : 0;
+      double size = yellowAndColorBlind ? 48 : 60;
       return Container(
         // key: UniqueKey(),
         height: 60,
         width: 60,
-        decoration: yellowAndColorBlind
-            ? _getDecoration(row, letter.color)
-            : null,
+        // if yellow and colorblind
+        // remove parents background
+        // then apply the rotated background to the child
+        decoration:
+            yellowAndColorBlind ? null : _getDecoration(row, letter.color),
         alignment: Alignment.center,
         // Rotate it yellow and color blind
         child: Transform.rotate(
@@ -110,11 +119,10 @@ class _BoardState extends State<Board> {
           child: Container(
             height: size,
             width: size,
-            // color: Colors.red,
             alignment: Alignment.center,
-            decoration: yellowAndColorBlind
-                ? null
-                : _getDecoration(row, letter.color),
+            // apply the rotated background to the child
+            decoration:
+                yellowAndColorBlind ? _getDecoration(row, letter.color) : null,
             child: Center(
               // Rotate it yellow and color blind
               child: Transform.rotate(

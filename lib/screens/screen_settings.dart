@@ -71,7 +71,7 @@ class _PageSettingsState extends State<PageSettings> {
             value: state.darkTheme,
             onChanged: (val) => _changeSettings(SettingsTypes.darkTheme, val),
             title: _getTitle('Dark Theme'),
-            secondary: const Icon(Icons.dark_mode),
+            secondary: const Icon(Icons.nightlight_rounded),
           ),
           SwitchListTile.adaptive(
             value: state.colorBlindMode,
@@ -86,7 +86,7 @@ class _PageSettingsState extends State<PageSettings> {
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.highContrast, val),
             title: _getTitle('High Contrast'),
-            secondary: const Icon(Icons.flashlight_on_rounded),
+            secondary: const Icon(Icons.brightness_6_rounded),
           ),
         ],
       ),

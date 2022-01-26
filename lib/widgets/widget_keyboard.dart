@@ -10,8 +10,8 @@ class Keyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var bloc = context.watch<BoardBloc>();
-    var submittedWordList = bloc.state.submittedWordList
+    var boardBloc = context.watch<BoardBloc>();
+    var submittedWordList = boardBloc.state.submittedWordList
         .expand((element) => element)
         .distinctBy((element) => element.letter)
         .toSet()
@@ -22,7 +22,7 @@ class Keyboard extends StatelessWidget {
           color: Colors.white,
         );
 
-    Color? getColor(String key) {
+    Color? _getColor(String key) {
       var letterTarget =
           submittedWordList.where((element) => element.letter == key).toList();
       if (letterTarget.isNotEmpty) {
@@ -31,13 +31,17 @@ class Keyboard extends StatelessWidget {
       return Colors.blueGrey;
     }
 
-    void onTap(String key) {
+    void _onTap(String key) {
+      if (boardBloc.state is BoardSubmitted) {
+        // print('submitted');
+        return;
+      }
       if (key == "BACKSPACE") {
-        bloc.add(BoardRemoveLetter());
+        boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
-        bloc.add(BoardSubmitWord());
+        boardBloc.add(BoardSubmitWord());
       } else {
-        bloc.add(BoardAddLetter(letter: key));
+        boardBloc.add(BoardAddLetter(letter: key));
       }
       // print(key);
     }
@@ -60,9 +64,9 @@ class Keyboard extends StatelessWidget {
         height: width,
         width: height,
         child: Card(
-          color: getColor(key),
+          color: _getColor(key),
           child: InkWell(
-            onTap: () => onTap(key),
+            onTap: () => _onTap(key),
             child: Center(
               child: label,
             ),
@@ -84,7 +88,7 @@ class Keyboard extends StatelessWidget {
       padding: EdgeInsetsDirectional.all(6),
       child: Column(
         children: [
-          // Text('${submittedWordList.map((e) => e.letter)}'),
+          // Text('${boardBloc.state.toString()}'),
           ..._keyboardButtons,
         ],
       ),
