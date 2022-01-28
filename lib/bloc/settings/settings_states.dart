@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:scuffed_wordle/models/model_settings.dart';
+import 'package:scuffed_wordle/data/models/model_settings.dart';
 
 enum SettingsTypes { hardMode, darkTheme, highContrast,colorBlindMode }
 

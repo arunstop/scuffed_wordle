@@ -8,41 +8,15 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
-import 'package:scuffed_wordle/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
+import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/ui.dart';
 
-class Board extends StatefulWidget {
-  Board({Key? key, required this.rows, required this.cols}) : super(key: key);
+class Board extends StatelessWidget {
+  const Board({Key? key}) : super(key: key);
 
-  final int rows;
-  final int cols;
-
-  @override
-  _BoardState createState() => _BoardState();
-}
-
-class _BoardState extends State<Board> {
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    // context.bloc<DictionaryBloc>.add(DictionaryInit());
-    _loadWordList();
-
-    super.initState();
-  }
-
-  _loadWordList() async {
-    var validWordList = await Dictionary.getValidWordList(context);
-    // print(validWordList.length);
-    var keywordList = await Dictionary.getKeywordList(context);
-    // print(keywordList.length);
-    var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
-    context.read<DictionaryBloc>().add(DictionaryInitialize(
-          list: validWordList,
-          keyword: randomKeyword,
-        ));
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +48,8 @@ class _BoardState extends State<Board> {
       // not changing shape if color blind is turned off
       if (settingsBloc.state.colorBlindMode == false) {
         return BoxShape.rectangle;
-      // } else if (boardState.attempt == row + 1) {
-      //   return BoxShape.rectangle;
+        // } else if (boardState.attempt == row + 1) {
+        //   return BoxShape.rectangle;
       } else if (color == BoardColors.pinpoint) {
         return BoxShape.circle;
       }
@@ -233,4 +207,5 @@ class _BoardState extends State<Board> {
       ),
     );
   }
+
 }

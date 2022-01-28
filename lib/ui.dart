@@ -157,39 +157,3 @@ class BoardColors {
   static var okLetter = Colors.yellow[700];
   static var pinpoint = Colors.green;
 }
-
-class Dictionary {
-  static Future<List<String>> getKeywordList(BuildContext context) async {
-    var data = await DefaultAssetBundle.of(context)
-        .loadString("assets/5LettersOxford5000.json");
-    // print(jsonDecode(data));
-    // Cast the jsonDecode result which is 
-    // List<dynamic> into List<String>
-    return Future<List<String>>.value(
-        (jsonDecode(data) as List<dynamic>).cast<String>());
-    // return DefaultAssetBundle.of(context)
-    //     .loadString("assets/valid5LetterWordList.json")
-    //     .then((value) => jsonDecode(value));
-  }
-
-  static Future<List<String>> getValidWordList(BuildContext context) async {
-    var data = await DefaultAssetBundle.of(context)
-        .loadString("assets/5LetterWordList.json");
-    // print(jsonDecode(data));
-    // Cast the jsonDecode result which is 
-    // List<dynamic> into List<String>
-    return Future<List<String>>.value(
-        (jsonDecode(data) as List<dynamic>).cast<String>());
-    // return DefaultAssetBundle.of(context)
-    //     .loadString("assets/valid5LetterWordList.json")
-    //     .then((value) => jsonDecode(value));
-  }
-  // static String keyWord = "KEKWL";
-
-
-  // List<dynamic> list(BuildContext context) {
-  //   List<dynamic> slk = (() async {
-  //     return await getList(context);
-  //   });
-  // }
-}

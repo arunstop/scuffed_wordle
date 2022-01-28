@@ -10,13 +10,14 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
-import 'package:scuffed_wordle/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/models/model_board_letter.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
 part 'package:scuffed_wordle/bloc/board/board_states.dart';
 
 class BoardBloc extends Bloc<BoardEvent, BoardState> {
-  static final BoardLetter _boardLetter = BoardLetter('', BoardColors.base);
+  static final BoardLetter _boardLetter =
+      BoardLetter(letter: '', strColor : 'base');
   static final _initWordList = [
     for (var i = 1; i <= 6; i++) [for (var i = 1; i <= 5; i++) _boardLetter]
   ];
@@ -138,7 +139,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
               );
               err = true;
             }
-          } 
+          }
         });
         latestSubmittedWord.forEachIndexed((element, index) {
           if (err == true) return;
@@ -179,9 +180,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
             if (keywordAsList[index] == letter) {
               // write off the letter of keyword if it is checked
               keywordAsList[index] = '-';
-              return BoardLetter(letter, BoardColors.pinpoint);
+              return BoardLetter(letter: letter, strColor : 'pinpoint');
             }
-            return BoardLetter(letter, BoardColors.base);
+            return BoardLetter(letter: letter, strColor : 'base');
           })
           .toList()
           // Then check the right-letter-wrong-position ones
@@ -193,7 +194,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
               // write off the letter of keyword if it is checked
               // by finding the index of targeted keyword letter
               keywordAsList[keywordAsList.indexOf(coloredLetter.letter)] = '-';
-              return BoardLetter(coloredLetter.letter, BoardColors.okLetter);
+              return BoardLetter(
+                  letter: coloredLetter.letter, strColor : 'okLetter');
             }
             return coloredLetter;
           })

@@ -4,6 +4,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -36,7 +37,7 @@ class ScuffedWordleApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => DictionaryBloc(),
+          create: (context) => DictionaryBloc(dictionaryRepo: DictionaryService() ),
         ),
         BlocProvider(
           create: (context) => SettingsBloc(),

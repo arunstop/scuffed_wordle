@@ -22,11 +22,8 @@ class PageHome extends StatelessWidget {
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
     var dictionaryBloc = context.watch<DictionaryBloc>();
-    // late var state123 = bloc.state;
-    // print('build');
-    // BoardBloc bloc(BuildContext ctx) {
-    //   return ctx.read<BoardBloc>();
-    // }
+    // SET Dictionary
+    dictionaryBloc.add(DictionaryInitialize());
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
       if (event is RawKeyDownEvent && boardBloc.state is! BoardSubmitted) {
@@ -83,12 +80,12 @@ class PageHome extends StatelessWidget {
           // Restart game
           boardBloc.add(BoardRestart());
 
-          var keywordList = await Dictionary.getKeywordList(context);
-          var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
+          // var keywordList = await Dictionary.getKeywordList(context);
+          // var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
 
-          dictionaryBloc.add(DictionaryRefreshKeyword(
-            keyword: randomKeyword,
-          ));
+          // dictionaryBloc.add(DictionaryRefreshKeyword(
+          //   keyword: randomKeyword,
+          // ));
 
           // dictionaryBloc.add(DictionaryRefreshKeyword());
         },
@@ -143,7 +140,7 @@ class PageHome extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Board(rows: 6, cols: 5),
+                const Board(),
                 Container(
                   alignment: Alignment.bottomCenter,
                   // color: Theme.of(context).colorScheme.secondary,
