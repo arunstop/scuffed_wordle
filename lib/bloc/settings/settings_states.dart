@@ -1,70 +1,25 @@
 import 'package:equatable/equatable.dart';
 import 'package:scuffed_wordle/data/models/model_settings.dart';
 
-enum SettingsTypes { hardMode, darkTheme, highContrast,colorBlindMode }
-
 class SettingsState extends Equatable {
-  final bool hardMode;
-  final bool darkTheme;
-  final bool highContrast;  
-  final bool colorBlindMode;
+  final Settings settings;
 
-  SettingsState(
-      {required this.hardMode,
-      required this.darkTheme,
-      required this.highContrast,
-      required this.colorBlindMode,
-      });
+  SettingsState({required this.settings});
 
-  SettingsState copyWith({
-    bool? hardMode,
-    bool? darkTheme,
-    bool? highContrast,
-    bool? colorBlindMode,
-  }) =>
-      SettingsState(
-        hardMode: hardMode ?? this.hardMode,
-        darkTheme: darkTheme ?? this.darkTheme,
-        highContrast: highContrast ?? this.highContrast,
-        colorBlindMode: colorBlindMode ?? this.colorBlindMode,
-      );
+  SettingsState copyWith({required Settings settings}) =>
+      SettingsState(settings: settings);
 
   @override
   // TODO: implement props
-  List<Object> get props => [hardMode, darkTheme, highContrast,colorBlindMode];
+  List<Object> get props => [settings];
 }
 
 class SettingsInit extends SettingsState {
-  SettingsInit({
-    required bool hardMode,
-    required bool darkTheme,
-    required bool highContrast,
-    required bool colorBlindMode,
-  }) : super(
-          hardMode: hardMode,
-          darkTheme: darkTheme,
-          highContrast: highContrast,
-          colorBlindMode: colorBlindMode,
-        );
+  SettingsInit({required Settings settings}) : super(settings: settings);
 }
 
 class SettingsDefault extends SettingsState {
-  final bool hardMode;
-  final bool darkTheme;
-  final bool highContrast;  
-  final bool colorBlindMode;
-
-  SettingsDefault({
-    this.hardMode = false,
-    this.darkTheme = false,
-    this.highContrast = false,
-    this.colorBlindMode = true,
-  }) : super(
-          hardMode: hardMode,
-          darkTheme: darkTheme,
-          highContrast: highContrast,
-          colorBlindMode: colorBlindMode,
-        );
+  SettingsDefault({required Settings settings}) : super(settings: settings);
 }
 
 // class SettingsInit extends SettingsState {

@@ -1,17 +1,42 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-// enum SettingsType { darkTheme, highContrast }
+part 'model_settings.g.dart';
 
-// class Settings {
-//   final SettingsType type;
-//   final String title;
-//   final bool value;
-//   final Icon icon;
+enum SettingsTypes { hardMode, darkTheme, highContrast, colorBlindMode }
 
-//   Settings({
-//     required this.type,
-//     required this.title,
-//     required this.value,
-//     required this.icon,
-//   });
-// }
+@JsonSerializable()
+class Settings {
+  final bool hardMode;
+  final bool darkTheme;
+  final bool highContrast;
+  final bool colorBlindMode;
+
+  Settings({
+    this.hardMode = false,
+    this.darkTheme = false,
+    this.highContrast = false,
+    this.colorBlindMode = false,
+  });
+
+  factory Settings.fromJson(Map<String, dynamic> json) =>
+      _$SettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SettingsToJson(this);
+
+  Settings copyWith({
+    bool? hardMode,
+    bool? darkTheme,
+    bool? highContrast,
+    bool? colorBlindMode,
+  }) =>
+      Settings(
+        hardMode: hardMode ?? this.hardMode,
+        darkTheme: darkTheme ?? this.darkTheme,
+        highContrast: highContrast ?? this.highContrast,
+        colorBlindMode: colorBlindMode ?? this.colorBlindMode,
+      );
+
+  @override
+  List<Object> get props => [hardMode, darkTheme, highContrast, colorBlindMode];
+}

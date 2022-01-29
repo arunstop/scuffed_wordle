@@ -6,6 +6,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/model_settings.dart';
+// import 'package:scuffed_wordle/data/models/model_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 
@@ -71,7 +72,7 @@ class _PageSettingsState extends State<PageSettings> {
         children: [
           // Text('$_isPlaying'),
           SwitchListTile.adaptive(
-            value: state.hardMode,
+            value: state.settings.hardMode,
             onChanged: (val) => _isPlaying
                 ? UiController.showToast(
                     title: 'Cannot change hard mode when playing',
@@ -83,13 +84,13 @@ class _PageSettingsState extends State<PageSettings> {
             secondary: const Icon(Icons.whatshot_rounded),
           ),
           SwitchListTile.adaptive(
-            value: state.darkTheme,
+            value: state.settings.darkTheme,
             onChanged: (val) => _changeSettings(SettingsTypes.darkTheme, val),
             title: _getTitle('Dark Theme'),
             secondary: const Icon(Icons.nightlight_rounded),
           ),
           SwitchListTile.adaptive(
-            value: state.colorBlindMode,
+            value: state.settings.colorBlindMode,
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.colorBlindMode, val),
             title: _getTitle('Color Blind Mode'),
@@ -98,7 +99,7 @@ class _PageSettingsState extends State<PageSettings> {
             secondary: const Icon(Icons.remove_red_eye_rounded),
           ),
           SwitchListTile.adaptive(
-            value: state.highContrast,
+            value: state.settings.highContrast,
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.highContrast, val),
             title: _getTitle('High Contrast'),

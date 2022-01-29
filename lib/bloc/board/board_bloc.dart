@@ -11,6 +11,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/models/model_settings.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
@@ -35,7 +36,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   final BoardRepo boardRepo;
 
   List<String> dictionaryList = [];
-  SettingsState settingsState = SettingsDefault();
+  SettingsState settingsState = SettingsDefault(settings: Settings());
   String keyword = "";
 
   @override
@@ -173,7 +174,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       bool err = false;
       bool gameOver = false;
 
-      if (settingsState.hardMode == true && state.attempt > 1) {
+      if (settingsState.settings.hardMode == true && state.attempt > 1) {
         // Get latest answer
         List<BoardLetter> latestSubmittedWord =
             state.wordList[state.attempt - 2];

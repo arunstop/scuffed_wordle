@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/data/models/model_settings.dart';
+import 'package:scuffed_wordle/data/repositories/settings_repostiory.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   // static final List<Settings> _defaultSettings = [
@@ -31,13 +33,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     return false;
   }
 
-  SettingsBloc()
+  final SettingsRepo settingsRepo;
+
+  SettingsBloc({required this.settingsRepo})
       : super(SettingsInit(
+            settings: Settings(
           hardMode: false,
           darkTheme: _isDarkTheme(),
           highContrast: false,
           colorBlindMode: true,
-        )) {
+        ))) {
     // Initialize state
     on<SettingsChange>((event, emit) {
       // print('vwinit');
@@ -45,26 +50,32 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // var randomWord = event.list[Random().nextInt(event.list.length)];
       switch (event.type) {
         case SettingsTypes.hardMode:
-          emit(state.copyWith(hardMode: event.value));
+          emit(state.copyWith(
+              settings: state.settings.copyWith(hardMode: event.value)));
           break;
         case SettingsTypes.darkTheme:
-          emit(state.copyWith(darkTheme: event.value));
+          emit(state.copyWith(
+              settings: state.settings.copyWith(darkTheme: event.value)));
           break;
         case SettingsTypes.highContrast:
-          emit(state.copyWith(highContrast: event.value));
+          emit(state.copyWith(
+              settings: state.settings.copyWith(highContrast: event.value)));
           break;
         case SettingsTypes.colorBlindMode:
-          emit(state.copyWith(colorBlindMode: event.value));
+          emit(state.copyWith(
+              settings: state.settings.copyWith(colorBlindMode: event.value)));
           break;
         default:
       }
+      settingsRepo.setLocalSettings(settings: state.settings);
       // print(state.list);
     });
 
     on<SettingsReset>((event, emit) {
-      emit(SettingsDefault().copyWith(
+      emit(SettingsDefault(
+          settings: Settings().copyWith(
         darkTheme: _isDarkTheme(),
-      ));
+      )));
     });
   }
 }

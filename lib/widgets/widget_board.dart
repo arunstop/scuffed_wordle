@@ -45,7 +45,7 @@ class Board extends StatelessWidget {
 
     BoxShape _getShape(int row, Color? color) {
       // not changing shape if color blind is turned off
-      if (settingsBloc.state.colorBlindMode == false) {
+      if (settingsBloc.state.settings.colorBlindMode == false) {
         return BoxShape.rectangle;
         // } else if (boardState.attempt == row + 1) {
         //   return BoxShape.rectangle;
@@ -70,7 +70,7 @@ class Board extends StatelessWidget {
       // Check if the letter is yellow
       bool yellowLetter = letter.color == BoardColors.okLetter;
       // Check if colorblind is on
-      bool isColorBlind = settingsBloc.state.colorBlindMode;
+      bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
       bool yellowAndColorBlind = yellowLetter && isColorBlind;
 
       double degree45 = -math.pi / 4;

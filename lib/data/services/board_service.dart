@@ -2,19 +2,20 @@ import 'dart:convert';
 
 import 'package:dartx/dartx.dart';
 import 'package:scuffed_wordle/data/constants.dart';
+import 'package:scuffed_wordle/data/services/main_service.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:scuffed_wordle/data/models/model_board_letter.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 
-class BoardService implements BoardRepo {
-  final Future<SharedPreferences> prefs;
-  SharedPreferences? localStorage;
+class BoardService extends MainService implements BoardRepo {
+  // final Future<SharedPreferences> prefs;
+  // SharedPreferences? localStorage;
   final String _guessWordListKey = Constants.localStorageKeys.guessWordList;
   BoardService({
-    required this.prefs,
-  });
+    required Future<SharedPreferences> prefs,
+  }) : super(prefs: prefs);
 
   @override
   Future<List<List<BoardLetter>>> getLocalGuessWordList({
@@ -22,9 +23,8 @@ class BoardService implements BoardRepo {
   }) async {
     localStorage = await prefs;
 
-    List rawData = jsonDecode((localStorage!
-        .getString(_guessWordListKey)??[])
-        .toString());
+    List rawData = jsonDecode(
+        (localStorage!.getString(_guessWordListKey) ?? []).toString());
 
     List<String> localGuessWordList = rawData.map((e) => e.toString()).toList();
     List<List<BoardLetter>> guessWordList = processGuessWordList(
@@ -44,7 +44,7 @@ class BoardService implements BoardRepo {
   }
 
   @override
-  void clearLocalGuessWordList()async{
+  void clearLocalGuessWordList() async {
     localStorage = await prefs;
     localStorage!.remove(_guessWordListKey);
   }

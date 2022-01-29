@@ -7,6 +7,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/services/board_service.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
+import 'package:scuffed_wordle/data/services/settings_service.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -46,11 +47,14 @@ class ScuffedWordleApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              DictionaryBloc(dictionaryRepo: DictionaryService(prefs: _prefs)),
+          create: (context) => DictionaryBloc(
+            dictionaryRepo: DictionaryService(prefs: _prefs),
+          ),
         ),
         BlocProvider(
-          create: (context) => SettingsBloc(),
+          create: (context) => SettingsBloc(
+            settingsRepo: SettingsService(prefs: _prefs),
+          ),
         ),
         BlocProvider(
           create: (context) => BoardBloc(
@@ -102,7 +106,7 @@ class ScuffedWordleApp extends StatelessWidget {
               //   // secondaryVariant: Colors.orange[800],
               // ),
             ),
-            themeMode: state.darkTheme ? ThemeMode.dark : ThemeMode.light,
+            themeMode: state.settings.darkTheme ? ThemeMode.dark : ThemeMode.light,
             // home: PageHome(title: title),
             initialRoute: '/',
             routes: _routes,

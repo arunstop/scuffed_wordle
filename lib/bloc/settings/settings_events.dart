@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/data/models/model_settings.dart';
 
 class SettingsEvent extends Equatable {
   const SettingsEvent();
