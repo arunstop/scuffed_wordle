@@ -86,15 +86,36 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     Emitter<BoardState> emit,
   ) async {
     // Get guesses form users latest session (if available)
-    print((await boardRepo.getLocalGuessWordList(
-            answerWord: dictionaryBloc.state.keyword))
-        .map((e) => e.map((e) => e.letter).join()));
-    // print(localGuessWordList);
-    // if (localGuessWordList.isNotEmpty) {
-    //   emit(_boardInit.copywith(
-    //     wordList: localGuessWordList,
-    //   ));
-    // }
+    List<List<BoardLetter>> userGuessWordList = await boardRepo
+        .getLocalGuessWordList(answerWord: dictionaryBloc.state.keyword);
+    // print(userGuessWordList.map((e) => e.map((e) => e.letter).join()));
+
+    // If user has played before.
+    if (userGuessWordList.isNotEmpty) {
+      // Get how many did user attempted
+      int userAttempts = userGuessWordList.length;
+      // Check if user's guesses were enough to make the game ends
+      // By checking if user's attempt has reached the limit or not
+      if (userAttempts >= state.attemptLimit) {
+        // No need to add user attempt since the game is over
+        emit(BoardSubmitted(
+          wordList: userGuessWordList,
+          attempt: userAttempts,
+          // attemptLimit: attempt,
+        ));
+        return;
+      }
+      // Add user's guesses to the board
+      List<List<BoardLetter>> wordList = [
+        ...userGuessWordList,
+        ...state.wordList.drop(userGuessWordList.length)
+      ];
+      // Add user attempt by 1 because the game is not over yet
+      emit(_boardInit.copywith(
+        attempt: userAttempts + 1,
+        wordList: wordList,
+      ));
+    }
   }
 
   void _onBoardAddLetter(BoardAddLetter event, Emitter<BoardState> emit) {
@@ -127,9 +148,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitWord event,
     Emitter<BoardState> emit,
   ) async {
-    print((await boardRepo.getLocalGuessWordList(
-            answerWord: dictionaryBloc.state.keyword))
-        .map((e) => e.map((e) => e.letter).join()));
+    // print((await boardRepo.getLocalGuessWordList(
+    //         answerWord: dictionaryBloc.state.keyword))
+    //     .map((e) => e.map((e) => e.letter).join()));
     // Submit word when the count is 5 letter
     if (state.word.length < 5) {
       Fluttertoast.showToast(
@@ -147,6 +168,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     else {
       var strWord = state.word.join().toLowerCase();
       bool err = false;
+      bool gameOver = false;
 
       if (settingsState.hardMode == true && state.attempt > 1) {
         // Get latest answer
@@ -206,8 +228,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       wordList[attempt - 1] = coloredWordList;
 
       // If the submitted word is corrent, end the game
-      if (strWord.toLowerCase() == keyword.toLowerCase() ||
-          state.attempt >= state.attemptLimit) {
+      gameOver = strWord.toLowerCase() == keyword.toLowerCase() ||
+          state.attempt >= state.attemptLimit;
+      if (gameOver == true) {
         // Not adding attempt if user guessed it right
         // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
         //     ? state.attempt - 1
@@ -222,29 +245,36 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           title: keyword.toUpperCase(),
           strColor: "#4caf50",
         );
-        return;
+        gameOver = true;
       }
-      // Apply changes on the bloc
-      emit(state.copywith(
-        word: _initWord,
-        wordList: wordList,
-        attempt: attempt + 1,
-      ));
-
+      // if game is not over
+      // keep adding the guesses
+      else {
+        // Apply changes on the bloc
+        emit(state.copywith(
+          word: _initWord,
+          wordList: wordList,
+          attempt: attempt + 1,
+        ));
+      }
+      // If the game is over,
+      // No need to cut the submittedWordList yb 1
+      List<List<BoardLetter>> submittedGuessWordList =
+          state.submittedWordList.dropLast(gameOver ? 0 : 1);
       // Saving list of guess words typed by user
       // By turn List<List<BoardLetter>> to List<String>
-      List<String> guessWordList = state.submittedWordList
-          .dropLast(1)
+      List<String> guessWordList = submittedGuessWordList
           .map((e) => e.map((e) => e.letter).join(''))
           .toList();
       boardRepo.setLocalGuessWordList(guessWordList: guessWordList);
-      print((await boardRepo.getLocalGuessWordList(
-              answerWord: dictionaryBloc.state.keyword))
-          .map((e) => e.map((e) => e.letter).join()));
+      // print((await boardRepo.getLocalGuessWordList(
+      //         answerWord: dictionaryBloc.state.keyword))
+      //     .map((e) => e.map((e) => e.letter).join()));
     }
   }
 
   void _onBoardRestart(BoardRestart event, Emitter<BoardState> emit) {
+    boardRepo.clearLocalGuessWordList();
     emit(_boardInit);
   }
 }

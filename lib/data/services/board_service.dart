@@ -11,6 +11,7 @@ import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 class BoardService implements BoardRepo {
   final Future<SharedPreferences> prefs;
   SharedPreferences? localStorage;
+  final String _guessWordListKey = Constants.localStorageKeys.guessWordList;
   BoardService({
     required this.prefs,
   });
@@ -22,7 +23,7 @@ class BoardService implements BoardRepo {
     localStorage = await prefs;
 
     List rawData = jsonDecode((localStorage!
-        .getString(Constants.localStorageKeys.guessWordList)??[])
+        .getString(_guessWordListKey)??[])
         .toString());
 
     List<String> localGuessWordList = rawData.map((e) => e.toString()).toList();
@@ -36,10 +37,16 @@ class BoardService implements BoardRepo {
     localStorage = await prefs;
     // Set board to
     localStorage!.setString(
-      Constants.localStorageKeys.guessWordList,
+      _guessWordListKey,
       jsonEncode(guessWordList),
     );
     // localStorage!.clear();
+  }
+
+  @override
+  void clearLocalGuessWordList()async{
+    localStorage = await prefs;
+    localStorage!.remove(_guessWordListKey);
   }
 
   @override

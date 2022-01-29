@@ -5,6 +5,7 @@ abstract class BoardRepo {
   void setLocalGuessWordList({
     required List<String> guessWordList,
   });
+  void clearLocalGuessWordList();
   List<BoardLetter> processGuessWord({
     required String guessWord,
     required String answerWord,

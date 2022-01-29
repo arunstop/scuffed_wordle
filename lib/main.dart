@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/services/board_service.dart';
@@ -29,18 +30,22 @@ class ScuffedWordleApp extends StatelessWidget {
       '/': (context) => PageHome(title: title),
       '/settings': (context) => const PageSettings(title: 'Settings'),
     };
-    
+
     // final userTheme = WidgetsBinding.instance?.window.platformBrightness;
     // if(userTheme == Brightness.dark){
     //   print('dark');
     // }else{
     //   print('light');
     // }
+    void _dictionaryBlocListener(BuildContext context, DictionaryState state) {
+      context.read<BoardBloc>().add(BoardInitialize());
+    }
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => DictionaryBloc(dictionaryRepo: DictionaryService() ),
+          create: (context) =>
+              DictionaryBloc(dictionaryRepo: DictionaryService()),
         ),
         BlocProvider(
           create: (context) => SettingsBloc(),
@@ -48,57 +53,58 @@ class ScuffedWordleApp extends StatelessWidget {
         BlocProvider(
           create: (context) => BoardBloc(
             boardRepo: BoardService(prefs: SharedPreferences.getInstance()),
-              dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
-              settingsBloc: BlocProvider.of<SettingsBloc>(context),
-              ),
+            dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
+            settingsBloc: BlocProvider.of<SettingsBloc>(context),
+          ),
         ),
       ],
-      child: BlocBuilder<SettingsBloc,SettingsState>(
-        builder: (context, state) => MaterialApp(
-          title: title,
-          theme: ThemeData(
-            brightness: Brightness.light,
-            // primaryColor: Colors.teal,
-            // primaryColorDark: Colors.teal,
-            // primarySwatch: Colors.teal,
-            scaffoldBackgroundColor: Colors.grey[50],
-            // colorScheme: ColorScheme.fromSwatch().copyWith(
-            //   primary: Colors.teal,
-            //   primaryVariant: Colors.teal[800],
-            //   secondary: Colors.orange,
-            //   secondaryVariant: Colors.orange[800],
-            // ),
-            colorScheme: ColorScheme.light(
-              primary: Colors.teal,
-              primaryVariant: Colors.teal,
-              secondary: Colors.orange,
-              secondaryVariant: Colors.orange,
+      child: BlocListener<DictionaryBloc, DictionaryState>(
+        listener: _dictionaryBlocListener,
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) => MaterialApp(
+            title: title,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              // primaryColor: Colors.teal,
+              // primaryColorDark: Colors.teal,
+              // primarySwatch: Colors.teal,
+              scaffoldBackgroundColor: Colors.grey[50],
+              // colorScheme: ColorScheme.fromSwatch().copyWith(
+              //   primary: Colors.teal,
+              //   primaryVariant: Colors.teal[800],
+              //   secondary: Colors.orange,
+              //   secondaryVariant: Colors.orange[800],
+              // ),
+              colorScheme: ColorScheme.light(
+                primary: Colors.teal,
+                primaryVariant: Colors.teal,
+                secondary: Colors.orange,
+                secondaryVariant: Colors.orange,
+              ),
             ),
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            colorScheme: ColorScheme.dark(
-              primary: Colors.teal,
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.dark(
+                primary: Colors.teal,
+              ),
+              // primaryColorDark: Colors.teal[300],
+              // primarySwatch: Colors.teal,
+              // scaffoldBackgroundColor: Colors.grey[50],
+              // primaryColor: Colors.teal,
+              // primaryColorDark: Colors.teal,
+              // primarySwatch: Colors.teal,
+              // colorScheme: ColorScheme.light(
+              //   // primary: Colors.teal,
+              //   // primaryVariant: Colors.teal[800],
+              //   // secondary: Colors.orange,
+              //   // secondaryVariant: Colors.orange[800],
+              // ),
             ),
-            // primaryColorDark: Colors.teal[300],
-            // primarySwatch: Colors.teal,
-            // scaffoldBackgroundColor: Colors.grey[50],
-            // primaryColor: Colors.teal,
-            // primaryColorDark: Colors.teal,
-            // primarySwatch: Colors.teal,
-            // colorScheme: ColorScheme.light(
-            //   // primary: Colors.teal,
-            //   // primaryVariant: Colors.teal[800],
-            //   // secondary: Colors.orange,
-            //   // secondaryVariant: Colors.orange[800],
-            // ),
+            themeMode: state.darkTheme ? ThemeMode.dark : ThemeMode.light,
+            // home: PageHome(title: title),
+            initialRoute: '/',
+            routes: _routes,
           ),
-          themeMode: state.darkTheme
-              ? ThemeMode.dark
-              : ThemeMode.light,
-          // home: PageHome(title: title),
-          initialRoute: '/',
-          routes: _routes,
         ),
       ),
     );

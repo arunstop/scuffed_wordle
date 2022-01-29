@@ -20,7 +20,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       // Get random keyword
       var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
 
-      emit(state.copyWith(list: validWordList, keyword: randomKeyword));
+      emit(DictionaryState(list: validWordList, keyword: randomKeyword));
     });
 
     on<DictionaryRefreshKeyword>((event, emit) async {
