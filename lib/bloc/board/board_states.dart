@@ -40,17 +40,18 @@ class BoardState extends Equatable {
   List<List<BoardLetter>> get submittedWordList => wordList.sublist(
         0,
         // set end index to not to go beyond wordlist Index
-        (attempt > attemptLimit ? attemptLimit : attempt),
+        // (attempt > attemptLimit ? attemptLimit : attempt),
+        attempt 
       );
 }
 
-class BoardInit extends BoardState {
+class BoardDefault extends BoardState {
   final List<String> word;
   final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
 
-  BoardInit({
+  BoardDefault({
     this.word = const [],
     this.wordList = const [],
     this.attempt = 1,

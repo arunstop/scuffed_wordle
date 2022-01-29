@@ -10,7 +10,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
   final DictionaryRepo dictionaryRepo;
 
   DictionaryBloc({required this.dictionaryRepo})
-      : super(const DictionaryInit()) {
+      : super(const DictionaryDefault()) {
     // Initialize state
     on<DictionaryInitialize>((event, emit) async {
       // Get list of english word
@@ -23,10 +23,13 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       emit(state.copyWith(list: validWordList, keyword: randomKeyword));
     });
 
-    on<DictionaryRefreshKeyword>((event, emit) {
+    on<DictionaryRefreshKeyword>((event, emit) async {
+      var keywordList = await dictionaryRepo.getKeywordList();
+      // Get random keyword
+      var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
       // print(state.keyword);
       // var randomWord = state.list[Random().nextInt(state.list.length)];
-      emit(state.copyWith(keyword: event.keyword));
+      emit(state.copyWith(keyword: randomKeyword));
       // print(state.keyword);
     });
   }

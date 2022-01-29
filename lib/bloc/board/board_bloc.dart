@@ -11,26 +11,29 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
 part 'package:scuffed_wordle/bloc/board/board_states.dart';
 
 class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardLetter _boardLetter =
-      BoardLetter(letter: '', strColor : 'base');
+      BoardLetter(letter: '', strColor: 'base');
   static final _initWordList = [
     for (var i = 1; i <= 6; i++) [for (var i = 1; i <= 5; i++) _boardLetter]
   ];
   // static const _initWord = ['', '', '', '', ''];
   static const List<String> _initWord = [];
 
-  static final BoardInit _boardInit =
-      BoardInit(word: _initWord, wordList: _initWordList);
+  static final BoardDefault _boardInit =
+      BoardDefault(word: _initWord, wordList: _initWordList);
 
   final DictionaryBloc dictionaryBloc;
   final SettingsBloc settingsBloc;
   late final StreamSubscription dictionaryStream;
   late final StreamSubscription settingsStream;
+  final BoardRepo boardRepo;
+
   List<String> dictionaryList = [];
   SettingsState settingsState = SettingsDefault();
   String keyword = "";
@@ -43,6 +46,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   }
 
   BoardBloc({
+    required this.boardRepo,
     required this.dictionaryBloc,
     required this.settingsBloc,
   }) : super(_boardInit) {
@@ -50,6 +54,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     dictionaryStream = dictionaryBloc.stream.listen(_dictionaryBlocListener);
     // Listen to settingsBloc
     settingsStream = settingsBloc.stream.listen(_settingsBlocListener);
+    // Initialize board (getting user's local guess)
+    on<BoardInitialize>(_onBoardInitialize);
     // Add letter whenever an alphabet key is pressed
     on<BoardAddLetter>(_onBoardAddLetter);
     // Remove letter when backspace key is pressed
@@ -74,6 +80,22 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   }
 
   void _settingsBlocListener(SettingsState state) => settingsState = state;
+
+  void _onBoardInitialize(
+    BoardInitialize event,
+    Emitter<BoardState> emit,
+  ) async {
+    // Get guesses form users latest session (if available)
+    print((await boardRepo.getLocalGuessWordList(
+            answerWord: dictionaryBloc.state.keyword))
+        .map((e) => e.map((e) => e.letter).join()));
+    // print(localGuessWordList);
+    // if (localGuessWordList.isNotEmpty) {
+    //   emit(_boardInit.copywith(
+    //     wordList: localGuessWordList,
+    //   ));
+    // }
+  }
 
   void _onBoardAddLetter(BoardAddLetter event, Emitter<BoardState> emit) {
     // Count typed letters
@@ -101,7 +123,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     emit(state.copywith(word: typedLetters));
   }
 
-  void _onBoardSubmitWord(BoardSubmitWord event, Emitter<BoardState> emit) {
+  void _onBoardSubmitWord(
+    BoardSubmitWord event,
+    Emitter<BoardState> emit,
+  ) async {
+    print((await boardRepo.getLocalGuessWordList(
+            answerWord: dictionaryBloc.state.keyword))
+        .map((e) => e.map((e) => e.letter).join()));
     // Submit word when the count is 5 letter
     if (state.word.length < 5) {
       Fluttertoast.showToast(
@@ -116,8 +144,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       );
     }
     // If user is in the hard mode and not using the green letters they found
-
-    //
     else {
       var strWord = state.word.join().toLowerCase();
       bool err = false;
@@ -170,58 +196,26 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // Change the value based on index/attempt
       var attempt = state.attempt;
 
-      var keywordAsList = keyword.toUpperCase().split('');
-
       // Process the typed word
-      List<BoardLetter> coloredWordList = state.word
-          // Check the right-letter-right-position ones
-          .mapIndexed((index, letter) {
-            // check if it is right-letter-right-position
-            if (keywordAsList[index] == letter) {
-              // write off the letter of keyword if it is checked
-              keywordAsList[index] = '-';
-              return BoardLetter(letter: letter, strColor : 'pinpoint');
-            }
-            return BoardLetter(letter: letter, strColor : 'base');
-          })
-          .toList()
-          // Then check the right-letter-wrong-position ones
-          .mapIndexed((index, coloredLetter) {
-            // check if the letter is in the keyword
-            // and if the letter is not green arleady
-            if (keywordAsList.contains(coloredLetter.letter) &&
-                coloredLetter.color != BoardColors.pinpoint) {
-              // write off the letter of keyword if it is checked
-              // by finding the index of targeted keyword letter
-              keywordAsList[keywordAsList.indexOf(coloredLetter.letter)] = '-';
-              return BoardLetter(
-                  letter: coloredLetter.letter, strColor : 'okLetter');
-            }
-            return coloredLetter;
-          })
-          .toList();
+      List<BoardLetter> coloredWordList = boardRepo.processGuessWord(
+        guessWord: state.word.join().toUpperCase(),
+        answerWord: keyword.toUpperCase(),
+      );
 
       // Change wordList value based on attempt
       wordList[attempt - 1] = coloredWordList;
 
-      // Apply changes on the bloc
-      emit(state.copywith(
-        word: _initWord,
-        wordList: wordList,
-        attempt: attempt + 1,
-      ));
-
       // If the submitted word is corrent, end the game
       if (strWord.toLowerCase() == keyword.toLowerCase() ||
-          state.attempt > state.attemptLimit) {
+          state.attempt >= state.attemptLimit) {
         // Not adding attempt if user guessed it right
-        var attempt = strWord.toLowerCase() == keyword.toLowerCase()
-            ? state.attempt - 1
-            : state.attempt;
+        // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
+        //     ? state.attempt - 1
+        //     : state.attempt;
         // Apply changes tot the bloc
         emit(BoardSubmitted(
-          wordList: state.wordList,
-          attempt: attempt,
+          wordList: wordList,
+          attempt: state.attempt,
         ));
         // Show the keyword
         UiController.showToast(
@@ -230,6 +224,23 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         );
         return;
       }
+      // Apply changes on the bloc
+      emit(state.copywith(
+        word: _initWord,
+        wordList: wordList,
+        attempt: attempt + 1,
+      ));
+
+      // Saving list of guess words typed by user
+      // By turn List<List<BoardLetter>> to List<String>
+      List<String> guessWordList = state.submittedWordList
+          .dropLast(1)
+          .map((e) => e.map((e) => e.letter).join(''))
+          .toList();
+      boardRepo.setLocalGuessWordList(guessWordList: guessWordList);
+      print((await boardRepo.getLocalGuessWordList(
+              answerWord: dictionaryBloc.state.keyword))
+          .map((e) => e.map((e) => e.letter).join()));
     }
   }
 

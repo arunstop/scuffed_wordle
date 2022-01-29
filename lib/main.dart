@@ -4,10 +4,12 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/data/services/board_service.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() {
@@ -27,6 +29,7 @@ class ScuffedWordleApp extends StatelessWidget {
       '/': (context) => PageHome(title: title),
       '/settings': (context) => const PageSettings(title: 'Settings'),
     };
+    
     // final userTheme = WidgetsBinding.instance?.window.platformBrightness;
     // if(userTheme == Brightness.dark){
     //   print('dark');
@@ -44,6 +47,7 @@ class ScuffedWordleApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BoardBloc(
+            boardRepo: BoardService(prefs: SharedPreferences.getInstance()),
               dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
               settingsBloc: BlocProvider.of<SettingsBloc>(context),
               ),

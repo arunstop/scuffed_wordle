@@ -23,11 +23,11 @@ class DictionaryState extends Equatable {
     List<Object> get props => [list,keyword];
 }
 
-class DictionaryInit extends DictionaryState {
+class DictionaryDefault extends DictionaryState {
   final List<String> list;
   final String keyword;
 
-  const DictionaryInit({
+  const DictionaryDefault({
     this.list = const [],
     this.keyword = "",
   }) : super(

@@ -7,6 +7,15 @@ abstract class BoardEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class BoardInitialize extends BoardEvent {
+  // final List<List<BoardLetter>> guessWordList;
+
+  // BoardInitialize({required this.guessWordList});
+
+  // @override
+  // List<Object> get props => [guessWordList];
+}
+
 class BoardAddLetter extends BoardEvent {
   final String letter;
 
@@ -17,6 +26,9 @@ class BoardAddLetter extends BoardEvent {
 }
 
 class BoardRemoveLetter extends BoardEvent {}
+
 class BoardSubmitWord extends BoardEvent {}
+
 class BoardRestart extends BoardEvent {}
+
 class BoardTest extends BoardEvent {}

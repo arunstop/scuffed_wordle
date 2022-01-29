@@ -18,10 +18,10 @@ class DictionaryInitialize extends DictionaryEvent {
 }
 
 class DictionaryRefreshKeyword extends DictionaryEvent {
-  final String keyword;
+  // final String keyword;
 
-  DictionaryRefreshKeyword({required this.keyword});
+  // DictionaryRefreshKeyword({required this.keyword});
 
-  @override
-  List<Object> get props => [keyword];
+  // @override
+  // List<Object> get props => [keyword];
 }

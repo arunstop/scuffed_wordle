@@ -16,14 +16,13 @@ import 'package:scuffed_wordle/ui.dart';
 class Board extends StatelessWidget {
   const Board({Key? key}) : super(key: key);
 
-  
-
   @override
   Widget build(BuildContext context) {
-    print('build');
+    // print('build');
     // Dictionary.list(context).then((value) => print(value));
     var boardBloc = context.watch<BoardBloc>();
     var settingsBloc = context.watch<SettingsBloc>();
+    var dictionaryBloc = context.watch<DictionaryBloc>();
 
     var boardState = context.watch<BoardBloc>().state;
 
@@ -163,7 +162,9 @@ class Board extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       child: Column(
         children: [
-          // Text('${DictionaryBloc.state.list.length}'),
+          // Text('${dictionaryBloc.state.keyword} ${boardBloc.state.attempt}'),
+          // Text(
+          //     '${boardBloc.boardRepo.getLocalGuessWordList(answerWord: dictionaryBloc.state.keyword)}'),
           ...wordBoard,
           // FutureBuilder<List<dynamic>>(
           //   future: Dictionary.list(
@@ -207,5 +208,4 @@ class Board extends StatelessWidget {
       ),
     );
   }
-
 }

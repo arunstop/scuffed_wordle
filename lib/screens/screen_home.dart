@@ -13,17 +13,36 @@ import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 
-class PageHome extends StatelessWidget {
+class PageHome extends StatefulWidget {
   const PageHome({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
+  State<PageHome> createState() => _PageHomeState();
+}
+
+class _PageHomeState extends State<PageHome> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserLocalData();
+  }
+
+  
+
+  _loadUserLocalData() {
+    // TODO: implement initState
+    var dictionaryBloc = context.read<DictionaryBloc>();
+    dictionaryBloc.add(DictionaryInitialize());
+ 
+    // context.read<BoardBloc>().add(BoardInitialize());
+  }
+
+  @override
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
-    var dictionaryBloc = context.watch<DictionaryBloc>();
-    // SET Dictionary
-    dictionaryBloc.add(DictionaryInitialize());
+    var dictionaryBloc = context.read<DictionaryBloc>();
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
       if (event is RawKeyDownEvent && boardBloc.state is! BoardSubmitted) {
@@ -87,7 +106,7 @@ class PageHome extends StatelessWidget {
           //   keyword: randomKeyword,
           // ));
 
-          // dictionaryBloc.add(DictionaryRefreshKeyword());
+          dictionaryBloc.add(DictionaryRefreshKeyword());
         },
       );
     }
@@ -106,9 +125,9 @@ class PageHome extends StatelessWidget {
     }
 
     return ScreenTemplate(
-      title: title,
+      title: widget.title,
       actions: [
-         IconButton(
+        IconButton(
           onPressed: () => boardBloc.state is BoardSubmitted
               ? _showResultDialog(context)
               : null,

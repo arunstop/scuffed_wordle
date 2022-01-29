@@ -3,6 +3,6 @@ class Constants {
 }
 
 class LocalStorageKey{
-  String boardWordList = 'BOARD_WORD_LIST';
+  String guessWordList = 'GUESS_WORD_LIST';
   String settings = 'SETTINGS';
 }
