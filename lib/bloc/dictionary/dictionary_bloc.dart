@@ -17,20 +17,34 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       var validWordList = await dictionaryRepo.getValidWordList();
       // Get list of possible keyword
       var keywordList = await dictionaryRepo.getKeywordList();
-      // Get random keyword
-      var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
-
-      emit(DictionaryState(list: validWordList, keyword: randomKeyword));
+      String localAnswer = await dictionaryRepo.getLocalAnswer();
+      
+      String newAnswer;
+      // Get random keyword to be a new answer 
+      // If there is no local answer
+      if (localAnswer.isEmpty) {
+        newAnswer = keywordList[Random().nextInt(keywordList.length)];
+      }
+      // If there is local answer, set it to the state.
+      else {
+        newAnswer = localAnswer;
+      }
+      // Apply changes
+      emit(DictionaryState(list: validWordList, keyword: newAnswer));
+      // Save answer locally
+      dictionaryRepo.setLocalAnswer(answer: state.keyword);
+      // print(await dictionaryRepo.getLocalAnswer());
     });
 
     on<DictionaryRefreshKeyword>((event, emit) async {
+      // Get list of possible answers
       var keywordList = await dictionaryRepo.getKeywordList();
-      // Get random keyword
+      // Get answers by randomizing the list
       var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
-      // print(state.keyword);
-      // var randomWord = state.list[Random().nextInt(state.list.length)];
+      // Apply changes to bloc
       emit(state.copyWith(keyword: randomKeyword));
-      // print(state.keyword);
+      // Save answer locally
+      dictionaryRepo.setLocalAnswer(answer: state.keyword);
     });
   }
 }

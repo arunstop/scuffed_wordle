@@ -41,18 +41,20 @@ class ScuffedWordleApp extends StatelessWidget {
       context.read<BoardBloc>().add(BoardInitialize());
     }
 
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) =>
-              DictionaryBloc(dictionaryRepo: DictionaryService()),
+              DictionaryBloc(dictionaryRepo: DictionaryService(prefs: _prefs)),
         ),
         BlocProvider(
           create: (context) => SettingsBloc(),
         ),
         BlocProvider(
           create: (context) => BoardBloc(
-            boardRepo: BoardService(prefs: SharedPreferences.getInstance()),
+            boardRepo: BoardService(prefs: _prefs),
             dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
             settingsBloc: BlocProvider.of<SettingsBloc>(context),
           ),

@@ -111,7 +111,7 @@ class _PageHomeState extends State<PageHome> {
       );
     }
 
-    void _blocListener(BuildContext listenerCtx, BoardState listenerState) {
+    void _boardBlocListener(BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
       // print(listenerState);
       if (listenerState is BoardSubmitted) {
@@ -145,7 +145,7 @@ class _PageHomeState extends State<PageHome> {
         ),
       ],
       child: BlocListener<BoardBloc, BoardState>(
-        listener: _blocListener,
+        listener: _boardBlocListener,
         child: RawKeyboardListener(
           autofocus: true,
           focusNode: FocusNode(),
