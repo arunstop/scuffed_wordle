@@ -96,20 +96,23 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       int userAttempts = userGuessWordList.length;
       // Check if user's guesses were enough to make the game ends
       // By checking if user's attempt has reached the limit or not
-      if (userAttempts >= state.attemptLimit) {
-        // No need to add user attempt since the game is over
-        emit(BoardSubmitted(
-          wordList: userGuessWordList,
-          attempt: userAttempts,
-          // attemptLimit: attempt,
-        ));
-        return;
-      }
+      // Or by checking the latest guess is the answer
       // Add user's guesses to the board
       List<List<BoardLetter>> wordList = [
         ...userGuessWordList,
         ...state.wordList.drop(userGuessWordList.length)
       ];
+      String lastGuess = userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
+      if (userAttempts >= state.attemptLimit ||
+          lastGuess == dictionaryBloc.state.keyword.toLowerCase()) {
+        // No need to add user attempt since the game is over
+        emit(BoardSubmitted(
+          wordList: wordList,
+          attempt: userAttempts,
+          // attemptLimit: attempt,
+        ));
+        return;
+      }
       // Add user attempt by 1 because the game is not over yet
       emit(_boardInit.copywith(
         attempt: userAttempts + 1,
