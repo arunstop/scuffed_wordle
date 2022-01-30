@@ -37,9 +37,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   SettingsBloc({required this.settingsRepo})
       : super(SettingsDefault(
-          settings: Settings(
-            darkTheme: _isDarkTheme()
-          ),
+          settings: Settings(darkTheme: _isDarkTheme()),
         )) {
     // Initialize state
     on<SettingsInitialize>((event, emit) async {
@@ -87,6 +85,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           settings: Settings().copyWith(
         darkTheme: _isDarkTheme(),
       )));
+      settingsRepo.setLocalSettings(settings: state.settings);
     });
   }
 }
