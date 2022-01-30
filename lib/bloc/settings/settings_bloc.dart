@@ -36,14 +36,25 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsRepo settingsRepo;
 
   SettingsBloc({required this.settingsRepo})
-      : super(SettingsInit(
-            settings: Settings(
-          hardMode: false,
-          darkTheme: _isDarkTheme(),
-          highContrast: false,
-          colorBlindMode: true,
-        ))) {
+      : super(SettingsDefault(
+          settings: Settings(
+            darkTheme: _isDarkTheme()
+          ),
+        )) {
     // Initialize state
+    on<SettingsInitialize>((event, emit) async {
+      Settings userLocalSettings = await settingsRepo.getLocalSettings();
+      // Check If user has changed the settings
+      // by comparing it to default value
+      if (userLocalSettings == Settings()) {
+        return;
+      }
+      // changed
+      emit(SettingsDefault(
+        settings: userLocalSettings,
+      ));
+    });
+
     on<SettingsChange>((event, emit) {
       // print('vwinit');
 

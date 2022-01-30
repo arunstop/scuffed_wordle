@@ -16,3 +16,4 @@ class SettingsChange extends SettingsEvent {
 }
 
 class SettingsReset extends SettingsEvent {}
+class SettingsInitialize extends SettingsEvent {}

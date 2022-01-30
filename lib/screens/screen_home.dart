@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
@@ -35,6 +37,8 @@ class _PageHomeState extends State<PageHome> {
     // TODO: implement initState
     var dictionaryBloc = context.read<DictionaryBloc>();
     dictionaryBloc.add(DictionaryInitialize());
+
+    context.read<SettingsBloc>().add(SettingsInitialize());
  
     // context.read<BoardBloc>().add(BoardInitialize());
   }

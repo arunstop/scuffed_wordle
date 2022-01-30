@@ -14,9 +14,9 @@ class SettingsState extends Equatable {
   List<Object> get props => [settings];
 }
 
-class SettingsInit extends SettingsState {
-  SettingsInit({required Settings settings}) : super(settings: settings);
-}
+// class SettingsInit extends SettingsState {
+//   SettingsInit({required Settings settings}) : super(settings: settings);
+// }
 
 class SettingsDefault extends SettingsState {
   SettingsDefault({required Settings settings}) : super(settings: settings);
