@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:scuffed_wordle/data/models/model_settings.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 
 class SettingsState extends Equatable {
   final Settings settings;

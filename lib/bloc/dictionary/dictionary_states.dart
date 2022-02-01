@@ -1,37 +1,20 @@
 import 'package:equatable/equatable.dart';
+import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 
 enum DictionaryStatus { init, success }
 
 class DictionaryState extends Equatable {
-  final List<String> list;
-  final String keyword;
+  final Dictionary dictionary;
+  const DictionaryState({required this.dictionary});
 
-  const DictionaryState(
-      {this.list = const [],
-      this.keyword = ""});
-
-  DictionaryState copyWith({
-    List<String>? list,
-    String? keyword,
-  }) =>
-      DictionaryState(
-        list: list ?? this.list,
-        keyword: keyword ?? this.keyword,
-      );
+  DictionaryState copyWith({required Dictionary dictionary}) =>
+      DictionaryState(dictionary: dictionary);
 
   @override
-    List<Object> get props => [list,keyword];
+  List<Object> get props => [dictionary];
 }
 
 class DictionaryDefault extends DictionaryState {
-  final List<String> list;
-  final String keyword;
-
-  const DictionaryDefault({
-    this.list = const [],
-    this.keyword = "",
-  }) : super(
-          list: list,
-          keyword: keyword,
-        );
+  const DictionaryDefault({required Dictionary dictionary})
+      : super(dictionary: dictionary);
 }

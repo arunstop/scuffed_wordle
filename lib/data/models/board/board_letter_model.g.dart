@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'model_board_letter.dart';
+part of 'board_letter_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

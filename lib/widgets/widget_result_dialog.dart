@@ -15,7 +15,8 @@ class DialogResult extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Text('The word was : ${dictionaryBloc.state.keyword.toUpperCase()}'),
+          Text(
+              'The word was : ${dictionaryBloc.state.dictionary.answer.toUpperCase()}'),
           const SizedBox(
             height: 12,
           ),

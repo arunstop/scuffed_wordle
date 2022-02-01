@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'model_settings.g.dart';
+part 'settings_model.g.dart';
 
 enum SettingsTypes { hardMode, darkTheme, highContrast, colorBlindMode }
 
-@JsonSerializable()
+// @JsonSerializable()
 class Settings {
   final bool hardMode;
   final bool darkTheme;

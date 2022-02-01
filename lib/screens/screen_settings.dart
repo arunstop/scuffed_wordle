@@ -5,7 +5,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
-import 'package:scuffed_wordle/data/models/model_settings.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 // import 'package:scuffed_wordle/data/models/model_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';

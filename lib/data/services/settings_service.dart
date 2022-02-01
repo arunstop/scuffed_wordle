@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:scuffed_wordle/data/constants.dart';
-import 'package:scuffed_wordle/data/models/model_settings.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/repositories/settings_repostiory.dart';
 import 'package:scuffed_wordle/data/services/main_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';

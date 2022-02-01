@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:scuffed_wordle/ui.dart';
 
-part 'model_board_letter.g.dart';
+part 'board_letter_model.g.dart';
 
-@JsonSerializable()
+// @JsonSerializable()
 class BoardLetter {
   final String letter;
   @JsonKey(ignore: true)

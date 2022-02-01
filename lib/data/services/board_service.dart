@@ -6,7 +6,7 @@ import 'package:scuffed_wordle/data/services/main_service.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:scuffed_wordle/data/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 
 class BoardService extends MainService implements BoardRepo {

@@ -1,16 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'model_settings.dart';
+part of 'settings_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
-      hardMode: json['hardMode'] as bool,
-      darkTheme: json['darkTheme'] as bool,
-      highContrast: json['highContrast'] as bool,
-      colorBlindMode: json['colorBlindMode'] as bool,
+      hardMode: json['hardMode'] as bool? ?? false,
+      darkTheme: json['darkTheme'] as bool? ?? false,
+      highContrast: json['highContrast'] as bool? ?? false,
+      colorBlindMode: json['colorBlindMode'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{

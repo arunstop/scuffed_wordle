@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.0.12
   url_strategy: ^0.2.0
   json_annotation: ^4.4.0
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_lints: ^1.0.0

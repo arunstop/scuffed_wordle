@@ -8,7 +8,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
-import 'package:scuffed_wordle/data/models/model_board_letter.dart';
+import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/ui.dart';

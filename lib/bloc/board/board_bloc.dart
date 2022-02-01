@@ -10,8 +10,8 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
-import 'package:scuffed_wordle/data/models/model_board_letter.dart';
-import 'package:scuffed_wordle/data/models/model_settings.dart';
+import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
@@ -69,13 +69,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   void _dictionaryBlocListener(DictionaryState state) {
     // Set the word list
-    dictionaryList = state.list
+    dictionaryList = state.dictionary.words
         .map((e) => e.toLowerCase())
         .toList()
         .sortedBy((element) => element);
     // dictionaryList.sortedBy((element) => element);
     // Set the keyword
-    keyword = state.keyword;
+    keyword = state.dictionary.answer;
 
     // print(dictionaryList.toSet().map((e) => '"$e"').toList());
   }
@@ -88,7 +88,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   ) async {
     // Get guesses form users latest session (if available)
     List<List<BoardLetter>> userGuessWordList = await boardRepo
-        .getLocalGuessWordList(answerWord: dictionaryBloc.state.keyword);
+        .getLocalGuessWordList(answerWord: dictionaryBloc.state.dictionary.answer);
     // print(userGuessWordList.map((e) => e.map((e) => e.letter).join()));
 
     // If user has played before.
@@ -105,7 +105,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       ];
       String lastGuess = userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
       if (userAttempts >= state.attemptLimit ||
-          lastGuess == dictionaryBloc.state.keyword.toLowerCase()) {
+          lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase()) {
         // No need to add user attempt since the game is over
         emit(BoardSubmitted(
           wordList: wordList,
@@ -153,7 +153,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     Emitter<BoardState> emit,
   ) async {
     // print((await boardRepo.getLocalGuessWordList(
-    //         answerWord: dictionaryBloc.state.keyword))
+    //         answerWord: dictionaryBloc.state.dictionary.answer))
     //     .map((e) => e.map((e) => e.letter).join()));
     // Submit word when the count is 5 letter
     if (state.word.length < 5) {
@@ -272,7 +272,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           .toList();
       boardRepo.setLocalGuessWordList(guessWordList: guessWordList);
       // print((await boardRepo.getLocalGuessWordList(
-      //         answerWord: dictionaryBloc.state.keyword))
+      //         answerWord: dictionaryBloc.state.dictionary.answer))
       //     .map((e) => e.map((e) => e.letter).join()));
     }
   }
