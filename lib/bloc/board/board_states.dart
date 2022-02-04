@@ -30,19 +30,17 @@ class BoardState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
-        word,
-        wordList,
-        attempt,
-        attemptLimit,
-        submittedWordList
-      ];
+  List<Object> get props =>
+      [word, wordList, attempt, attemptLimit, submittedWordList];
   List<List<BoardLetter>> get submittedWordList => wordList.sublist(
-        0,
-        // set end index to not to go beyond wordlist Index
-        // (attempt > attemptLimit ? attemptLimit : attempt),
-        attempt 
-      );
+      0,
+      // set end index to not to go beyond wordlist Index
+      // (attempt > attemptLimit ? attemptLimit : attempt),
+      attempt);
+  // get answers as string
+  List<String> get strAnswerList => wordList
+      .map((letterList) => letterList.map((letter) => letter.letter).join().toLowerCase())
+      .toList();
 }
 
 class BoardDefault extends BoardState {

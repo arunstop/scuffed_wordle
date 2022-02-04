@@ -87,8 +87,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     Emitter<BoardState> emit,
   ) async {
     // Get guesses form users latest session (if available)
-    List<List<BoardLetter>> userGuessWordList = await boardRepo
-        .getLocalGuessWordList(answerWord: dictionaryBloc.state.dictionary.answer);
+    List<List<BoardLetter>> userGuessWordList =
+        await boardRepo.getLocalGuessWordList(
+            answerWord: dictionaryBloc.state.dictionary.answer);
     // print(userGuessWordList.map((e) => e.map((e) => e.letter).join()));
 
     // If user has played before.
@@ -103,7 +104,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         ...userGuessWordList,
         ...state.wordList.drop(userGuessWordList.length)
       ];
-      String lastGuess = userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
+      String lastGuess =
+          userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
       if (userAttempts >= state.attemptLimit ||
           lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase()) {
         // No need to add user attempt since the game is over
@@ -223,18 +225,19 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       var attempt = state.attempt;
 
       // Process the typed word
-      List<BoardLetter> coloredWordList = boardRepo.processGuessWord(
+      List<BoardLetter> coloredGuess = boardRepo.processGuessWord(
         guessWord: state.word.join().toUpperCase(),
         answerWord: keyword.toUpperCase(),
       );
 
       // Change wordList value based on attempt
-      wordList[attempt - 1] = coloredWordList;
+      wordList[attempt - 1] = coloredGuess;
 
-      // If the submitted word is corrent, end the game
-      gameOver = strWord.toLowerCase() == keyword.toLowerCase() ||
-          state.attempt >= state.attemptLimit;
-      if (gameOver == true) {
+      // END the game if :
+      // latest guess is correct OR
+      // user has reached max attempt
+      if (strWord.toLowerCase() == keyword.toLowerCase() ||
+          state.attempt >= state.attemptLimit) {
         // Not adding attempt if user guessed it right
         // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
         //     ? state.attempt - 1
@@ -250,6 +253,28 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           strColor: "#4caf50",
         );
         gameOver = true;
+      }
+      // END THE GAME
+      // if user entered the same word they already did.
+      // meaning they gave up
+      else if (state.strAnswerList.contains(strWord.toLowerCase())) {
+        print('same word entered, game over');
+        // change the empty board guesses with current guess
+        wordList = state.wordList.map((letterList) {
+          // check if a row is empty
+          String letter = letterList.map((e) => e.letter).join().toLowerCase();
+          // if it is, then 
+          // change the current row, with current guess
+          if(letter.isEmpty){
+            return coloredGuess;
+          }
+          return letterList;
+        }).toList();
+        // apply changes
+        emit(BoardSubmitted(
+          wordList: wordList,
+          attempt: state.attemptLimit,
+        ));
       }
       // if game is not over
       // keep adding the guesses

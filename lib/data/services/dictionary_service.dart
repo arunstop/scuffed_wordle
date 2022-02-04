@@ -36,6 +36,7 @@ class DictionaryService extends MainService implements DictionaryRepo {
   @override
   Future<Dictionary> getLocalDictionary() async {
     localStorage = await prefs;
+    // Get dictionary from local, if it exists
     if (localStorage!.containsKey(_dictionaryKey)) {
       Dictionary data = Dictionary.fromJson(jsonDecode(
         localStorage!.getString(_dictionaryKey).toString(),
