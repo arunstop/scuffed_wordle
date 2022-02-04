@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dartx/dartx.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -12,6 +10,7 @@ import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:scuffed_wordle/widgets/board/board_tile_widget.dart';
 
 class Board extends StatelessWidget {
   const Board({Key? key}) : super(key: key);
@@ -43,30 +42,7 @@ class Board extends StatelessWidget {
           : color;
     }
 
-    BoxShape _getShape(int row, Color? color) {
-      // not changing shape if color blind is turned off
-      if (settingsBloc.state.settings.colorBlindMode == false) {
-        return BoxShape.rectangle;
-        // } else if (boardState.attempt == row + 1) {
-        //   return BoxShape.rectangle;
-      } else if (color == BoardColors.pinpoint) {
-        return BoxShape.circle;
-      }
-      return BoxShape.rectangle;
-    }
-
-    BoxDecoration _getDecoration(int row, Color? color) {
-      BoxShape shape = _getShape(row, color);
-      return BoxDecoration(
-        shape: shape,
-        color: _getColor(row, color),
-        borderRadius: shape == BoxShape.rectangle
-            ? BorderRadius.all(Radius.circular(8.0))
-            : null,
-      );
-    }
-
-    Widget _getLetterShape(int row, int col, BoardLetter letter) {
+    Widget _getTile(int row, int col, BoardLetter letter) {
       // Check if the letter is yellow
       bool yellowLetter = letter.color == BoardColors.okLetter;
       // Check if colorblind is on
@@ -76,42 +52,11 @@ class Board extends StatelessWidget {
       double degree45 = -math.pi / 4;
       double rotation = yellowAndColorBlind ? degree45 : 0;
       double size = yellowAndColorBlind ? 48 : 60;
-      return Container(
-        // key: UniqueKey(),
-        height: 60,
-        width: 60,
-        // if yellow and colorblind
-        // remove parents background
-        // then apply the rotated background to the child
-        decoration:
-            yellowAndColorBlind ? null : _getDecoration(row, letter.color),
-        alignment: Alignment.center,
-        // Rotate it yellow and color blind
-        child: Transform.rotate(
-          angle: rotation,
-          child: Container(
-            height: size,
-            width: size,
-            alignment: Alignment.center,
-            // apply the rotated background to the child
-            decoration:
-                yellowAndColorBlind ? _getDecoration(row, letter.color) : null,
-            child: Center(
-              // Rotate it yellow and color blind
-              child: Transform.rotate(
-                angle: -rotation,
-                child: Text(
-                  _getLetter(row, col, letter.letter),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+      return BoardTile(
+        isColorBlind: isColorBlind,
+        letter: _getLetter(row, col, letter.letter),
+        // null safty
+        color: _getColor(row, letter.color)!,
       );
     }
 
@@ -121,10 +66,7 @@ class Board extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: word
                 .mapIndexed(
-                  (col, letter) => Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: _getLetterShape(row, col, letter),
-                  ),
+                  (col, letter) => _getTile(row, col, letter),
                 )
                 .toList(),
           ),

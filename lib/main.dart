@@ -8,6 +8,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/services/board_service.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/data/services/settings_service.dart';
+import 'package:scuffed_wordle/screens/howtoplay_screen.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/screen_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -28,8 +29,9 @@ class ScuffedWordleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     String title = 'Scuffed Wordle';
     Map<String, Widget Function(BuildContext)> _routes = {
-      '/': (context) => PageHome(title: title),
-      '/settings': (context) => const PageSettings(title: 'Settings'),
+      '/': (context) => HomeScreen(title: title),
+      '/settings': (context) => const SettingsScreen(title: 'Settings'),
+      '/howtoplay': (context) => const HowToPlayScreen(title: 'How To Play'),
     };
 
     // final userTheme = WidgetsBinding.instance?.window.platformBrightness;

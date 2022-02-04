@@ -15,23 +15,22 @@ import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 
-class PageHome extends StatefulWidget {
-  const PageHome({Key? key, required this.title}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<PageHome> createState() => _PageHomeState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _PageHomeState extends State<PageHome> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
     _loadUserLocalData();
   }
 
-  
 
   _loadUserLocalData() {
     // TODO: implement initState
@@ -132,9 +131,7 @@ class _PageHomeState extends State<PageHome> {
       title: widget.title,
       actions: [
         IconButton(
-          onPressed: () => boardBloc.state is BoardSubmitted
-              ? _showResultDialog(context)
-              : null,
+          onPressed: () => Navigator.pushNamed(context, '/howtoplay'),
           icon: const Icon(Icons.help_outline_rounded),
         ),
         IconButton(
@@ -159,7 +156,7 @@ class _PageHomeState extends State<PageHome> {
               _onKeyboardPressed(context, event);
             }
           },
-          child: SizedBox.expand(
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

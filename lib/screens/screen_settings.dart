@@ -10,15 +10,15 @@ import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 
-class PageSettings extends StatefulWidget {
-  const PageSettings({Key? key, required this.title}) : super(key: key);
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
   @override
-  _PageSettingsState createState() => _PageSettingsState();
+  _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _PageSettingsState extends State<PageSettings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     var settingsBloc = context.watch<SettingsBloc>();
