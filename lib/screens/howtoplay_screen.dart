@@ -110,9 +110,7 @@ class HowToPlayScreen extends StatelessWidget {
                     "We\'ll give you a 5x6 game (meaning 5 letters word and 6 attempts). Pretend that you don\'t know this, but the answer is SMART."),
                 _lineSpace(12),
                 Row(
-                  children: [
-                    ..._wordExample1
-                  ],
+                  children: [..._wordExample1],
                 ),
                 _lineSpace(12),
                 const Text(
@@ -120,10 +118,8 @@ class HowToPlayScreen extends StatelessWidget {
                 const Text(
                     'The letters with black tiles, are wrong in both condition, so, don\'t mind them.'),
                 _lineSpace(12),
-                 Row(
-                  children: [
-                    ..._wordExample2
-                  ],
+                Row(
+                  children: [..._wordExample2],
                 ),
                 _lineSpace(12),
                 const Text(
@@ -143,7 +139,10 @@ class HowToPlayScreen extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     child: Text('PLAY',
                         style: Theme.of(context).textTheme.headline6!.copyWith(
-                            letterSpacing: 4, fontWeight: FontWeight.bold)),
+                              letterSpacing: 4,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            )),
                   ),
                 ),
               ],

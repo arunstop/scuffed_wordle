@@ -1,11 +1,11 @@
 {
-    "name": "scuffed_wordle",
-    "short_name": "scuffed_wordle",
+    "name": "Scuffed Wordle",
+    "short_name": "Scuffed Wordle",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Scuffed Wordle, Yes this is an imitation of the infamous wordle game, but with some tweak in it.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

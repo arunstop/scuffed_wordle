@@ -265,7 +265,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           String letter = letterList.map((e) => e.letter).join().toLowerCase();
           // if it is, then 
           // change the current row, with current guess
-          if(letter.isEmpty){
+          if(letter.isEmpty){ 
             return coloredGuess;
           }
           return letterList;
@@ -275,6 +275,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           wordList: wordList,
           attempt: state.attemptLimit,
         ));
+        gameOver = true;
       }
       // if game is not over
       // keep adding the guesses

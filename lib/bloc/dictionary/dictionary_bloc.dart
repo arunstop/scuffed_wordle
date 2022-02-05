@@ -24,12 +24,12 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
         emit(state.copyWith(dictionary: dictionary));
         // Save answer locally
         dictionaryRepo.setLocalDictionary(dictionary: dictionary);
-        print('new ${dictionary.answer}');
+        // print('new ${dictionary.answer}');
       }
       // If there is local answer, set it to the state.
       else {
         emit(state.copyWith(dictionary: localDictionary));
-        print('local ${localDictionary.answer}');
+        // print('local ${localDictionary.answer}');
       }
 
       // print(await dictionaryRepo.getLocalAnswer());
