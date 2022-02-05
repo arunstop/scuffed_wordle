@@ -70,7 +70,7 @@ class ScuffedWordleApp extends StatelessWidget {
         listener: _dictionaryBlocListener,
         child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, state) => MaterialApp(
-            title: title,
+            title: "Scuffed Wordle - A word guessing game",
             theme: ThemeData(
               brightness: Brightness.light,
               // primaryColor: Colors.teal,
