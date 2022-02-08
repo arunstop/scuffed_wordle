@@ -1,7 +1,10 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/src/provider.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
@@ -11,17 +14,130 @@ class DialogResult extends StatelessWidget {
   Widget build(BuildContext context) {
     var boardBloc = context.read<BoardBloc>();
     var dictionaryBloc = context.read<DictionaryBloc>();
+    String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
+
+    void _shareResult() {
+      var state = boardBloc.state;
+
+      // Turn the submitted boad into string format
+      var resultClipBoard = state.submittedWordList.map((word) {
+        return word.mapIndexed((letterIndex, letter) {
+          String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
+          if (letter.color == BoardColors.base) {
+            // Black
+            return "⬛$lineBreak";
+          } else if (letter.color == BoardColors.okLetter) {
+            // Yellow
+            return "🟨$lineBreak";
+          } else if (letter.color == BoardColors.pinpoint) {
+            // Green
+            return "🟩$lineBreak";
+          }
+        }).join();
+      }).join();
+      var totalAttempt =
+          state.attempt > state.attemptLimit ? 'X' : state.attempt;
+      var text =
+          "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
+      Clipboard.setData(ClipboardData(text: text));
+      UiController.showSnackbar(
+        context: context,
+        message: 'Copied to clipboard',
+      );
+    }
+
+    void _close() => Navigator.pop(context);
+    void _playAgain() {
+      _close();
+      boardBloc.add(BoardRestart());
+      dictionaryBloc.add(DictionaryRefreshKeyword());
+    }
+
+    Widget _outlinedButton({
+      required String label,
+      Icon? icon,
+      required void Function()? action,
+      bool noBorder = false,
+    }) =>
+        SizedBox(
+          width: double.infinity,
+          height: 45,
+          child: OutlinedButton.icon(
+            onPressed: action,
+            icon: icon ?? const Text(''),
+            label: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            style: noBorder
+                ? null
+                : ButtonStyle(
+                    side: MaterialStateProperty.all(
+                      BorderSide(
+                          width: 2,
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                  ),
+          ),
+        );
 
     return Center(
       child: Column(
         children: [
-          Text(
-              'The word was : ${dictionaryBloc.state.dictionary.answer.toUpperCase()}'),
-          const SizedBox(
-            height: 12,
+          // Text('The word was : ${answer}'),
+          // Answer Chip
+          Chip(
+            label: Text(
+              "${_answer}",
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  letterSpacing: 2.0,
+                  color: Colors.white),
+            ),
+            padding: const EdgeInsets.all(8.0),
+            backgroundColor: Colors.green,
           ),
-          Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
-          const BoardResult(),
+          UiController.vSpace(18),
+          // Share Button
+          _outlinedButton(
+            label: "Share Result",
+            icon: const Icon(Icons.share_rounded),
+            action: () => _shareResult(),
+          ),
+          UiController.vSpace(9),
+          // Play again button
+          SizedBox(
+            width: double.infinity,
+            height: 45,
+            child: ElevatedButton.icon(
+              onPressed: () => _playAgain(),
+              icon: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white,
+              ),
+              label: const Text(
+                "Play Again",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          UiController.vSpace(9),
+          // Close button
+          _outlinedButton(
+            label: "Close",
+            icon: const Icon(Icons.close_rounded),
+            action: () => _close(),
+            noBorder: true,
+          ),
+          // UiController.vSpace(9),
+          // Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
+          // const BoardResult(),
         ],
       ),
     );
@@ -49,7 +165,7 @@ class BoardResult extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
+        const SizedBox(
           height: 12,
         ),
         for (var word in state.submittedWordList)

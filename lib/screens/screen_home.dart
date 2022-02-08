@@ -70,47 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: ctx,
         title: 'Game over',
         content: const DialogResult(),
-        actionN: () => {},
-        actionY: () async {
-          var state = boardBloc.state;
-
-          // Turn the submitted boad into string format
-          var resultClipBoard = state.submittedWordList.map((word) {
-            return word.mapIndexed((letterIndex, letter) {
-              String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
-              if (letter.color == BoardColors.base) {
-                // Black
-                return "⬛$lineBreak";
-              } else if (letter.color == BoardColors.okLetter) {
-                // Yellow
-                return "🟨$lineBreak";
-              } else if (letter.color == BoardColors.pinpoint) {
-                // Green
-                return "🟩$lineBreak";
-              }
-            }).join();
-          }).join();
-          var totalAttempt =
-              state.attempt > state.attemptLimit ? 'X' : state.attempt;
-          var text =
-              "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
-          Clipboard.setData(ClipboardData(text: text));
-          UiController.showSnackbar(
-            context: context,
-            message: 'Copied to clipboard',
-          );
-          // Restart game
-          boardBloc.add(BoardRestart());
-
-          // var keywordList = await Dictionary.getKeywordList(context);
-          // var randomKeyword = keywordList[Random().nextInt(keywordList.length)];
-
-          // dictionaryBloc.add(DictionaryRefreshKeyword(
-          //   keyword: randomKeyword,
-          // ));
-
-          dictionaryBloc.add(DictionaryRefreshKeyword());
-        },
+        noAction: true
       );
     }
 

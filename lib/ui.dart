@@ -10,6 +10,7 @@ class UiController {
     required BuildContext context,
     required String title,
     required dynamic content,
+    bool noAction = false,
     String labelActionN = 'Cancel',
     Function actionN = _doNothing,
     String labelActionY = 'OK',
@@ -52,29 +53,32 @@ class UiController {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[_getContent()],
         ),
-        actions: <Widget>[
-          OutlinedButton(
-            onPressed: () {
-              Navigator.pop(context, 'Cancel');
-              actionN();
-            },
-            child: _btnLabel(labelActionN),
-            style: ButtonStyle(
-              minimumSize: MaterialStateProperty.all(const Size(96, 48)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context, 'OK');
-              actionY();
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(_colorScheme.primary),
-              minimumSize: MaterialStateProperty.all(const Size(96, 48)),
-            ),
-            child: _btnLabel(labelActionY),
-          ),
-        ],
+        actions: noAction
+            ? []
+            : <Widget>[
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                    actionN();
+                  },
+                  child: _btnLabel(labelActionN),
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(const Size(96, 48)),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'OK');
+                    actionY();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(_colorScheme.primary),
+                    minimumSize: MaterialStateProperty.all(const Size(96, 48)),
+                  ),
+                  child: _btnLabel(labelActionY),
+                ),
+              ],
       ),
     );
   }
@@ -97,7 +101,7 @@ class UiController {
       ));
   }
 
-  static void showToast({String title = '', String strColor= '#00b09b'}) {
+  static void showToast({String title = '', String strColor = '#00b09b'}) {
     Fluttertoast.showToast(
       msg: title,
       toastLength: Toast.LENGTH_SHORT,
@@ -148,7 +152,12 @@ class UiController {
   ];
   static List<String> keyboardKeys =
       keyboardTemplate.expand((element) => element).toList();
-      
+  static Widget vSpace(double h) => SizedBox(
+        height: h,
+      );
+  static Widget hSpace(double w) => SizedBox(
+        width: w,
+      );
 }
 
 class BoardColors {
