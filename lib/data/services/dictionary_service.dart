@@ -56,9 +56,10 @@ class DictionaryService extends MainService implements DictionaryRepo {
   @override
   Future<Dictionary> getDictionary({required int length}) async {
     http.Response getGameDictionary = await getData(
-      apiUri: Constants.api.scuffedWordle.getWords(
+      apiUri: Constants.api.scuffedWordle.getDictionary(
         params: {
           "length": "5",
+          "difficulty": "easy",
         },
       ),
     );

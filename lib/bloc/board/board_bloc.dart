@@ -69,7 +69,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   void _dictionaryBlocListener(DictionaryState state) {
     // Set the word list
-    dictionaryList = state.dictionary.words
+    dictionaryList = state.dictionary.wordList
         .map((e) => e.toLowerCase())
         .toList()
         .sortedBy((element) => element);

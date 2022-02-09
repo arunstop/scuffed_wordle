@@ -4,32 +4,40 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'dictionary_model.g.dart';
 
-// @JsonSerializable()
+@JsonSerializable()
 class Dictionary {
   final int letterCount;
   final int wordsCount;
   final String answer;
-  final List<String> words;
+  final String difficulty;
+  final List<String> answerList;
+  final List<String> wordList;
   // final DictionaryStatus status;
 
   Dictionary({
     required this.letterCount,
     required this.wordsCount,
     required this.answer,
-    required this.words,
+    required this.difficulty,
+    required this.answerList,
+    required this.wordList,
   });
 
   Dictionary copyWith({
     int? letterCount,
     int? wordsCount,
     String? answer,
-    List<String>? words,
+    String? difficulty,
+    List<String>? answerList,
+    List<String>? wordList,
   }) =>
       Dictionary(
         letterCount: letterCount ?? this.letterCount,
         wordsCount: wordsCount ?? this.wordsCount,
         answer: answer ?? this.answer,
-        words: words ?? this.words,
+        difficulty: difficulty ?? this.difficulty,
+        answerList: answerList ?? this.answerList, 
+        wordList: wordList ?? this.wordList, 
       );
 
   factory Dictionary.fromJson(Map<String, dynamic> json) =>
@@ -43,11 +51,15 @@ class DictionaryEmpty extends Dictionary {
     int letterCount = 0,
     int wordsCount = 0,
     String answer = '',
-    List<String> words = const [],
+    String difficulty = '',
+    List<String> answerList = const [],
+    List<String> wordList = const [],
   }) : super(
           letterCount: letterCount,
           wordsCount: wordsCount,
           answer: answer,
-          words: words,
+          difficulty: difficulty,
+          answerList: answerList,
+          wordList: wordList,
         );
 }

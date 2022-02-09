@@ -15,10 +15,9 @@ class DialogResult extends StatelessWidget {
     var boardBloc = context.read<BoardBloc>();
     var dictionaryBloc = context.read<DictionaryBloc>();
     String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
-
+    // Share result
     void _shareResult() {
       var state = boardBloc.state;
-
       // Turn the submitted boad into string format
       var resultClipBoard = state.submittedWordList.map((word) {
         return word.mapIndexed((letterIndex, letter) {
@@ -40,20 +39,22 @@ class DialogResult extends StatelessWidget {
       var text =
           "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
+      // 
       UiController.showSnackbar(
         context: context,
         message: 'Copied to clipboard',
       );
     }
-
+    // Close dialog
     void _close() => Navigator.pop(context);
+    // Play again
     void _playAgain() {
       _close();
       boardBloc.add(BoardRestart());
       dictionaryBloc.add(DictionaryRefreshKeyword());
     }
-
-    Widget _outlinedButton({
+    // Bordered button
+    Widget _borderedButton({
       required String label,
       Icon? icon,
       required void Function()? action,
@@ -71,13 +72,15 @@ class DialogResult extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
+            // give no border coloring if noBorder is true
             style: noBorder
                 ? null
                 : ButtonStyle(
                     side: MaterialStateProperty.all(
                       BorderSide(
-                          width: 2,
-                          color: Theme.of(context).colorScheme.primary),
+                        width: 2,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
           ),
@@ -92,17 +95,18 @@ class DialogResult extends StatelessWidget {
             label: Text(
               "${_answer}",
               style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  letterSpacing: 2.0,
-                  color: Colors.white),
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                letterSpacing: 2.0,
+                color: Colors.white,
+              ),
             ),
             padding: const EdgeInsets.all(8.0),
             backgroundColor: Colors.green,
           ),
           UiController.vSpace(18),
           // Share Button
-          _outlinedButton(
+          _borderedButton(
             label: "Share Result",
             icon: const Icon(Icons.share_rounded),
             action: () => _shareResult(),
@@ -129,7 +133,7 @@ class DialogResult extends StatelessWidget {
           ),
           UiController.vSpace(9),
           // Close button
-          _outlinedButton(
+          _borderedButton(
             label: "Close",
             icon: const Icon(Icons.close_rounded),
             action: () => _close(),

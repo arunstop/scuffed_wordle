@@ -7,12 +7,15 @@ part of 'dictionary_model.dart';
 // **************************************************************************
 
 Dictionary _$DictionaryFromJson(Map<String, dynamic> json) => Dictionary(
-      letterCount: json['letterCount'] as int? ?? 0,
-      wordsCount: json['wordsCount'] as int? ?? 0,
-      answer: json['answer'] as String? ?? '',
-      words:
-          (json['words'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              const [],
+      letterCount: json['letterCount'] as int,
+      wordsCount: json['wordsCount'] as int,
+      answer: json['answer'] as String,
+      difficulty: json['difficulty'] as String,
+      answerList: (json['answerList'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      wordList:
+          (json['wordList'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$DictionaryToJson(Dictionary instance) =>
@@ -20,5 +23,7 @@ Map<String, dynamic> _$DictionaryToJson(Dictionary instance) =>
       'letterCount': instance.letterCount,
       'wordsCount': instance.wordsCount,
       'answer': instance.answer,
-      'words': instance.words,
+      'difficulty': instance.difficulty,
+      'answerList': instance.answerList,
+      'wordList': instance.wordList,
     };

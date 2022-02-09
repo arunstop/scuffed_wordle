@@ -29,9 +29,9 @@ class Api {
 class ApiScuffedWordle extends ApiBaseURL {
   ApiScuffedWordle({required String baseUrl}) : super(baseUrl: baseUrl);
 
-  ApiUri getWords({required Map<String, String> params}) => ApiUri(
+  ApiUri getDictionary({required Map<String, String> params}) => ApiUri(
         baseUrl: baseUrl,
-        route: "/words",
+        route: "/dictionary",
         params: params,
       );
 }

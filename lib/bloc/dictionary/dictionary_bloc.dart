@@ -16,7 +16,6 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     on<DictionaryInitialize>((event, emit) async {
       Dictionary localDictionary = await dictionaryRepo.getLocalDictionary();
 
-      String newAnswer;
       // If there is no local dictionary
       if (localDictionary is DictionaryEmpty) {
         Dictionary dictionary = await dictionaryRepo.getDictionary(length: 5);
@@ -38,16 +37,14 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     on<DictionaryRefreshKeyword>((event, emit) async {
       // Get answers by randomizing the list
       String getAnswer(String currentAnswer) {
-        List<String> wordList = state.dictionary.words;
-        String newAnswer = wordList[Random().nextInt(wordList.length)];
+        List<String> answerList = state.dictionary.answerList;
+        String newAnswer = answerList[Random().nextInt(answerList.length)];
         if (currentAnswer == newAnswer) {
           return getAnswer(newAnswer);
         } else {
           return newAnswer;
         }
       }
-
-      ;
       // Apply changes to bloc
       emit(
         state.copyWith(
