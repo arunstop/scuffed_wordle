@@ -33,14 +33,14 @@ class Keyboard extends StatelessWidget {
         // if the [current-checked-letter] is black
         // if the [found-letter] is green
         // do nothing
-        if (element.color == BoardColors.base ||
-            letterInUniqList[0].color == BoardColors.pinpoint) {
+        if (element.color == ColorList.tileBase ||
+            letterInUniqList[0].color == ColorList.tilePinpoint) {
           return;
         }
         // if the [found-letter] is not green (yellow/black)
         // --------
         // if the the [current-checked-letter] is green
-        else if (element.color == BoardColors.pinpoint) {
+        else if (element.color == ColorList.tilePinpoint) {
           // remove the non green [found-letter] and add the [current-checked-letter] (green)
           uniqTypedLetterList.remove(letterInUniqList[0]);
           uniqTypedLetterList.add(element);
@@ -48,8 +48,8 @@ class Keyboard extends StatelessWidget {
         // if the [current-checked-letter] is yellow
         // and the [found-letter] is black
         // remove the black [found-letter] and add the [current-checked-letter] (yellow)
-        else if (element.color == BoardColors.okLetter &&
-            letterInUniqList[0].color == BoardColors.base) {
+        else if (element.color == ColorList.tileOkLetter &&
+            letterInUniqList[0].color == ColorList.tileBase) {
           uniqTypedLetterList.remove(letterInUniqList[0]);
           uniqTypedLetterList.add(element);
         }
@@ -114,7 +114,7 @@ class Keyboard extends StatelessWidget {
           color: _getColor(key),
           child: InkWell(
             onTap:
-                boardBloc.state is! BoardSubmitted ? () => _onTap(key) : null,
+                boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
             child: Center(
               child: label,
             ),

@@ -21,7 +21,7 @@ class BoardTile extends StatelessWidget {
       return BoxShape.rectangle;
       // } else if (boardState.attempt == row + 1) {
       //   return BoxShape.rectangle;
-    } else if (color == BoardColors.pinpoint) {
+    } else if (color == ColorList.tilePinpoint) {
       return BoxShape.circle;
     }
     return BoxShape.rectangle;
@@ -41,7 +41,7 @@ class BoardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if the letter is yellow
-    bool yellowLetter = color == BoardColors.okLetter;
+    bool yellowLetter = color == ColorList.tileOkLetter;
     // Check if colorblind is on
     // bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
     bool yellowAndColorBlind = yellowLetter && isColorBlind;

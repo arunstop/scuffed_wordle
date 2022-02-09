@@ -160,9 +160,13 @@ class UiController {
       );
 }
 
-class BoardColors {
-  static var base = Colors.grey[800];
-  static var activeRow = Colors.blue[800];
-  static var okLetter = Colors.yellow[700];
-  static var pinpoint = Colors.green;
+class ColorList {
+  static Color tileBase = Colors.grey[800]!;
+  static Color tileActiveRow = Colors.blue[800]!;
+  static Color tileOkLetter = Colors.yellow[700]!;
+  static Color tilePinpoint = Colors.green;
+  static Color ok = Colors.green;
+  static String strOk = "#4caf50";
+  static Color error = Colors.red;
+  static String strError = "#f44336";
 }

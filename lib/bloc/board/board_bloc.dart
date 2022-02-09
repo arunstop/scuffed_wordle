@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +107,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       if (userAttempts >= state.attemptLimit ||
           lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase()) {
         // No need to add user attempt since the game is over
-        emit(BoardSubmitted(
+        emit(BoardGameOver(
           wordList: wordList,
           attempt: userAttempts,
           // attemptLimit: attempt,
@@ -166,7 +164,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         webPosition: 'center',
         timeInSecForIosWeb: 2,
         backgroundColor: Colors.red,
-        webBgColor: "#f44336",
+        webBgColor: ColorList.strError,
         textColor: Colors.white,
       );
     }
@@ -184,12 +182,12 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         latestSubmittedWord.forEachIndexed((element, idx) {
           if (err == true) return;
           // Green hint should be re-used in the current answer
-          if (element.color == BoardColors.pinpoint) {
+          if (element.color == ColorList.tilePinpoint) {
             // if not show error and call don't proceed
             if (element.letter != state.word[idx]) {
               UiController.showToast(
                 title: 'Letter no. ${idx + 1} must be ${element.letter}',
-                strColor: "#f44336",
+                strColor: ColorList.strError,
               );
               err = true;
             }
@@ -198,12 +196,12 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         latestSubmittedWord.forEachIndexed((element, index) {
           if (err == true) return;
           // Yellow hint should be included in the current answer
-          if (element.color == BoardColors.okLetter) {
+          if (element.color == ColorList.tileOkLetter) {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
               UiController.showToast(
                 title: 'Letter ${element.letter} must be included',
-                strColor: "#f44336",
+                strColor: ColorList.strError,
               );
               err = true;
             }
@@ -215,7 +213,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       if (!dictionaryList.contains(strWord)) {
         UiController.showToast(
           title: "${strWord.toUpperCase()} is not in word list",
-          strColor: "#f44336",
+          strColor: ColorList.strError,
         );
         return;
       }
@@ -243,14 +241,14 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         //     ? state.attempt - 1
         //     : state.attempt;
         // Apply changes tot the bloc
-        emit(BoardSubmitted(
+        emit(BoardGameOver(
           wordList: wordList,
           attempt: state.attempt,
         ));
         // Show the keyword
         UiController.showToast(
           title: keyword.toUpperCase(),
-          strColor: "#4caf50",
+          strColor: ColorList.strOk,
         );
         gameOver = true;
       }
@@ -271,7 +269,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           return letterList;
         }).toList();
         // apply changes
-        emit(BoardSubmitted(
+        emit(BoardGameOver(
           wordList: wordList,
           attempt: state.attemptLimit,
         ));

@@ -46,7 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     // check if user is currently playing by checking submitted word
-    bool _isPlaying = boardBloc.state is! BoardSubmitted &&
+    bool _isPlaying = boardBloc.state is! BoardGameOver &&
         boardBloc.state.submittedWordList[0]
             .filter((element) => element.letter.isNotEmpty)
             .isNotEmpty;

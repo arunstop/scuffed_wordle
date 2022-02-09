@@ -28,7 +28,7 @@ class Board extends StatelessWidget {
     String _getLetter(int row, int col, String letter) {
       // Show the letter of the current answer if the based on attempt
       // when the board is not submitted
-      if (boardState.attempt == row + 1 && boardState is! BoardSubmitted) {
+      if (boardState.attempt == row + 1 && boardState is! BoardGameOver) {
         return boardState.word.length > col ? boardState.word[col] : '';
       }
       return letter;
@@ -37,14 +37,14 @@ class Board extends StatelessWidget {
     Color? _getColor(int row, Color? color) {
       // Change current attempt row's color
       // when the board is not submitted
-      return boardState.attempt == row + 1 && boardState is! BoardSubmitted
-          ? BoardColors.activeRow
+      return boardState.attempt == row + 1 && boardState is! BoardGameOver
+          ? ColorList.tileActiveRow
           : color;
     }
 
     Widget _getTile(int row, int col, BoardLetter letter) {
       // Check if the letter is yellow
-      bool yellowLetter = letter.color == BoardColors.okLetter;
+      bool yellowLetter = letter.color == ColorList.tileOkLetter;
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
       bool yellowAndColorBlind = yellowLetter && isColorBlind;

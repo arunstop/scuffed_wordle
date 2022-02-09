@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var dictionaryBloc = context.read<DictionaryBloc>();
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
-      if (event is RawKeyDownEvent && boardBloc.state is! BoardSubmitted) {
+      if (event is RawKeyDownEvent && boardBloc.state is! BoardGameOver) {
         final letter = event.logicalKey.keyLabel;
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     void _boardBlocListener(BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
       // print(listenerState);
-      if (listenerState is BoardSubmitted) {
+      if (listenerState is BoardGameOver) {
         // UiController.showSnackbar(
         //   context: context,
         //   message: "Submitted",
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.help_outline_rounded),
         ),
         IconButton(
-          onPressed: () => boardBloc.state is BoardSubmitted
+          onPressed: () => boardBloc.state is BoardGameOver
               ? _showResultDialog(context)
               : null,
           icon: const Icon(Icons.bar_chart_rounded),
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
           focusNode: FocusNode(),
           onKey: (event) {
             // Keep typing if attempt is below its limit
-            if (boardBloc.state is! BoardSubmitted) {
+            if (boardBloc.state is! BoardGameOver) {
               _onKeyboardPressed(context, event);
             }
           },

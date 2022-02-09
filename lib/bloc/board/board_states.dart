@@ -61,13 +61,13 @@ class BoardDefault extends BoardState {
             attemptLimit: attemptLimit);
 }
 
-class BoardSubmitted extends BoardState {
+class BoardGameOver extends BoardState {
   final List<String> word;
   final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
 
-  BoardSubmitted({
+  BoardGameOver({
     this.word = const [],
     this.wordList = const [],
     this.attempt = 1,

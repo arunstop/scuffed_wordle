@@ -22,13 +22,13 @@ class DialogResult extends StatelessWidget {
       var resultClipBoard = state.submittedWordList.map((word) {
         return word.mapIndexed((letterIndex, letter) {
           String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
-          if (letter.color == BoardColors.base) {
+          if (letter.color == ColorList.tileBase) {
             // Black
             return "⬛$lineBreak";
-          } else if (letter.color == BoardColors.okLetter) {
+          } else if (letter.color == ColorList.tileOkLetter) {
             // Yellow
             return "🟨$lineBreak";
-          } else if (letter.color == BoardColors.pinpoint) {
+          } else if (letter.color == ColorList.tilePinpoint) {
             // Green
             return "🟩$lineBreak";
           }
