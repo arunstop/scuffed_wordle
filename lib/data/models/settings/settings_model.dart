@@ -14,7 +14,7 @@ class Settings {
 
   Settings({
     this.hardMode = false,
-    this.darkTheme = false,
+    this.darkTheme = true,
     this.highContrast = false,
     this.colorBlindMode = false,
   });

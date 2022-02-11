@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             boardBloc.add(BoardRemoveLetter());
           } else if (event.logicalKey == LogicalKeyboardKey.enter ||
               event.logicalKey == LogicalKeyboardKey.numpadEnter) {
-            boardBloc.add(BoardSubmitWord());
+            boardBloc.add(BoardSubmitGuess());
           } else {
             boardBloc.add(BoardAddLetter(letter: letter));
           }

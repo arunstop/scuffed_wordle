@@ -15,7 +15,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     if (userTheme == Brightness.dark) {
       // print('dark');
       return true;
-    } // print('light');
+    } 
+    // print('light');
     return false;
   }
 

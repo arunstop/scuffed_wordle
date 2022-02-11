@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -86,7 +86,7 @@ class Keyboard extends StatelessWidget {
       if (key == "BACKSPACE") {
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
-        boardBloc.add(BoardSubmitWord());
+        boardBloc.add(BoardSubmitGuess());
       } else {
         boardBloc.add(BoardAddLetter(letter: key));
       }

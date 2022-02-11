@@ -37,9 +37,10 @@ class BoardState extends Equatable {
       // set end index to not to go beyond wordlist Index
       // (attempt > attemptLimit ? attemptLimit : attempt),
       attempt);
-  // get answers as string
-  List<String> get strAnswerList => wordList
+  // get guesses as string
+  List<String> get strGuessList => wordList
       .map((letterList) => letterList.map((letter) => letter.letter).join().toLowerCase())
+      .filter((guess)=>guess.isNotEmpty)
       .toList();
 }
 

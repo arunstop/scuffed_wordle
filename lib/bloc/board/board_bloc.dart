@@ -40,7 +40,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   @override
   Future<void> close() {
     dictionaryStream.cancel();
-    dictionaryStream.cancel();
+    settingsStream.cancel();
     return super.close();
   }
 
@@ -60,7 +60,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     // Remove letter when backspace key is pressed
     on<BoardRemoveLetter>(_onBoardRemoveLetter);
     // Submit word when enter key is pressed
-    on<BoardSubmitWord>(_onBoardSubmitWord);
+    on<BoardSubmitGuess>(_onBoardSubmitGuess);
     // Restart game
     on<BoardRestart>(_onBoardRestart);
   }
@@ -148,8 +148,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     emit(state.copywith(word: typedLetters));
   }
 
-  void _onBoardSubmitWord(
-    BoardSubmitWord event,
+  void _onBoardSubmitGuess(
+    BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
     // print((await boardRepo.getLocalGuessWordList(
@@ -255,7 +255,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // END THE GAME
       // if user entered the same word they already did.
       // meaning they gave up
-      else if (state.strAnswerList.contains(strWord.toLowerCase())) {
+      else if (state.strGuessList.contains(strWord.toLowerCase())) {
         print('same word entered, game over');
         // change the empty board guesses with current guess
         wordList = state.wordList.map((letterList) {
@@ -285,16 +285,16 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           attempt: attempt + 1,
         ));
       }
-      // If the game is over,
-      // No need to cut the submittedWordList yb 1
-      List<List<BoardLetter>> submittedGuessWordList =
-          state.submittedWordList.dropLast(gameOver ? 0 : 1);
-      // Saving list of guess words typed by user
-      // By turn List<List<BoardLetter>> to List<String>
-      List<String> guessWordList = submittedGuessWordList
-          .map((e) => e.map((e) => e.letter).join(''))
-          .toList();
-      boardRepo.setLocalGuessWordList(guessWordList: guessWordList);
+      // // If the game is over,
+      // // No need to cut the submittedWordList by 1
+      // List<List<BoardLetter>> submittedGuessWordList =
+      //     state.submittedWordList.dropLast(gameOver ? 0 : 1);
+      // // Saving list of guess words typed by user
+      // // By turn List<List<BoardLetter>> to List<String>
+      // List<String> guessWordList = submittedGuessWordList
+      //     .map((e) => e.map((e) => e.letter).join(''))
+      //     .toList();
+      boardRepo.setLocalGuessWordList(guessWordList: state.strGuessList);
       // print((await boardRepo.getLocalGuessWordList(
       //         answerWord: dictionaryBloc.state.dictionary.answer))
       //     .map((e) => e.map((e) => e.letter).join()));

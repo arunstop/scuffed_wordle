@@ -27,7 +27,7 @@ class BoardAddLetter extends BoardEvent {
 
 class BoardRemoveLetter extends BoardEvent {}
 
-class BoardSubmitWord extends BoardEvent {}
+class BoardSubmitGuess extends BoardEvent {}
 
 class BoardRestart extends BoardEvent {}
 

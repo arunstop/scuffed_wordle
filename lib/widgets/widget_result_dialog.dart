@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/src/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
@@ -12,9 +12,10 @@ class DialogResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var boardBloc = context.read<BoardBloc>();
-    var dictionaryBloc = context.read<DictionaryBloc>();
+    BoardBloc boardBloc = context.read<BoardBloc>();
+    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
+    bool isWon = boardBloc.state.strGuessList.last.toUpperCase() == _answer;
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
@@ -39,12 +40,13 @@ class DialogResult extends StatelessWidget {
       var text =
           "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
-      // 
+      //
       UiController.showSnackbar(
         context: context,
         message: 'Copied to clipboard',
       );
     }
+
     // Close dialog
     void _close() => Navigator.pop(context);
     // Play again
@@ -53,6 +55,7 @@ class DialogResult extends StatelessWidget {
       boardBloc.add(BoardRestart());
       dictionaryBloc.add(DictionaryRefreshKeyword());
     }
+
     // Bordered button
     Widget _borderedButton({
       required String label,
@@ -102,7 +105,7 @@ class DialogResult extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.all(8.0),
-            backgroundColor: Colors.green,
+            backgroundColor: isWon ? ColorList.ok : ColorList.error,
           ),
           UiController.vSpace(18),
           // Share Button
