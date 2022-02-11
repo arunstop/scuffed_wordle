@@ -104,12 +104,14 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       ];
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
-      if (userAttempts >= state.attemptLimit ||
-          lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase()) {
+      bool hasWon =
+          lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase();
+      if (userAttempts >= state.attemptLimit) {
         // No need to add user attempt since the game is over
         emit(BoardGameOver(
           wordList: wordList,
           attempt: userAttempts,
+          win: hasWon,
           // attemptLimit: attempt,
         ));
         return;
@@ -234,7 +236,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // END the game if :
       // latest guess is correct OR
       // user has reached max attempt
-      if (strWord.toLowerCase() == keyword.toLowerCase() ||
+      bool hasWon = strWord.toLowerCase() == keyword.toLowerCase();
+      if ( hasWon ||
           state.attempt >= state.attemptLimit) {
         // Not adding attempt if user guessed it right
         // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
@@ -244,6 +247,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         emit(BoardGameOver(
           wordList: wordList,
           attempt: state.attempt,
+          win: hasWon,
         ));
         // Show the keyword
         UiController.showToast(
@@ -255,15 +259,15 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // END THE GAME
       // if user entered the same word they already did.
       // meaning they gave up
-      else if (state.strGuessList.contains(strWord.toLowerCase())) {
+      else if (state.strGuessList.contains(strWord.toUpperCase())) {
         print('same word entered, game over');
         // change the empty board guesses with current guess
         wordList = state.wordList.map((letterList) {
           // check if a row is empty
           String letter = letterList.map((e) => e.letter).join().toLowerCase();
-          // if it is, then 
+          // if it is, then
           // change the current row, with current guess
-          if(letter.isEmpty){ 
+          if (letter.isEmpty) {
             return coloredGuess;
           }
           return letterList;
@@ -272,6 +276,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         emit(BoardGameOver(
           wordList: wordList,
           attempt: state.attemptLimit,
+          win: false,
         ));
         gameOver = true;
       }

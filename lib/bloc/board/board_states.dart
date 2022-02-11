@@ -7,12 +7,14 @@ class BoardState extends Equatable {
   final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
+  final bool win;
 
   const BoardState({
     required this.word,
     required this.wordList,
     required this.attempt,
     required this.attemptLimit,
+    this.win = false,
   });
 
   BoardState copywith({
@@ -20,12 +22,14 @@ class BoardState extends Equatable {
     List<List<BoardLetter>>? wordList,
     int? attempt,
     int? attemptLimit,
+    bool? win,
   }) {
     return BoardState(
       word: word ?? this.word,
       wordList: wordList ?? this.wordList,
       attempt: attempt ?? this.attempt,
       attemptLimit: attemptLimit ?? this.attemptLimit,
+      win: win ?? this.win,
     );
   }
 
@@ -39,7 +43,7 @@ class BoardState extends Equatable {
       attempt);
   // get guesses as string
   List<String> get strGuessList => wordList
-      .map((letterList) => letterList.map((letter) => letter.letter).join().toLowerCase())
+      .map((letterList) => letterList.map((letter) => letter.letter).join())
       .filter((guess)=>guess.isNotEmpty)
       .toList();
 }
@@ -49,17 +53,20 @@ class BoardDefault extends BoardState {
   final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
+  final bool win;
 
   BoardDefault({
     this.word = const [],
     this.wordList = const [],
     this.attempt = 1,
     this.attemptLimit = 6,
+    this.win = false,
   }) : super(
             word: word,
             wordList: wordList,
             attempt: attempt,
-            attemptLimit: attemptLimit);
+            attemptLimit: attemptLimit,
+            win:win);
 }
 
 class BoardGameOver extends BoardState {
@@ -67,17 +74,21 @@ class BoardGameOver extends BoardState {
   final List<List<BoardLetter>> wordList;
   final int attempt;
   final int attemptLimit;
+  final bool win;
+  
 
   BoardGameOver({
     this.word = const [],
     this.wordList = const [],
     this.attempt = 1,
     this.attemptLimit = 6,
+    this.win = false,
   }) : super(
             word: word,
             wordList: wordList,
             attempt: attempt,
-            attemptLimit: attemptLimit);
+            attemptLimit: attemptLimit,
+            win:win);
 }
 
 // class BoardValue extends BoardState {

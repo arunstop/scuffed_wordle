@@ -15,7 +15,6 @@ class DialogResult extends StatelessWidget {
     BoardBloc boardBloc = context.read<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
-    bool isWon = boardBloc.state.strGuessList.last.toUpperCase() == _answer;
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
@@ -105,7 +104,7 @@ class DialogResult extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.all(8.0),
-            backgroundColor: isWon ? ColorList.ok : ColorList.error,
+            backgroundColor: boardBloc.state.win ? ColorList.ok : ColorList.error,
           ),
           UiController.vSpace(18),
           // Share Button
