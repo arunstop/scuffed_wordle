@@ -5,6 +5,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
+import 'package:scuffed_wordle/data/services/encrypting_service.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
@@ -45,6 +46,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
           return newAnswer;
         }
       }
+
       // Apply changes to bloc
       emit(
         state.copyWith(
@@ -56,5 +58,13 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       // Save answer locally
       dictionaryRepo.setLocalDictionary(dictionary: state.dictionary);
     });
+
+    // on<DictionaryTest>((event, emit) {
+    //   EncryptingService xd = EncryptingService();
+    //   String enc = xd.encrypt(state.dictionary.answer);
+    //   // print(enc);
+    //   // print(xd.decrypt(enc));
+    //   print(state.dictionary.answer);
+    // });
   }
 }

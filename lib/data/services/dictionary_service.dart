@@ -41,6 +41,8 @@ class DictionaryService extends MainService implements DictionaryRepo {
       Dictionary data = Dictionary.fromJson(jsonDecode(
         localStorage!.getString(_dictionaryKey).toString(),
       ));
+      // decrypt the answer
+      data = data.copyWith(answer: decrypt(data.answer));
       return data;
     }
     return DictionaryEmpty();
@@ -49,6 +51,8 @@ class DictionaryService extends MainService implements DictionaryRepo {
   @override
   void setLocalDictionary({required Dictionary dictionary}) async {
     localStorage = await prefs;
+    // encrypt the answer
+    dictionary = dictionary.copyWith(answer: encrypt(dictionary.answer));
     // set to local disk
     localStorage!.setString(_dictionaryKey, jsonEncode(dictionary.toJson()));
   }

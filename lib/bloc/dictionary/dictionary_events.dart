@@ -25,3 +25,7 @@ class DictionaryRefreshKeyword extends DictionaryEvent {
   // @override
   // List<Object> get props => [keyword];
 }
+
+class DictionaryTest extends DictionaryEvent{
+  
+}

@@ -2,6 +2,8 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -16,6 +18,7 @@ class Board extends StatelessWidget {
     // Dictionary.list(context).then((value) => print(value));
     var boardBloc = context.watch<BoardBloc>();
     var settingsBloc = context.watch<SettingsBloc>();
+    var dictionaryBloc = context.watch<DictionaryBloc>();
     var boardState = boardBloc.state;
 
     String _getLetter(int row, int col, String letter) {
@@ -63,6 +66,7 @@ class Board extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       child: Column(
         children: [
+          // TextButton(onPressed: ()=> dictionaryBloc.add(DictionaryTest()), child: Text('ENC/DEC')),
           // Row(children: [
           //   Text("${_start}"),
           //   TextButton(

@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:encrypt/encrypt.dart';
+import 'package:scuffed_wordle/data/constants.dart';
 import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
+import 'package:scuffed_wordle/data/services/encrypting_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class MainService {
+class MainService extends EncryptingService{
   SharedPreferences? localStorage;
   final Future<SharedPreferences> prefs;
   http.Client httpClient = http.Client();
@@ -33,4 +36,6 @@ class MainService {
       httpClient.close();
     }
   }
+
+  
 }

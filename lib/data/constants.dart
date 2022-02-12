@@ -1,8 +1,11 @@
 import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
+import 'package:encrypt/encrypt.dart';
 
 class Constants {
   static LocalStorageKey localStorageKeys = LocalStorageKey();
   static Api api = Api();
+  static final key32 = Key.fromUtf8("scuffed-wordle-encryption-key-32");
+  static final iv = IV.fromLength(16);
 }
 
 class LocalStorageKey {
