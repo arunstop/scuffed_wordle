@@ -1,10 +1,9 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
-import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 // import 'package:scuffed_wordle/data/models/model_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -104,6 +103,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _changeSettings(SettingsTypes.highContrast, val),
             title: _getTitle('High Contrast'),
             secondary: const Icon(Icons.brightness_6_rounded),
+          ),
+          SwitchListTile.adaptive(
+            value: state.settings.retypeOnWrongGuess,
+            onChanged: (val) =>
+                _changeSettings(SettingsTypes.retypeOnWrongGuess, val),
+            title: _getTitle('Re-type on wrong guess'), 
+            subtitle: const Text(
+                'Delete current guess when it is INVALID (not a dictionary word/does not meet the hard mode requirements)'),
+            secondary: const Icon(Icons.keyboard_return_rounded),
           ),
         ],
       ),

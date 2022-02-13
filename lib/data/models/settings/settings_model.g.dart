@@ -8,9 +8,10 @@ part of 'settings_model.dart';
 
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       hardMode: json['hardMode'] as bool? ?? false,
-      darkTheme: json['darkTheme'] as bool? ?? false,
+      darkTheme: json['darkTheme'] as bool? ?? true,
       highContrast: json['highContrast'] as bool? ?? false,
       colorBlindMode: json['colorBlindMode'] as bool? ?? false,
+      retypeOnWrongGuess: json['retypeOnWrongGuess'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'darkTheme': instance.darkTheme,
       'highContrast': instance.highContrast,
       'colorBlindMode': instance.colorBlindMode,
+      'retypeOnWrongGuess': instance.retypeOnWrongGuess,
     };

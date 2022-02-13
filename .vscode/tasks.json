@@ -21,7 +21,8 @@
                 "pub",
                 "run",
                 "build_runner",
-                "build"
+                "build",
+                "--delete-conflicting-outputs"
             ],
             "problemMatcher": [
                 "$dart-build_runner"

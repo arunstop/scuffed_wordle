@@ -18,7 +18,7 @@ class Board extends StatelessWidget {
     // Dictionary.list(context).then((value) => print(value));
     var boardBloc = context.watch<BoardBloc>();
     var settingsBloc = context.watch<SettingsBloc>();
-    var dictionaryBloc = context.watch<DictionaryBloc>();
+    // var dictionaryBloc = context.watch<DictionaryBloc>();
     var boardState = boardBloc.state;
 
     String _getLetter(int row, int col, String letter) {

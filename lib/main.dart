@@ -10,7 +10,7 @@ import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/data/services/settings_service.dart';
 import 'package:scuffed_wordle/screens/howtoplay_screen.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
-import 'package:scuffed_wordle/screens/screen_settings.dart';
+import 'package:scuffed_wordle/screens/settings_screen.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';

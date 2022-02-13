@@ -175,6 +175,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       var strWord = state.word.join().toLowerCase();
       bool err = false;
       bool gameOver = false;
+      bool retypeOnWrongGuess = settingsState.settings.retypeOnWrongGuess == true;
 
       if (settingsState.settings.hardMode == true && state.attempt > 1) {
         // Get latest answer
@@ -209,7 +210,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
             }
           }
         });
-        if (err == true) return;
+        if (err == true) {
+          // reset current guess if the retypeOnWrongGuess setting is on
+          if (retypeOnWrongGuess) {
+            emit(state.copywith(word: []));
+          }
+          return;
+        }
       }
       // If the word is not in word list
       if (!dictionaryList.contains(strWord)) {
@@ -217,6 +224,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           title: "${strWord.toUpperCase()} is not in word list",
           strColor: ColorList.strError,
         );
+        if (retypeOnWrongGuess) {
+            emit(state.copywith(word: []));
+          }
         return;
       }
       // Copy the wordList state value
@@ -237,8 +247,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // latest guess is correct OR
       // user has reached max attempt
       bool hasWon = strWord.toLowerCase() == keyword.toLowerCase();
-      if ( hasWon ||
-          state.attempt >= state.attemptLimit) {
+      if (hasWon || state.attempt >= state.attemptLimit) {
         // Not adding attempt if user guessed it right
         // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
         //     ? state.attempt - 1
