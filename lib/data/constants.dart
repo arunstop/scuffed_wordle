@@ -4,8 +4,13 @@ import 'package:encrypt/encrypt.dart';
 class Constants {
   static LocalStorageKey localStorageKeys = LocalStorageKey();
   static Api api = Api();
-  static final key32 = Key.fromUtf8("scuffed-wordle-encryption-key-32");
-  static final iv = IV.fromLength(16);
+  // Encryption
+  static EncrypterKey encrypter = EncrypterKey();
+}
+
+class EncrypterKey {
+  Key key32 = Key.fromUtf8("scuffed-wordle-encryption-key-32");
+  IV iv = IV.fromLength(16);
 }
 
 class LocalStorageKey {

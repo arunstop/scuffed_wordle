@@ -64,8 +64,9 @@ class Keyboard extends StatelessWidget {
 
     // var
     TextStyle getTextStyle() => const TextStyle(
-          fontWeight: FontWeight.bold,
+          // fontWeight: FontWeight.bold,
           color: Colors.white,
+          // fontSize: 10,
         );
 
     Color? _getColor(String key) {
@@ -94,15 +95,20 @@ class Keyboard extends StatelessWidget {
     }
 
     Widget getKey(String key) {
-      double width = 60;
-      double height = 36;
+      double width = 48;
+      double height = 30;
       Widget label = Text(key, style: getTextStyle());
       if (key == 'ENTER' || key == 'BACKSPACE') {
         height = height * 2;
-        label = key == 'ENTER' ? Text(key, style: getTextStyle()) : label;
+        label = key == 'ENTER'
+            ? const Icon(
+                Icons.keyboard_return_rounded,
+                color: Colors.white,
+              )
+            : label;
         label = key == 'BACKSPACE'
             ? const Icon(
-                Icons.backspace,
+                Icons.backspace_rounded,
                 color: Colors.white,
               )
             : label;
@@ -113,8 +119,7 @@ class Keyboard extends StatelessWidget {
         child: Card(
           color: _getColor(key),
           child: InkWell(
-            onTap:
-                boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
+            onTap: boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
             child: Center(
               child: label,
             ),

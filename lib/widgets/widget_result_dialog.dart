@@ -97,6 +97,7 @@ class DialogResult extends StatelessWidget {
             label: Text(
               "${_answer}",
               style: const TextStyle(
+                fontFamily: 'Rubik',
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 letterSpacing: 2.0,

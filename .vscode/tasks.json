@@ -6,7 +6,7 @@
         {
             "label": "Flutter build web and deploy",
             "type": "shell",
-            "command": "flutter build web --web-renderer canvaskit --release && firebase deploy",
+            "command": "flutter build web --web-renderer html --release && firebase deploy",
             "args": [],
             "group": "build",
             "presentation": {

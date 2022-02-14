@@ -80,6 +80,7 @@ class BoardTile extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
+                    fontFamily: 'Rubik'
                   ),
                 ),
               ),

@@ -139,7 +139,7 @@ class UiController {
       'L',
     ],
     [
-      'ENTER',
+      'BACKSPACE',
       'Z',
       'X',
       'C',
@@ -147,7 +147,7 @@ class UiController {
       'B',
       'N',
       'M',
-      'BACKSPACE',
+      'ENTER',
     ]
   ];
   static List<String> keyboardKeys =

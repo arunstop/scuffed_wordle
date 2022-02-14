@@ -72,6 +72,7 @@ class ScuffedWordleApp extends StatelessWidget {
           builder: (context, state) => MaterialApp(
             title: "Scuffed Wordle - A word guessing game",
             theme: ThemeData(
+              fontFamily: 'RobotoMono',
               brightness: Brightness.light,
               // primaryColor: Colors.teal,
               // primaryColorDark: Colors.teal,
@@ -91,6 +92,7 @@ class ScuffedWordleApp extends StatelessWidget {
               ),
             ),
             darkTheme: ThemeData(
+              fontFamily: 'RobotoMono',
               brightness: Brightness.dark,
               colorScheme: ColorScheme.dark(
                 primary: Colors.teal,
