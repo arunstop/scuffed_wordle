@@ -79,10 +79,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsReset>((event, emit) {
-      emit(SettingsDefault(
-          settings: Settings().copyWith(
-        darkTheme: _isDarkTheme(),
-      )));
+      // emit(SettingsDefault(
+      //     settings: Settings().copyWith(
+      //   darkTheme: _isDarkTheme(),
+      // )));
+      emit(SettingsDefault(settings: Settings()));
       settingsRepo.setLocalSettings(settings: state.settings);
     });
   }
