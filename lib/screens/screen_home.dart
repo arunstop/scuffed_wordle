@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var boardBloc = context.read<BoardBloc>();
+    var boardBloc = context.watch<BoardBloc>();
     var dictionaryBloc = context.read<DictionaryBloc>();
     var settingsBloc = context.read<SettingsBloc>();
     Settings settings = settingsBloc.state.settings;

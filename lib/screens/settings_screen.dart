@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +59,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             fontSize: 18,
           ),
         );
+    bool _isMobile = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
 
     return ScreenTemplate(
       title: widget.title,
@@ -108,18 +112,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: state.settings.retypeOnWrongGuess,
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.retypeOnWrongGuess, val),
-            title: _getTitle('Re-type on wrong guess'), 
+            title: _getTitle('Re-type on wrong guess'),
             subtitle: const Text(
                 'Delete current guess when it is INVALID (not in dictionary or does not meet the Hard Mode requirements)'),
             secondary: const Icon(Icons.keyboard_return_rounded),
           ),
           SwitchListTile.adaptive(
             value: state.settings.useMobileKeyboard,
-            onChanged: (val) =>
-                _changeSettings(SettingsTypes.useMobileKeyboard, val),
-            title: _getTitle('Use device\'s keyboard on mobile'), 
-            subtitle: const Text(
-                'Use phone\'s default virtual keyboard instead.'),
+            onChanged: !_isMobile
+                ? null
+                : (val) =>
+                    _changeSettings(SettingsTypes.useMobileKeyboard, val),
+            title: _getTitle('Use device\'s keyboard on mobile'),
+            subtitle:
+                const Text('Use phone\'s default virtual keyboard instead.'),
             secondary: const Icon(Icons.keyboard_alt_outlined),
           ),
         ],
