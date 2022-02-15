@@ -84,7 +84,7 @@ class ScuffedWordleApp extends StatelessWidget {
               //   secondary: Colors.orange,
               //   secondaryVariant: Colors.orange[800],
               // ),
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Colors.teal,
                 primaryVariant: Colors.teal,
                 secondary: Colors.orange,
@@ -94,7 +94,7 @@ class ScuffedWordleApp extends StatelessWidget {
             darkTheme: ThemeData(
               fontFamily: 'RobotoMono',
               brightness: Brightness.dark,
-              colorScheme: ColorScheme.dark(
+              colorScheme: const ColorScheme.dark(
                 primary: Colors.teal,
               ),
               // primaryColorDark: Colors.teal[300],

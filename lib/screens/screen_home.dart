@@ -9,6 +9,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
@@ -31,14 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadUserLocalData();
   }
 
-
   _loadUserLocalData() {
     // TODO: implement initState
     var dictionaryBloc = context.read<DictionaryBloc>();
     dictionaryBloc.add(DictionaryInitialize());
 
     context.read<SettingsBloc>().add(SettingsInitialize());
- 
+
     // context.read<BoardBloc>().add(BoardInitialize());
   }
 
@@ -46,16 +46,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
     var dictionaryBloc = context.read<DictionaryBloc>();
+    var settingsBloc = context.read<SettingsBloc>();
+    Settings settings = settingsBloc.state.settings;
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
-      if (event is RawKeyDownEvent && boardBloc.state is! BoardGameOver) {
+      BoardState boardState = boardBloc.state;
+      if (event is RawKeyDownEvent && boardState is! BoardGameOver) {
         final letter = event.logicalKey.keyLabel;
+        bool backspacePressed = event.logicalKey == LogicalKeyboardKey.backspace;
+        bool entersPressed = event.logicalKey == LogicalKeyboardKey.enter ||
+              event.logicalKey == LogicalKeyboardKey.numpadEnter;
+        // if guess is empty & backspace is pressed, do nothing
+        if(boardState.word.isEmpty&& backspacePressed){
+          return;
+        }
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
-          if (event.logicalKey == LogicalKeyboardKey.backspace) {
+          if (backspacePressed) {
             boardBloc.add(BoardRemoveLetter());
-          } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-              event.logicalKey == LogicalKeyboardKey.numpadEnter) {
+          } else if (entersPressed) {
             boardBloc.add(BoardSubmitGuess());
           } else {
             boardBloc.add(BoardAddLetter(letter: letter));
@@ -67,14 +76,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     void _showResultDialog(BuildContext ctx) {
       UiController.showConfirmationDialog(
-        context: ctx,
-        title: 'Game over',
-        content: const DialogResult(),
-        noAction: true
-      );
+          context: ctx,
+          title: 'Game over',
+          content: const DialogResult(),
+          noAction: true);
     }
 
-    void _boardBlocListener(BuildContext listenerCtx, BoardState listenerState) {
+    void _boardBlocListener(
+        BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
       // print(listenerState);
       if (listenerState is BoardGameOver) {
@@ -110,22 +119,36 @@ class _HomeScreenState extends State<HomeScreen> {
         child: RawKeyboardListener(
           autofocus: true,
           focusNode: FocusNode(),
-          onKey: (event) {
-            // Keep typing if attempt is below its limit
-            if (boardBloc.state is! BoardGameOver) {
-              _onKeyboardPressed(context, event);
-            }
-          },
+          onKey: boardBloc.state is BoardGameOver
+              ? null
+              : (event) => _onKeyboardPressed(context, event),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Board(),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  // color: Theme.of(context).colorScheme.secondary,
-                  child: const Keyboard(),
-                )
+                settings.useMobileKeyboard
+                    ? Container(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 45,
+                          child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              // padding: EdgeInsets.all(8)
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(Icons.keyboard_alt_outlined),
+                            label: const Text('Toggle Keyboard'),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        alignment: Alignment.bottomCenter,
+                        // color: Theme.of(context).colorScheme.secondary,
+                        child: const Keyboard(),
+                      )
               ],
             ),
           ),

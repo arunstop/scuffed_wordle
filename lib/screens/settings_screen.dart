@@ -110,8 +110,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _changeSettings(SettingsTypes.retypeOnWrongGuess, val),
             title: _getTitle('Re-type on wrong guess'), 
             subtitle: const Text(
-                'Delete current guess when it is INVALID (not a dictionary word/does not meet the hard mode requirements)'),
+                'Delete current guess when it is INVALID (not in dictionary or does not meet the Hard Mode requirements)'),
             secondary: const Icon(Icons.keyboard_return_rounded),
+          ),
+          SwitchListTile.adaptive(
+            value: state.settings.useMobileKeyboard,
+            onChanged: (val) =>
+                _changeSettings(SettingsTypes.useMobileKeyboard, val),
+            title: _getTitle('Use device\'s keyboard on mobile'), 
+            subtitle: const Text(
+                'Use phone\'s default virtual keyboard instead.'),
+            secondary: const Icon(Icons.keyboard_alt_outlined),
           ),
         ],
       ),

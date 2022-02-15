@@ -4,10 +4,10 @@ import 'package:scuffed_wordle/ui.dart';
 
 part 'board_letter_model.g.dart';
 
-@JsonSerializable()
+// @JsonSerializable()
 class BoardLetter {
   final String letter;
-  @JsonKey(ignore: true)
+  // @JsonKey(ignore: true)
   Color? color;
   final String? strColor;
 

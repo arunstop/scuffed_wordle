@@ -71,6 +71,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             settings: state.settings.copyWith(retypeOnWrongGuess: event.value),
           ));
           break;
+        case SettingsTypes.useMobileKeyboard:
+          emit(state.copyWith(
+            settings: state.settings.copyWith(useMobileKeyboard: event.value),
+          ));
+          break;
         default:
       }
       // print("bloc"+jsonEncode(state.settings.toJson()));

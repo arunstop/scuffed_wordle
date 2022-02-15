@@ -8,16 +8,18 @@ enum SettingsTypes {
   darkTheme,
   highContrast,
   colorBlindMode,
-  retypeOnWrongGuess
+  retypeOnWrongGuess,
+  useMobileKeyboard,
 }
 
-@JsonSerializable()
+// @JsonSerializable()
 class Settings {
   final bool hardMode;
   final bool darkTheme;
   final bool highContrast;
   final bool colorBlindMode;
   final bool retypeOnWrongGuess;
+  final bool useMobileKeyboard;
 
   Settings({
     this.hardMode = false,
@@ -25,6 +27,7 @@ class Settings {
     this.highContrast = false,
     this.colorBlindMode = false,
     this.retypeOnWrongGuess = true,
+    this.useMobileKeyboard = false,
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +41,7 @@ class Settings {
     bool? highContrast,
     bool? colorBlindMode,
     bool? retypeOnWrongGuess,
+    bool? useMobileKeyboard,
   }) =>
       Settings( 
         hardMode: hardMode ?? this.hardMode,
@@ -45,9 +49,10 @@ class Settings {
         highContrast: highContrast ?? this.highContrast,
         colorBlindMode: colorBlindMode ?? this.colorBlindMode,
         retypeOnWrongGuess: retypeOnWrongGuess ?? this.retypeOnWrongGuess,
+        useMobileKeyboard: useMobileKeyboard ?? this.useMobileKeyboard,
       );
 
   @override
   List<Object> get props =>
-      [hardMode, darkTheme, highContrast, colorBlindMode, retypeOnWrongGuess];
+      [hardMode, darkTheme, highContrast, colorBlindMode, retypeOnWrongGuess,useMobileKeyboard];
 }

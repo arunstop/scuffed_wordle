@@ -12,6 +12,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       highContrast: json['highContrast'] as bool? ?? false,
       colorBlindMode: json['colorBlindMode'] as bool? ?? false,
       retypeOnWrongGuess: json['retypeOnWrongGuess'] as bool? ?? true,
+      useMobileKeyboard: json['useMobileKeyboard'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -20,4 +21,5 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'highContrast': instance.highContrast,
       'colorBlindMode': instance.colorBlindMode,
       'retypeOnWrongGuess': instance.retypeOnWrongGuess,
+      'useMobileKeyboard': instance.useMobileKeyboard,
     };
