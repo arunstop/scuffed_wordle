@@ -44,27 +44,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var boardBloc = context.watch<BoardBloc>();
+    var boardBloc = context.read<BoardBloc>();
     var dictionaryBloc = context.read<DictionaryBloc>();
     var settingsBloc = context.read<SettingsBloc>();
     Settings settings = settingsBloc.state.settings;
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
       BoardState boardState = boardBloc.state;
-      if (event is RawKeyDownEvent && boardState is! BoardGameOver) {
+      if (event is RawKeyDownEvent) {
         final letter = event.logicalKey.keyLabel;
-        bool backspacePressed = event.logicalKey == LogicalKeyboardKey.backspace;
-        bool entersPressed = event.logicalKey == LogicalKeyboardKey.enter ||
-              event.logicalKey == LogicalKeyboardKey.numpadEnter;
+        bool backspaced = event.logicalKey == LogicalKeyboardKey.backspace;
+        bool entered = event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.numpadEnter;
         // if guess is empty & backspace is pressed, do nothing
-        if(boardState.word.isEmpty&& backspacePressed){
+        if (boardState.word.isEmpty && backspaced) {
+          return;
+        } 
+        // if guess reached max required letter
+        // and the key is not enter or backspace
+        // do nothing
+        else if (boardState.word.length == 5 && !backspaced && !entered) {
           return;
         }
         // LogicalKeyboardKey.backspace;
         if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
-          if (backspacePressed) {
+          if (backspaced) {
             boardBloc.add(BoardRemoveLetter());
-          } else if (entersPressed) {
+          } else if (entered) {
             boardBloc.add(BoardSubmitGuess());
           } else {
             boardBloc.add(BoardAddLetter(letter: letter));
