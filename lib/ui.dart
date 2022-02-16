@@ -101,7 +101,7 @@ class UiController {
       ),
       // isScrollControlled: true,
       builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 12,bottom: 12),
         child: content,
       ),
     );
