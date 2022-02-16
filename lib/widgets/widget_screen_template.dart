@@ -14,7 +14,7 @@ class ScreenTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme.of(context).errorColor,
       child: Center(
         child: SizedBox(
           width: 520,

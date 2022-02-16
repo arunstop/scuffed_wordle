@@ -129,39 +129,49 @@ class _HomeScreenState extends State<HomeScreen> {
           onKey: boardBloc.state is BoardGameOver
               ? null
               : (event) => _onKeyboardPressed(context, event),
-          child: boardBloc.state is BoardDefault
-              ? const LoadingIndicator()
-              : SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Text('${boardBloc.state.runtimeType}'),
-                      const Board(),
-                      settings.useMobileKeyboard
-                          ? Container(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                height: 45,
-                                child: ElevatedButton.icon(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        MaterialStateProperty.all(Colors.white),
-                                    // padding: EdgeInsets.all(8)
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 1234),
+            transitionBuilder: (child, animation) => ScaleTransition(
+              scale: animation,
+              alignment: Alignment.center,
+              child: child,
+            ),
+            child: boardBloc.state is BoardDefault
+                ? const LoadingIndicator()
+                : SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Text('${boardBloc.state.runtimeType}'),
+                        const Board(),
+                        settings.useMobileKeyboard
+                            ? Container(
+                                alignment: Alignment.center,
+                                child: SizedBox(
+                                  height: 45,
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      // padding: EdgeInsets.all(8)
+                                    ),
+                                    onPressed: () {},
+                                    icon:
+                                        const Icon(Icons.keyboard_alt_outlined),
+                                    label: const Text('Toggle Keyboard'),
                                   ),
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.keyboard_alt_outlined),
-                                  label: const Text('Toggle Keyboard'),
                                 ),
-                              ),
-                            )
-                          : Container(
-                              alignment: Alignment.bottomCenter,
-                              // color: Theme.of(context).colorScheme.secondary,
-                              child: const Keyboard(),
-                            )
-                    ],
+                              )
+                            : Container(
+                                alignment: Alignment.bottomCenter,
+                                // color: Theme.of(context).colorScheme.secondary,
+                                child: const Keyboard(),
+                              )
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );

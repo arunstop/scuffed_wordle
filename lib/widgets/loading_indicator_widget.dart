@@ -15,10 +15,11 @@ class LoadingIndicator extends StatelessWidget {
             width: 120,
             child: CircularProgressIndicator(
               color: Theme.of(context).colorScheme.primary,
+              strokeWidth: 12,
               value: null,
             ),
           ),
-          UiController.vSpace(18),
+          UiController.vSpace(24),
           Text(
             'Loading game...',
             style: Theme.of(context).textTheme.headline6!.copyWith(

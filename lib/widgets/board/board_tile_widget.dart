@@ -8,12 +8,12 @@ class BoardTile extends StatelessWidget {
   final bool isColorBlind;
   final String letter;
   final Color color;
-  const BoardTile(
-      {Key? key,
-      required this.isColorBlind,
-      required this.letter,
-      required this.color})
-      : super(key: key);
+  const BoardTile({
+    Key? key,
+    required this.isColorBlind,
+    required this.letter,
+    required this.color,
+  }) : super(key: key);
 
   BoxShape _getShape(Color? color) {
     // not changing shape if color blind is turned off
@@ -77,11 +77,10 @@ class BoardTile extends StatelessWidget {
                 child: Text(
                   letter,
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    fontFamily: 'Rubik'
-                  ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                      fontFamily: 'Rubik'),
                 ),
               ),
             ),

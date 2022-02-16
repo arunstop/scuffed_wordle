@@ -11,7 +11,7 @@ import 'package:scuffed_wordle/widgets/board/board_tile_widget.dart';
 
 class Board extends StatelessWidget {
   const Board({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     // print('build');
@@ -41,11 +41,26 @@ class Board extends StatelessWidget {
     Widget _getTile(int row, int col, BoardLetter letter) {
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
-      return BoardTile(
-        isColorBlind: isColorBlind,
-        letter: _getLetter(row, col, letter.letter),
-        // null safty
-        color: _getColor(row, letter.color)!,
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 2222),
+        transitionBuilder: (child, animation) => ScaleTransition(
+          scale: animation,
+          alignment: Alignment.center,
+          child: child,
+        ),
+        child: _getLetter(row, col, letter.letter).isEmpty
+            ? BoardTile(
+                isColorBlind: isColorBlind,
+                letter: '-',
+                // null safty
+                color: _getColor(row, letter.color)!,
+              )
+            : BoardTile(
+                isColorBlind: isColorBlind,
+                letter: _getLetter(row, col, letter.letter),
+                // null safty
+                color: _getColor(row, letter.color)!,
+              ),
       );
     }
 
