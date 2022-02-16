@@ -52,35 +52,44 @@ class BoardTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(2.0),
-      child: Container(
-        // key: UniqueKey(),
-        height: 60,
-        width: 60,
-        // if yellow and colorblind
-        // remove parents background
-        // then apply the rotated background to the child
-        decoration: yellowAndColorBlind ? null : _getDecoration(color),
-        alignment: Alignment.center,
-        // Rotate it yellow and color blind
-        child: Transform.rotate(
-          angle: rotation,
-          child: Container(
-            height: size,
-            width: size,
-            alignment: Alignment.center,
-            // apply the rotated background to the child
-            decoration: yellowAndColorBlind ? _getDecoration(color) : null,
-            child: Center(
-              // Rotate it yellow and color blind
-              child: Transform.rotate(
-                angle: -rotation,
-                child: Text(
-                  letter,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      fontFamily: 'Rubik'),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) => ScaleTransition(
+          scale: animation,
+          alignment: Alignment.center,
+          child: child,
+        ),
+        child: Container(
+          key: ValueKey<String>(letter),
+          // key: UniqueKey(),
+          height: 60,
+          width: 60,
+          // if yellow and colorblind
+          // remove parents background
+          // then apply the rotated background to the child
+          decoration: yellowAndColorBlind ? null : _getDecoration(color),
+          alignment: Alignment.center,
+          // Rotate it yellow and color blind
+          child: Transform.rotate(
+            angle: rotation,
+            child: Container(
+              height: size,
+              width: size,
+              alignment: Alignment.center,
+              // apply the rotated background to the child
+              decoration: yellowAndColorBlind ? _getDecoration(color) : null,
+              child: Center(
+                // Rotate it yellow and color blind
+                child: Transform.rotate(
+                  angle: -rotation,
+                  child: Text(
+                    letter,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        fontFamily: 'Rubik'),
+                  ),
                 ),
               ),
             ),

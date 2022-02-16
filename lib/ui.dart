@@ -83,6 +83,30 @@ class UiController {
     );
   }
 
+  static void showBottomSheet({
+    required BuildContext context,
+    required dynamic content,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 520,
+      ),
+      // isScrollControlled: true,
+      builder: (BuildContext context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: content,
+      ),
+    );
+  }
+
   static void showSnackbar({
     required BuildContext context,
     required String message,

@@ -82,11 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     void _showResultDialog(BuildContext ctx) {
-      UiController.showConfirmationDialog(
-          context: ctx,
-          title: 'Game over',
-          content: const DialogResult(),
-          noAction: true);
+      UiController.showBottomSheet(
+        context: ctx,
+        content: const DialogResult(),
+      );
     }
 
     void _boardBlocListener(
@@ -130,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? null
               : (event) => _onKeyboardPressed(context, event),
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 1234),
+            duration: const Duration(milliseconds: 2121),
             transitionBuilder: (child, animation) => ScaleTransition(
               scale: animation,
               alignment: Alignment.center,

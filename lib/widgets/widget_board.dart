@@ -41,27 +41,12 @@ class Board extends StatelessWidget {
     Widget _getTile(int row, int col, BoardLetter letter) {
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
-      return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 2222),
-        transitionBuilder: (child, animation) => ScaleTransition(
-          scale: animation,
-          alignment: Alignment.center,
-          child: child,
-        ),
-        child: _getLetter(row, col, letter.letter).isEmpty
-            ? BoardTile(
-                isColorBlind: isColorBlind,
-                letter: '-',
-                // null safty
-                color: _getColor(row, letter.color)!,
-              )
-            : BoardTile(
-                isColorBlind: isColorBlind,
-                letter: _getLetter(row, col, letter.letter),
-                // null safty
-                color: _getColor(row, letter.color)!,
-              ),
-      );
+      return BoardTile(
+              isColorBlind: isColorBlind,
+              letter: _getLetter(row, col, letter.letter),
+              // null safty
+              color: _getColor(row, letter.color)!,
+            );
     }
 
     List<Widget> wordBoard = boardBloc.state.wordList

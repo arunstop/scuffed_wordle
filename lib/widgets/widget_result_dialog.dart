@@ -18,7 +18,6 @@ class DialogResult extends StatelessWidget {
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
-      print(state.win);
       // Turn the submitted boad into string format
       var resultClipBoard = state.submittedWordList.map((word) {
         return word.mapIndexed((letterIndex, letter) {
@@ -36,8 +35,7 @@ class DialogResult extends StatelessWidget {
         }).join();
       }).join();
       bool gameOver = state.attempt > state.attemptLimit || !state.win;
-      var totalAttempt =
-           gameOver ? 'X' : state.attempt;
+      var totalAttempt = gameOver ? 'X' : state.attempt;
       var text =
           "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
@@ -89,27 +87,59 @@ class DialogResult extends StatelessWidget {
                   ),
           ),
         );
+    Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
 
-    return Center(
+    return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Text('The word was : ${answer}'),
           // Answer Chip
-          Chip(
-            label: Text(
-              "${_answer}",
-              style: const TextStyle(
-                fontFamily: 'Rubik',
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                letterSpacing: 2.0,
-                color: Colors.white,
-              ),
+          Center(
+            child: Text(
+              'Game Over',
+              style: Theme.of(context).textTheme.headline5!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
-            padding: const EdgeInsets.all(8.0),
-            backgroundColor: boardBloc.state.win ? ColorList.ok : ColorList.error,
           ),
           UiController.vSpace(18),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Chip(
+                    label: Text(
+                      "${_answer}",
+                      style: const TextStyle(
+                        fontFamily: 'Rubik',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        letterSpacing: 2.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(6.0),
+                    backgroundColor: _resultColor,
+                  ),
+                  UiController.hSpace(9),
+                  Text(
+                    'an·swer - noun',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic
+                    ),
+                  ),
+                ],
+              ),
+              UiController.vSpace(9),
+              Text(
+                  'a thing said, written, or done to deal with or as a reaction to a question, statement, or situation.'),
+            ],
+          ),
+          UiController.vSpace(24),
           // Share Button
           _borderedButton(
             label: "Share Result",
