@@ -91,6 +91,28 @@ class BoardGameOver extends BoardState {
             win:win);
 }
 
+// class BoardEmpty extends BoardState {
+//   final List<String> word;
+//   final List<List<BoardLetter>> wordList;
+//   final int attempt;
+//   final int attemptLimit;
+//   final bool win;
+  
+
+//   BoardEmpty({
+//     this.word = const [],
+//     this.wordList = const [],
+//     this.attempt = 1,
+//     this.attemptLimit = 6,
+//     this.win = false,
+//   }) : super(
+//             word: word,
+//             wordList: wordList,
+//             attempt: attempt,
+//             attemptLimit: attemptLimit,
+//             win:win);
+// }
+
 // class BoardValue extends BoardState {
 //   final String word;
 //   BoardValue({

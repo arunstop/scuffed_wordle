@@ -11,6 +11,13 @@ class BoardInitialize extends BoardEvent {
   // final List<List<BoardLetter>> guessWordList;
 
   // BoardInitialize({required this.guessWordList});
+  final int length;
+  final int lives;
+
+  BoardInitialize({
+    required this.length,
+    required this.lives,
+  });
 
   // @override
   // List<Object> get props => [guessWordList];

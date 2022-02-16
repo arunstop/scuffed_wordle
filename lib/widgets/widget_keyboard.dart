@@ -15,7 +15,7 @@ class Keyboard extends StatelessWidget {
     var typedLetterList = boardBloc.state.submittedWordList.flatten().toList();
     // process the unqList
     typedLetterList.forEach((element) {
-      // do nothing, if the board letter already there
+      // do nothing, if the letter already in the uniqList
       var inUniqList = uniqTypedLetterList.contains(element);
       if (inUniqList) {
         return;

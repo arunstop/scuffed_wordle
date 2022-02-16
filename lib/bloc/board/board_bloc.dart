@@ -18,14 +18,12 @@ part 'package:scuffed_wordle/bloc/board/board_states.dart';
 class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardLetter _boardLetter =
       BoardLetter(letter: '', strColor: 'base');
-  static final _initWordList = [
-    for (var i = 1; i <= 6; i++) [for (var i = 1; i <= 5; i++) _boardLetter]
-  ];
+
   // static const _initWord = ['', '', '', '', ''];
   static const List<String> _initWord = [];
 
-  static final BoardDefault _boardInit =
-      BoardDefault(word: _initWord, wordList: _initWordList);
+  static final BoardDefault _boardInit = BoardDefault();
+  // BoardDefault(word: _initWord, wordList: _initWordList);
 
   final DictionaryBloc dictionaryBloc;
   final SettingsBloc settingsBloc;
@@ -36,13 +34,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   List<String> dictionaryList = [];
   SettingsState settingsState = SettingsDefault(settings: Settings());
   String keyword = "";
-
-  @override
-  Future<void> close() {
-    dictionaryStream.cancel();
-    settingsStream.cancel();
-    return super.close();
-  }
 
   BoardBloc({
     required this.boardRepo,
@@ -65,6 +56,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     on<BoardRestart>(_onBoardRestart);
   }
 
+  @override
+  Future<void> close() {
+    dictionaryStream.cancel();
+    settingsStream.cancel();
+    return super.close();
+  }
+
   void _dictionaryBlocListener(DictionaryState state) {
     // Set the word list
     dictionaryList = state.dictionary.wordList
@@ -84,6 +82,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardInitialize event,
     Emitter<BoardState> emit,
   ) async {
+    List<List<BoardLetter>> gameTemplate = [
+      for (var i = 1; i <= event.lives; i++)
+        [for (var i = 1; i <= event.length; i++) _boardLetter]
+    ];
     // Get guesses form users latest session (if available)
     List<List<BoardLetter>> userGuessWordList =
         await boardRepo.getLocalGuessWordList(
@@ -100,7 +102,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // Add user's guesses to the board
       List<List<BoardLetter>> wordList = [
         ...userGuessWordList,
-        ...state.wordList.drop(userGuessWordList.length)
+        ...gameTemplate.drop(userGuessWordList.length)
       ];
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
@@ -112,7 +114,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           wordList: wordList,
           attempt: userAttempts,
           win: hasWon,
-          // attemptLimit: attempt,
+          attemptLimit: event.lives,
         ));
         return;
       }
@@ -120,11 +122,20 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       emit(_boardInit.copywith(
         attempt: userAttempts + 1,
         wordList: wordList,
+        attemptLimit: event.lives,
+      ));
+    } else {
+      emit(_boardInit.copywith(
+        wordList: gameTemplate,
+        attemptLimit: event.lives,
       ));
     }
   }
 
-  void _onBoardAddLetter(BoardAddLetter event, Emitter<BoardState> emit) {
+  void _onBoardAddLetter(
+    BoardAddLetter event,
+    Emitter<BoardState> emit,
+  ) {
     // Count typed letters
     var typedLetters = [...state.word, event.letter];
     // if typed letters is 5 or more, do nothing
@@ -137,7 +148,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     ));
   }
 
-  void _onBoardRemoveLetter(BoardRemoveLetter event, Emitter<BoardState> emit) {
+  void _onBoardRemoveLetter(
+    BoardRemoveLetter event,
+    Emitter<BoardState> emit,
+  ) {
     // Count typed letters
     var typedLetters = [...state.word];
     // Proceed if the word is not empty
@@ -175,7 +189,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       var strWord = state.word.join().toLowerCase();
       bool err = false;
       bool gameOver = false;
-      bool retypeOnWrongGuess = settingsState.settings.retypeOnWrongGuess == true;
+      bool retypeOnWrongGuess =
+          settingsState.settings.retypeOnWrongGuess == true;
 
       if (settingsState.settings.hardMode == true && state.attempt > 1) {
         // Get latest answer
@@ -225,8 +240,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           strColor: ColorList.strError,
         );
         if (retypeOnWrongGuess) {
-            emit(state.copywith(word: []));
-          }
+          emit(state.copywith(word: []));
+        }
         return;
       }
       // Copy the wordList state value
@@ -315,7 +330,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     }
   }
 
-  void _onBoardRestart(BoardRestart event, Emitter<BoardState> emit) {
+  void _onBoardRestart(
+    BoardRestart event,
+    Emitter<BoardState> emit,
+  ) {
     boardRepo.clearLocalGuessWordList();
     emit(_boardInit);
   }

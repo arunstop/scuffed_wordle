@@ -18,6 +18,7 @@ class DialogResult extends StatelessWidget {
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
+      print(state.win);
       // Turn the submitted boad into string format
       var resultClipBoard = state.submittedWordList.map((word) {
         return word.mapIndexed((letterIndex, letter) {
@@ -34,8 +35,9 @@ class DialogResult extends StatelessWidget {
           }
         }).join();
       }).join();
+      bool gameOver = state.attempt > state.attemptLimit || !state.win;
       var totalAttempt =
-          state.attempt > state.attemptLimit ? 'X' : state.attempt;
+           gameOver ? 'X' : state.attempt;
       var text =
           "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));

@@ -11,6 +11,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // if guess is empty & backspace is pressed, do nothing
         if (boardState.word.isEmpty && backspaced) {
           return;
-        } 
+        }
         // if guess reached max required letter
         // and the key is not enter or backspace
         // do nothing
@@ -128,36 +129,39 @@ class _HomeScreenState extends State<HomeScreen> {
           onKey: boardBloc.state is BoardGameOver
               ? null
               : (event) => _onKeyboardPressed(context, event),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Board(),
-                settings.useMobileKeyboard
-                    ? Container(
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          height: 45,
-                          child: ElevatedButton.icon(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              // padding: EdgeInsets.all(8)
-                            ),
-                            onPressed: () {},
-                            icon: const Icon(Icons.keyboard_alt_outlined),
-                            label: const Text('Toggle Keyboard'),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        alignment: Alignment.bottomCenter,
-                        // color: Theme.of(context).colorScheme.secondary,
-                        child: const Keyboard(),
-                      )
-              ],
-            ),
-          ),
+          child: boardBloc.state is BoardDefault
+              ? const LoadingIndicator()
+              : SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Text('${boardBloc.state.runtimeType}'),
+                      const Board(),
+                      settings.useMobileKeyboard
+                          ? Container(
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                height: 45,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all(Colors.white),
+                                    // padding: EdgeInsets.all(8)
+                                  ),
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.keyboard_alt_outlined),
+                                  label: const Text('Toggle Keyboard'),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.bottomCenter,
+                              // color: Theme.of(context).colorScheme.secondary,
+                              child: const Keyboard(),
+                            )
+                    ],
+                  ),
+                ),
         ),
       ),
     );

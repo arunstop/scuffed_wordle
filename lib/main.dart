@@ -41,7 +41,12 @@ class ScuffedWordleApp extends StatelessWidget {
     //   print('light');
     // }
     void _dictionaryBlocListener(BuildContext context, DictionaryState state) {
-      context.read<BoardBloc>().add(BoardInitialize());
+      context.read<BoardBloc>().add(
+            BoardInitialize(
+              length: 5,
+              lives: 6,
+            ),
+          );
     }
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -110,7 +115,8 @@ class ScuffedWordleApp extends StatelessWidget {
               //   // secondaryVariant: Colors.orange[800],
               // ),
             ),
-            themeMode: state.settings.darkTheme ? ThemeMode.dark : ThemeMode.light,
+            themeMode:
+                state.settings.darkTheme ? ThemeMode.dark : ThemeMode.light,
             // home: PageHome(title: title),
             initialRoute: '/',
             routes: _routes,
