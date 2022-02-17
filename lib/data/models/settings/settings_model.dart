@@ -12,7 +12,7 @@ enum SettingsTypes {
   useMobileKeyboard,
 }
 
-// @JsonSerializable()
+@JsonSerializable()
 class Settings {
   final bool hardMode;
   final bool darkTheme;

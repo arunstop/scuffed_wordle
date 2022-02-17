@@ -32,6 +32,8 @@ class ApiBaseURL {
 class Api {
   ApiScuffedWordle scuffedWordle =
       ApiScuffedWordle(baseUrl: "scuffed-wordle-api.herokuapp.com");
+  ApiFreeDictionary freeDictionary =
+      ApiFreeDictionary(baseUrl: "api.dictionaryapi.dev");
 }
 
 class ApiScuffedWordle extends ApiBaseURL {
@@ -41,5 +43,15 @@ class ApiScuffedWordle extends ApiBaseURL {
         baseUrl: baseUrl,
         route: "/dictionary",
         params: params,
+      );
+}
+
+class ApiFreeDictionary extends ApiBaseURL {
+  ApiFreeDictionary({required String baseUrl}) : super(baseUrl: baseUrl);
+
+  ApiUri getDefinition({required String lang, required String word}) => ApiUri(
+        baseUrl: baseUrl,
+        route: "/api/v2/entries/${lang}/${word}",
+        params: {},
       );
 }

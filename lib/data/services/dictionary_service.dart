@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:scuffed_wordle/data/constants.dart';
 import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
+import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
 import 'package:scuffed_wordle/data/services/main_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,5 +77,15 @@ class DictionaryService extends MainService implements DictionaryRepo {
       // then throw an exception.
       return throw Exception('Failed to load album');
     }
+  }
+
+  @override
+  Future<Word> getWordDefinition({
+    required String lang,
+    required String word,
+  }) async {
+    // return Word(word: word, phonetic: phonetic, phonetics: phonetics, origin: origin, meanings: meanings)
+    throw UnimplementedError();
+    
   }
 }
