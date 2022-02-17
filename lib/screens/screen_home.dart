@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
-    var dictionaryBloc = context.read<DictionaryBloc>();
+    var dictionaryBloc = context.watch<DictionaryBloc>();
     var settingsBloc = context.read<SettingsBloc>();
     Settings settings = settingsBloc.state.settings;
 
@@ -142,6 +142,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Text('${boardBloc.state.runtimeType}'),
+                        ElevatedButton(
+                          onPressed: () {
+                            dictionaryBloc.add(
+                              DictionaryDefine(
+                                lang: 'en',
+                                word: dictionaryBloc.state.dictionary.answer,
+                              ),
+                            );
+                          },
+                          child:
+                              Text('${dictionaryBloc.state.dictionary.answer}'),
+                        ),
+                        Text(
+                            '${dictionaryBloc.state.dictionary.wordDefinition}'),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

@@ -35,6 +35,7 @@ class Word {
         origin: origin ?? this.origin,
         meanings: meanings ?? this.meanings,
       );
+
   factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
 
   Map<String, dynamic> toJson() => _$WordToJson(this);

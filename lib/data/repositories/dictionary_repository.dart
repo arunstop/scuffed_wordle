@@ -7,5 +7,5 @@ abstract class DictionaryRepo {
   Future<Dictionary> getLocalDictionary();
   void setLocalDictionary({required Dictionary dictionary});
   Future<Dictionary> getDictionary({required int length});
-  Future<Word> getWordDefinition({required String lang, required String word});
+  Future<Word?> getWordDefinition({required String lang, required String word});
 }

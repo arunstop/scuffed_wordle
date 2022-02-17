@@ -1,7 +1,7 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'phonetic_model.g.dart';
+
 @JsonSerializable()
 class Phonetic {
   Phonetic({
@@ -20,7 +20,8 @@ class Phonetic {
         text: text ?? this.text,
         audio: audio ?? this.audio,
       );
-       factory Phonetic.fromJson(Map<String, dynamic> json) =>
+      
+  factory Phonetic.fromJson(Map<String, dynamic> json) =>
       _$PhoneticFromJson(json);
 
   Map<String, dynamic> toJson() => _$PhoneticToJson(this);

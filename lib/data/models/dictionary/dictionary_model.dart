@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 
 // enum DictionaryStatus { loaded, empty }
 
@@ -13,6 +14,8 @@ class Dictionary {
   final List<String> answerList;
   final List<String> wordList;
   // final DictionaryStatus status;
+  @JsonKey(ignore: true)
+  final Word? wordDefinition;
 
   Dictionary({
     required this.letterCount,
@@ -21,6 +24,7 @@ class Dictionary {
     required this.difficulty,
     required this.answerList,
     required this.wordList,
+    this.wordDefinition,
   });
 
   Dictionary copyWith({
@@ -30,6 +34,7 @@ class Dictionary {
     String? difficulty,
     List<String>? answerList,
     List<String>? wordList,
+    Word? wordDefinition,
   }) =>
       Dictionary(
         letterCount: letterCount ?? this.letterCount,
@@ -38,6 +43,7 @@ class Dictionary {
         difficulty: difficulty ?? this.difficulty,
         answerList: answerList ?? this.answerList, 
         wordList: wordList ?? this.wordList, 
+        wordDefinition: wordDefinition ?? this.wordDefinition, 
       );
 
   factory Dictionary.fromJson(Map<String, dynamic> json) =>
@@ -54,6 +60,7 @@ class DictionaryEmpty extends Dictionary {
     String difficulty = '',
     List<String> answerList = const [],
     List<String> wordList = const [],
+    Word? wordDefinition,
   }) : super(
           letterCount: letterCount,
           wordsCount: wordsCount,
@@ -61,5 +68,6 @@ class DictionaryEmpty extends Dictionary {
           difficulty: difficulty,
           answerList: answerList,
           wordList: wordList,
+          wordDefinition: wordDefinition,
         );
 }

@@ -26,6 +26,14 @@ class DictionaryRefreshKeyword extends DictionaryEvent {
   // List<Object> get props => [keyword];
 }
 
-class DictionaryTest extends DictionaryEvent{
-  
+class DictionaryTest extends DictionaryEvent {}
+
+class DictionaryDefine extends DictionaryEvent {
+  final String lang;
+  final String word;
+
+  DictionaryDefine({
+    required this.lang,
+    required this.word,
+  });
 }

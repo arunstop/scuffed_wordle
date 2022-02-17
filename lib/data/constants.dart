@@ -49,7 +49,7 @@ class ApiScuffedWordle extends ApiBaseURL {
 class ApiFreeDictionary extends ApiBaseURL {
   ApiFreeDictionary({required String baseUrl}) : super(baseUrl: baseUrl);
 
-  ApiUri getDefinition({required String lang, required String word}) => ApiUri(
+  ApiUri getWordDefinition({required String lang, required String word}) => ApiUri(
         baseUrl: baseUrl,
         route: "/api/v2/entries/${lang}/${word}",
         params: {},

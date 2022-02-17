@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
@@ -13,7 +14,8 @@ class DialogResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
+    Word? answer = dictionaryBloc.state.dictionary.wordDefinition;
     String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
     // Share result
     void _shareResult() {
@@ -107,7 +109,7 @@ class DialogResult extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(left: 18,right: 18),
+              padding: const EdgeInsets.only(left: 18, right: 18),
               child: Column(
                 children: [
                   UiController.vSpace(18),
@@ -131,15 +133,21 @@ class DialogResult extends StatelessWidget {
                             backgroundColor: _resultColor,
                           ),
                           UiController.hSpace(9),
-                          Text(
-                            'an·swer - noun',
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
+                          answer == null
+                              ? Text('-')
+                              : Text(
+                                  '${answer.phonetic}',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
                         ],
                       ),
                       UiController.vSpace(9),
-                      Text(
-                          'a thing said, written, or done to deal with or as a reaction to a question, statement, or situation.'),
+                      answer == null
+                          ? Text('-')
+                          : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [for (var meaning in answer.meanings) Text('--${meaning.partOfSpeech}--\n${meaning.definitions[0].definition}')],
+                            ),
                     ],
                   ),
                   UiController.vSpace(24),

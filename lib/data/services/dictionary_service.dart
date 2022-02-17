@@ -80,12 +80,21 @@ class DictionaryService extends MainService implements DictionaryRepo {
   }
 
   @override
-  Future<Word> getWordDefinition({
+  Future<Word?> getWordDefinition({
     required String lang,
     required String word,
   }) async {
-    // return Word(word: word, phonetic: phonetic, phonetics: phonetics, origin: origin, meanings: meanings)
-    throw UnimplementedError();
-    
+    http.Response wordDefinition = await getData(
+        apiUri: Constants.api.freeDictionary.getWordDefinition(
+      lang: lang,
+      word: word,
+    ));
+    if (wordDefinition.statusCode == 200) {
+      // Get data from first array, because how that's the API works
+      Map<String, dynamic> firstItem = jsonDecode(wordDefinition.body)[0];
+      return Word.fromJson(firstItem);
+    } else {
+      return null;
+    }
   }
 }
