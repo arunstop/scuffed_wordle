@@ -11,28 +11,32 @@ class Word {
     required this.word,
     required this.phonetic,
     required this.phonetics,
-    required this.origin,
+    // required this.origin,
     required this.meanings,
   });
 
+  @JsonKey(includeIfNull: true)
   final String word;
+  @JsonKey(includeIfNull: true)
   final String phonetic;
+  @JsonKey(includeIfNull: true)
   final List<Phonetic> phonetics;
-  final String origin;
+  // final String origin;
+  @JsonKey(includeIfNull: true)
   final List<Meaning> meanings;
 
   Word copyWith({
     String? word,
     String? phonetic,
     List<Phonetic>? phonetics,
-    String? origin,
+    // String? origin,
     List<Meaning>? meanings,
   }) =>
       Word(
         word: word ?? this.word,
         phonetic: phonetic ?? this.phonetic,
         phonetics: phonetics ?? this.phonetics,
-        origin: origin ?? this.origin,
+        // origin: origin ?? this.origin,
         meanings: meanings ?? this.meanings,
       );
 

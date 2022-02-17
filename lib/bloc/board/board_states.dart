@@ -17,7 +17,7 @@ class BoardState extends Equatable {
     this.win = false,
   });
 
-  BoardState copywith({
+  BoardState copyWith({
     List<String>? word,
     List<List<BoardLetter>>? wordList,
     int? attempt,

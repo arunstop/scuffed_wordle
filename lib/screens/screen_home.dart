@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
+import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _loadUserLocalData() {
     // TODO: implement initState
-    var dictionaryBloc = context.read<DictionaryBloc>();
+    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     dictionaryBloc.add(DictionaryInitialize());
 
     context.read<SettingsBloc>().add(SettingsInitialize());
@@ -45,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var boardBloc = context.watch<BoardBloc>();
-    var dictionaryBloc = context.watch<DictionaryBloc>();
-    var settingsBloc = context.read<SettingsBloc>();
+    BoardBloc boardBloc = context.watch<BoardBloc>();
+    DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
+    SettingsBloc settingsBloc = context.read<SettingsBloc>();
     Settings settings = settingsBloc.state.settings;
 
     void _onKeyboardPressed(BuildContext ctx, RawKeyEvent event) {
@@ -82,9 +84,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     void _showResultDialog(BuildContext ctx) {
+      Dictionary dictionary = dictionaryBloc.state.dictionary;
+      // get definition
+      // dictionaryBloc.add(
+      //   DictionaryDefine(
+      //     lang: 'en',
+      //     word: dictionaryBloc.state.dictionary.answer,
+      //   ),
+      // );
       UiController.showBottomSheet(
         context: ctx,
-        content: const DialogResult(),
+        content: DialogResult(
+          answer: dictionary.answer,
+          // definition: dictionary.wordDefinition,
+        ),
       );
     }
 
@@ -98,6 +111,17 @@ class _HomeScreenState extends State<HomeScreen> {
         //   message: "Submitted",
         //   actionLabel: 'OK',
         // );
+        // Dictionary dictionary = dictionaryBloc.state.dictionary;
+        // bool isDefinitionValid = dictionary.wordDefinition != null &&
+        //     dictionary.answer == dictionary.wordDefinition?.word;
+        // if (!isDefinitionValid) {
+        //   dictionaryBloc.add(
+        //     DictionaryDefine(
+        //       lang: 'en',
+        //       word: dictionaryBloc.state.dictionary.answer,
+        //     ),
+        //   );
+        // }
         _showResultDialog(listenerCtx);
       }
     }
@@ -129,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? null
               : (event) => _onKeyboardPressed(context, event),
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 2121),
+            duration: const Duration(milliseconds: 1212),
             transitionBuilder: (child, animation) => ScaleTransition(
               scale: animation,
               alignment: Alignment.center,
@@ -138,24 +162,27 @@ class _HomeScreenState extends State<HomeScreen> {
             child: boardBloc.state is BoardDefault
                 ? const LoadingIndicator()
                 : SingleChildScrollView(
+                    key: ValueKey<String>(
+                        dictionaryBloc.state.dictionary.answer),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Text('${boardBloc.state.runtimeType}'),
-                        ElevatedButton(
-                          onPressed: () {
-                            dictionaryBloc.add(
-                              DictionaryDefine(
-                                lang: 'en',
-                                word: dictionaryBloc.state.dictionary.answer,
-                              ),
-                            );
-                          },
-                          child:
-                              Text('${dictionaryBloc.state.dictionary.answer}'),
-                        ),
-                        Text(
-                            '${dictionaryBloc.state.dictionary.wordDefinition}'),
+                        // ElevatedButton(
+                        //   onPressed: () {
+                        //     dictionaryBloc.add(
+                        //       DictionaryDefine(
+                        //         lang: 'en',
+                        //         word: dictionaryBloc.state.dictionary.answer,
+                        //       ),
+                        //     );
+                        //     // boardBloc.add(BoardRestart());
+                        //   },
+                        //   child:
+                        //       Text('${dictionaryBloc.state.dictionary.answer}'),
+                        // ),
+                        // Text(
+                        //     '${dictionaryBloc.state.dictionary.wordDefinition}'),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

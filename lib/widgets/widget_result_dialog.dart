@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +11,19 @@ import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
-  const DialogResult({Key? key}) : super(key: key);
+  final String answer;
+  // final Word? definition;
+  const DialogResult({
+    Key? key,
+    required this.answer,
+    // required this.definition,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
-    Word? answer = dictionaryBloc.state.dictionary.wordDefinition;
-    String _answer = dictionaryBloc.state.dictionary.answer.toUpperCase();
+    Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
@@ -53,8 +60,18 @@ class DialogResult extends StatelessWidget {
     // Play again
     void _playAgain() {
       _close();
+      // Timer(const Duration(milliseconds: 1), () {
       boardBloc.add(BoardRestart());
       dictionaryBloc.add(DictionaryRefreshKeyword());
+      // });
+    }
+
+    void _defineWord(String answer) {
+      // print('defineword');
+      // dictionaryBloc.add(DictionaryDefine(
+      //   lang: 'en',
+      //   word: answer,
+      // ));
     }
 
     // Bordered button
@@ -97,13 +114,27 @@ class DialogResult extends StatelessWidget {
         // Text('The word was : ${answer}'),
         // Answer Chip
         Center(
-          child: Text(
-            'Game Over',
-            style: Theme.of(context).textTheme.headline5!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'The word was : ',
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      // letterSpacing: 1,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              Text(
+                '${answer.toUpperCase()}',
+                style: Theme.of(context).textTheme.headline5!.copyWith(
+                      fontFamily: 'Rubik',
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                      color: _resultColor,
+                    ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -118,35 +149,42 @@ class DialogResult extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Chip(
-                            label: Text(
-                              "${_answer}",
-                              style: const TextStyle(
-                                fontFamily: 'Rubik',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                letterSpacing: 2.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            padding: const EdgeInsets.all(6.0),
-                            backgroundColor: _resultColor,
+                          Text(
+                            "${answer}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic
+                                    // letterSpacing: 2.0,
+                                    // color: _resultColor,
+                                    ),
                           ),
                           UiController.hSpace(9),
-                          answer == null
-                              ? Text('-')
+                          definition == null
+                          // Define word button
+                              ? ElevatedButton.icon(
+                                  onPressed: ()=>_defineWord(answer),
+                                  icon: Icon(Icons.search),
+                                  label: Text('Define'),
+                                )
                               : Text(
-                                  '${answer.phonetic}',
+                                  '${definition!.phonetic}',
                                   style: TextStyle(fontStyle: FontStyle.italic),
                                 ),
                         ],
                       ),
                       UiController.vSpace(9),
-                      answer == null
+                      definition == null
                           ? Text('-')
                           : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [for (var meaning in answer.meanings) Text('--${meaning.partOfSpeech}--\n${meaning.definitions[0].definition}')],
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (var meaning in definition!.meanings)
+                                  Text(
+                                      '--${meaning.partOfSpeech}--\n${meaning.definitions[0].definition}')
+                              ],
                             ),
                     ],
                   ),

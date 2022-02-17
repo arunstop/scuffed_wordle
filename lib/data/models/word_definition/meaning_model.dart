@@ -10,7 +10,9 @@ class Meaning {
     required this.definitions,
   });
 
+  @JsonKey(includeIfNull: true)
   final String partOfSpeech;
+  @JsonKey(includeIfNull: true)
   final List<Definition> definitions;
 
   Meaning copyWith({

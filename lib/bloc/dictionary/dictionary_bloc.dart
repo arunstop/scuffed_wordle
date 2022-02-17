@@ -66,13 +66,16 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     }
 
     // Apply changes to bloc
+    print(state.dictionary.wordDefinition);
     emit(
       state.copyWith(
         dictionary: state.dictionary.copyWith(
           answer: getAnswer(state.dictionary.answer),
+          wordDefinition: null,
         ),
       ),
     );
+    print(state.dictionary.wordDefinition);
     // Save answer locally
     dictionaryRepo.setLocalDictionary(dictionary: state.dictionary);
   }

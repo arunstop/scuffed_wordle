@@ -12,7 +12,6 @@ Word _$WordFromJson(Map<String, dynamic> json) => Word(
       phonetics: (json['phonetics'] as List<dynamic>)
           .map((e) => Phonetic.fromJson(e as Map<String, dynamic>))
           .toList(),
-      origin: json['origin'] as String,
       meanings: (json['meanings'] as List<dynamic>)
           .map((e) => Meaning.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -22,6 +21,5 @@ Map<String, dynamic> _$WordToJson(Word instance) => <String, dynamic>{
       'word': instance.word,
       'phonetic': instance.phonetic,
       'phonetics': instance.phonetics,
-      'origin': instance.origin,
       'meanings': instance.meanings,
     };

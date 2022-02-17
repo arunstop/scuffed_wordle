@@ -5,23 +5,22 @@ part 'definition_model.g.dart';
 class Definition {
   Definition({
     required this.definition,
-    required this.synonyms,
-    required this.antonyms,
+    required this.example,
   });
-
+  
+  @JsonKey(includeIfNull: true)
   final String definition;
-  final List<String> synonyms;
-  final List<String> antonyms;
+  @JsonKey(includeIfNull: true)
+  final String example;
+
 
   Definition copyWith({
     String? definition,
-    List<String>? synonyms,
-    List<String>? antonyms,
+    String? example,
   }) =>
       Definition(
         definition: definition ?? this.definition,
-        synonyms: synonyms ?? this.synonyms,
-        antonyms: antonyms ?? this.antonyms,
+        example: example ?? this.example,
       );
 
    factory Definition.fromJson(Map<String, dynamic> json) =>

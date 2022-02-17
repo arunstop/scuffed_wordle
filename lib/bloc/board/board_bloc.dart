@@ -119,13 +119,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         return;
       }
       // Add user attempt by 1 because the game is not over yet
-      emit(_boardInit.copywith(
+      emit(_boardInit.copyWith(
         attempt: userAttempts + 1,
         wordList: wordList,
         attemptLimit: event.lives,
       ));
     } else {
-      emit(_boardInit.copywith(
+      emit(_boardInit.copyWith(
         wordList: gameTemplate,
         attemptLimit: event.lives,
       ));
@@ -143,7 +143,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       return;
     }
     // Apply changes on the bloc
-    emit(state.copywith(
+    emit(state.copyWith(
       word: typedLetters,
     ));
   }
@@ -161,7 +161,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     // Remove the last letter
     typedLetters.removeLast();
     // Apply changes on the bloc
-    emit(state.copywith(word: typedLetters));
+    emit(state.copyWith(word: typedLetters));
   }
 
   void _onBoardSubmitGuess(
@@ -228,7 +228,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         if (err == true) {
           // reset current guess if the retypeOnWrongGuess setting is on
           if (retypeOnWrongGuess) {
-            emit(state.copywith(word: []));
+            emit(state.copyWith(word: []));
           }
           return;
         }
@@ -240,7 +240,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           strColor: ColorList.strError,
         );
         if (retypeOnWrongGuess) {
-          emit(state.copywith(word: []));
+          emit(state.copyWith(word: []));
         }
         return;
       }
@@ -308,7 +308,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // keep adding the guesses
       else {
         // Apply changes on the bloc
-        emit(state.copywith(
+        emit(state.copyWith(
           word: _initWord,
           wordList: wordList,
           attempt: attempt + 1,
@@ -335,6 +335,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     Emitter<BoardState> emit,
   ) {
     boardRepo.clearLocalGuessWordList();
+    print(state.runtimeType);
     emit(_boardInit);
+    print(state.runtimeType);
   }
 }

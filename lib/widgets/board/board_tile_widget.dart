@@ -53,7 +53,7 @@ class BoardTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 240),
         transitionBuilder: (child, animation) => ScaleTransition(
           scale: animation,
           alignment: Alignment.center,

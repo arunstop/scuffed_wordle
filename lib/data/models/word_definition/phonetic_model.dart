@@ -9,18 +9,20 @@ class Phonetic {
     required this.audio,
   });
 
+  @JsonKey(includeIfNull: true)
   final String text;
+  @JsonKey(includeIfNull: true)
   final String audio;
 
   Phonetic copyWith({
     String? text,
     String? audio,
-  }) =>
+  }) => 
       Phonetic(
         text: text ?? this.text,
         audio: audio ?? this.audio,
       );
-      
+
   factory Phonetic.fromJson(Map<String, dynamic> json) =>
       _$PhoneticFromJson(json);
 
