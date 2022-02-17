@@ -67,11 +67,11 @@ class DialogResult extends StatelessWidget {
     }
 
     void _defineWord(String answer) {
-      // print('defineword');
-      // dictionaryBloc.add(DictionaryDefine(
-      //   lang: 'en',
-      //   word: answer,
-      // ));
+      print('defineword');
+      dictionaryBloc.add(DictionaryDefine(
+        lang: 'en',
+        word: answer,
+      ));
     }
 
     // Bordered button
@@ -107,6 +107,7 @@ class DialogResult extends StatelessWidget {
           ),
         );
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
+    bool _isDefinitionValid = definition != null && definition.word == answer;
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
@@ -162,10 +163,14 @@ class DialogResult extends StatelessWidget {
                                     ),
                           ),
                           UiController.hSpace(9),
-                          definition == null
-                          // Define word button
+                          _isDefinitionValid == false
+                              // Define word button
                               ? ElevatedButton.icon(
-                                  onPressed: ()=>_defineWord(answer),
+                                  onPressed: () => _defineWord(answer),
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all(Colors.white),
+                                  ),
                                   icon: Icon(Icons.search),
                                   label: Text('Define'),
                                 )
@@ -176,7 +181,7 @@ class DialogResult extends StatelessWidget {
                         ],
                       ),
                       UiController.vSpace(9),
-                      definition == null
+                      _isDefinitionValid == false
                           ? Text('-')
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

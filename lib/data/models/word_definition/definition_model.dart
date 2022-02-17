@@ -5,13 +5,13 @@ part 'definition_model.g.dart';
 class Definition {
   Definition({
     required this.definition,
-    required this.example,
+    // required this.example,
   });
   
   @JsonKey(includeIfNull: true)
   final String definition;
-  @JsonKey(includeIfNull: true)
-  final String example;
+  // @JsonKey(includeIfNull: true)
+  // final String example;
 
 
   Definition copyWith({
@@ -20,7 +20,7 @@ class Definition {
   }) =>
       Definition(
         definition: definition ?? this.definition,
-        example: example ?? this.example,
+        // example: example ?? this.example,
       );
 
    factory Definition.fromJson(Map<String, dynamic> json) =>
