@@ -29,11 +29,11 @@ class DictionaryRefreshKeyword extends DictionaryEvent {
 class DictionaryTest extends DictionaryEvent {}
 
 class DictionaryDefine extends DictionaryEvent {
-  final String lang;
-  final String word;
+  // final String lang;
+  // final String word;
 
-  DictionaryDefine({
-    required this.lang,
-    required this.word,
-  });
+  // DictionaryDefine({
+  //   required this.lang,
+  //   required this.word,
+  // });
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
@@ -130,6 +131,15 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         attemptLimit: event.lives,
       ));
     }
+
+    // dictionaryBloc.add(
+    //     DictionaryDefine(
+    //       lang: 'en',
+    //       word: dictionaryBloc.state.dictionary.answer,
+    //     ),
+    //   );
+    // dictionaryStream.cancel();
+
   }
 
   void _onBoardAddLetter(

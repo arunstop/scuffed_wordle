@@ -9,10 +9,8 @@ class Phonetic {
     required this.audio,
   });
 
-  @JsonKey(includeIfNull: true)
-  final String text;
-  @JsonKey(includeIfNull: true)
-  final String audio;
+  final String? text;
+  final String? audio;
 
   Phonetic copyWith({
     String? text,

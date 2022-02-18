@@ -8,8 +8,7 @@ class Definition {
     // required this.example,
   });
   
-  @JsonKey(includeIfNull: true)
-  final String definition;
+  final String? definition;
   // @JsonKey(includeIfNull: true)
   // final String example;
 

@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     dictionaryBloc.add(DictionaryInitialize());
+    // dictionaryBloc.add(DictionaryDefine());
 
     context.read<SettingsBloc>().add(SettingsInitialize());
 
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('s-home');
     BoardBloc boardBloc = context.watch<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: ctx,
         content: DialogResult(
           answer: dictionary.answer,
-          // definition: dictionary.wordDefinition,
+          definition: dictionary.wordDefinition,
         ),
       );
     }

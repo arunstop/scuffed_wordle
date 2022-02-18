@@ -15,12 +15,9 @@ class Word {
     required this.meanings,
   });
 
-  @JsonKey(includeIfNull: true)
-  final String word;
-  @JsonKey(includeIfNull: true)
-  final String phonetic;
-  @JsonKey(includeIfNull: true)
-  final List<Phonetic> phonetics;
+  final String? word;
+  final String? phonetic;
+  final List<Phonetic>? phonetics;
   // final String origin;
   @JsonKey(includeIfNull: true)
   final List<Meaning> meanings;

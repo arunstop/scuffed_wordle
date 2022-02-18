@@ -7,23 +7,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
   final String answer;
-  // final Word? definition;
+  final Word? definition;
   const DialogResult({
     Key? key,
     required this.answer,
-    // required this.definition,
+    required this.definition,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
-    DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
-    Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
+    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    SettingsBloc settingsBloc = context.read<SettingsBloc>();
+    // Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
+
+    // Close dialog
+    void _close() => Navigator.pop(context);
+    // Play again
+    void _playAgain() {
+      _close();
+      Timer(const Duration(milliseconds: 300), () {
+        boardBloc.add(BoardRestart());
+        dictionaryBloc.add(DictionaryRefreshKeyword());
+        // dictionaryBloc.add(DictionaryDefine());
+      });
+    }
+
     // Share result
     void _shareResult() {
       var state = boardBloc.state;
@@ -53,25 +68,15 @@ class DialogResult extends StatelessWidget {
         context: context,
         message: 'Copied to clipboard',
       );
-    }
-
-    // Close dialog
-    void _close() => Navigator.pop(context);
-    // Play again
-    void _playAgain() {
       _close();
-      // Timer(const Duration(milliseconds: 1), () {
-      boardBloc.add(BoardRestart());
-      dictionaryBloc.add(DictionaryRefreshKeyword());
-      // });
     }
 
     void _defineWord(String answer) {
       print('defineword');
-      dictionaryBloc.add(DictionaryDefine(
-        lang: 'en',
-        word: answer,
-      ));
+      // dictionaryBloc.add(DictionaryDefine(
+      //   lang: 'en',
+      //   word: answer,
+      // ));
     }
 
     // Bordered button
@@ -107,35 +112,27 @@ class DialogResult extends StatelessWidget {
           ),
         );
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
-    bool _isDefinitionValid = definition != null && definition.word == answer;
+    bool _isDefinitionValid = definition != null && definition?.word == answer;
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
       children: [
         // Text('The word was : ${answer}'),
         // Answer Chip
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'The word was : ',
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      // letterSpacing: 1,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Center(
+            child: Container(
+              height: 6,
+              width: 60,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6),
+                ),
+                color: Colors.grey,
               ),
-              Text(
-                '${answer.toUpperCase()}',
-                style: Theme.of(context).textTheme.headline5!.copyWith(
-                      fontFamily: 'Rubik',
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                      color: _resultColor,
-                    ),
-              ),
-            ],
+              // child: Text('-'),
+            ),
           ),
         ),
         Expanded(
@@ -144,56 +141,81 @@ class DialogResult extends StatelessWidget {
               padding: const EdgeInsets.only(left: 18, right: 18),
               child: Column(
                 children: [
-                  UiController.vSpace(18),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            "${answer}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic
-                                    // letterSpacing: 2.0,
-                                    // color: _resultColor,
-                                    ),
-                          ),
-                          UiController.hSpace(9),
-                          _isDefinitionValid == false
-                              // Define word button
-                              ? ElevatedButton.icon(
-                                  onPressed: () => _defineWord(answer),
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        MaterialStateProperty.all(Colors.white),
-                                  ),
-                                  icon: Icon(Icons.search),
-                                  label: Text('Define'),
-                                )
-                              : Text(
-                                  '${definition!.phonetic}',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                        ],
-                      ),
-                      UiController.vSpace(9),
-                      _isDefinitionValid == false
-                          ? Text('-')
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var meaning in definition!.meanings)
-                                  Text(
-                                      '--${meaning.partOfSpeech}--\n${meaning.definitions[0].definition}')
-                              ],
+                      Text(
+                        'The word was : ',
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              // letterSpacing: 1,
+                              // color: Theme.of(context).colorScheme.primary,
                             ),
+                      ),
+                      Text(
+                        '${answer.toUpperCase()}',
+                        style: Theme.of(context).textTheme.headline5!.copyWith(
+                              fontFamily: 'Rubik',
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                              color: _resultColor,
+                            ),
+                      ),
                     ],
                   ),
-                  UiController.vSpace(24),
+                  UiController.vSpace(18),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Row(
+                  //       children: [
+                  //         Text(
+                  //           "${answer}",
+                  //           style: Theme.of(context)
+                  //               .textTheme
+                  //               .subtitle1!
+                  //               .copyWith(
+                  //                   fontWeight: FontWeight.bold,
+                  //                   fontStyle: FontStyle.italic
+                  //                   // letterSpacing: 2.0,
+                  //                   // color: _resultColor,
+                  //                   ),
+                  //         ),
+                  //         UiController.hSpace(9),
+                  //         _isDefinitionValid == false
+                  //             // Define word button
+                  //             ? ElevatedButton.icon(
+                  //                 onPressed: () => _defineWord(answer),
+                  //                 style: ButtonStyle(
+                  //                   foregroundColor:
+                  //                       MaterialStateProperty.all(Colors.white),
+                  //                 ),
+                  //                 icon: Icon(Icons.search),
+                  //                 label: Text('Define'),
+                  //               )
+                  //             : Text(
+                  //                 '${definition!.phonetic}',
+                  //                 style: TextStyle(
+                  //                   fontSize: 16,
+                  //                   fontFamily: 'Rubik',
+                  //                 ),
+                  //               ),
+                  //       ],
+                  //     ),
+                  //     UiController.vSpace(9),
+                  //     _isDefinitionValid == false
+                  //         ? Text('-')
+                  //         : Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: [
+                  //               for (var meaning in definition!.meanings)
+                  //                 Text(
+                  //                     '--${meaning.partOfSpeech}--\n${meaning.definitions?[0].definition}')
+                  //             ],
+                  //           ),
+                  //   ],
+                  // ),
+                  // UiController.vSpace(24),
                   // Share Button
                   _borderedButton(
                     label: "Share Result",
