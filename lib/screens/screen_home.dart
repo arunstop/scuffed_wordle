@@ -18,6 +18,7 @@ import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
+import 'package:animations/animations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
@@ -154,11 +155,12 @@ class _HomeScreenState extends State<HomeScreen> {
           onKey: boardBloc.state is BoardGameOver
               ? null
               : (event) => _onKeyboardPressed(context, event),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 1212),
-            transitionBuilder: (child, animation) => ScaleTransition(
-              scale: animation,
-              alignment: Alignment.center,
+          child: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 600),
+            transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+                FadeThroughTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
               child: child,
             ),
             child: boardBloc.state is BoardDefault
