@@ -141,20 +141,21 @@ class DialogResult extends StatelessWidget {
               padding: const EdgeInsets.only(left: 18, right: 18),
               child: Column(
                 children: [
-                  Row(
-                    // mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'The word was : ',
+                        'The answer was : ',
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.bold,
                               // letterSpacing: 1,
                               // color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
+                  UiController.vSpace(60/10),
                       Text(
                         '${answer.toUpperCase()}',
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
+                        style: Theme.of(context).textTheme.headline3!.copyWith(
                               fontFamily: 'Rubik',
                               fontWeight: FontWeight.bold,
                               letterSpacing: 2,
