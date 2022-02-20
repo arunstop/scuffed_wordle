@@ -32,7 +32,7 @@ class DialogResult extends StatelessWidget {
     // Play again
     void _playAgain() {
       _close();
-      // Timer(const Duration(milliseconds: 300), () {
+      Timer(const Duration(milliseconds: 300), () {
       boardBloc.add(const BoardRestart(
         length: 5,
         lives: 6,
@@ -45,7 +45,7 @@ class DialogResult extends StatelessWidget {
       //         );
       dictionaryBloc.add(DictionaryRefreshKeyword());
       //   // dictionaryBloc.add(DictionaryDefine());
-      // });
+      });
     }
 
     // Share result
