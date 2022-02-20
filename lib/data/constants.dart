@@ -2,10 +2,10 @@ import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
 import 'package:encrypt/encrypt.dart';
 
 class Constants {
-  static LocalStorageKey localStorageKeys = LocalStorageKey();
-  static Api api = Api();
+  static LocalStorageKey localStorageKeys= LocalStorageKey();
+  static Api api= Api();
   // Encryption
-  static EncrypterKey encrypter = EncrypterKey();
+  static EncrypterKey encrypter= EncrypterKey();
 }
 
 class EncrypterKey {

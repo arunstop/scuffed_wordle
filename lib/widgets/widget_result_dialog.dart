@@ -8,6 +8,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
@@ -33,18 +34,18 @@ class DialogResult extends StatelessWidget {
     void _playAgain() {
       _close();
       Timer(const Duration(milliseconds: 300), () {
-      boardBloc.add(const BoardRestart(
-        length: 5,
-        lives: 6,
-      ));
-      // boardBloc.add(
-      //           BoardInitialize(
-      //             length: 5,
-      //             lives: 6,
-      //           ),
-      //         );
-      dictionaryBloc.add(DictionaryRefreshKeyword());
-      //   // dictionaryBloc.add(DictionaryDefine());
+        boardBloc.add(const BoardRestart(
+          length: 5,
+          lives: 6,
+        ));
+        // boardBloc.add(
+        //           BoardInitialize(
+        //             length: 5,
+        //             lives: 6,
+        //           ),
+        //         );
+        dictionaryBloc.add(DictionaryRefreshKeyword());
+        //   // dictionaryBloc.add(DictionaryDefine());
       });
     }
 
@@ -123,6 +124,23 @@ class DialogResult extends StatelessWidget {
         );
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
     bool _isDefinitionValid = definition != null && definition.word == answer;
+    List<Widget> _getDefinitionList(List<Definition> defList) {
+      return defList
+          .mapIndexed((index, def) => Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${index + 1}. ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Flexible(child: Text('${def.definition}')),
+                ],
+              ))
+          .toList();
+    }
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
@@ -175,14 +193,14 @@ class DialogResult extends StatelessWidget {
                       ),
                     ],
                   ),
-                  UiLib.vSpace(9),
+                  // UiLib.vSpace(6),
                   Column(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: _isDefinitionValid == false
-                            // Define word button
-                            ? ElevatedButton.icon(
+                      _isDefinitionValid == false
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 9.0),
+                              child: ElevatedButton.icon(
                                 onPressed: () => _defineWord(answer),
                                 style: ButtonStyle(
                                   foregroundColor:
@@ -190,26 +208,62 @@ class DialogResult extends StatelessWidget {
                                 ),
                                 icon: Icon(Icons.search),
                                 label: Text('Define'),
-                              )
-                            : Text(
-                                '${definition!.phonetic}',
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  letterSpacing: 2,
-                                  fontFamily: 'Rubik',
-                                ),
                               ),
-                      ),
-                  UiLib.vSpace(9),
-                      _isDefinitionValid == false
-                          ? Container()
+                            )
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                for (var meaning in definition!.meanings)
-                                  Text(
-                                      '--${meaning.partOfSpeech}--\n${meaning.definitions?[0].definition}')
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.volume_up_rounded),
+                                      color: Colors.lightBlue,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        '${definition!.phonetic}',
+                                        style: const TextStyle(
+                                          fontSize: 21,
+                                          letterSpacing: 2,
+                                          fontFamily: 'Rubik',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // UiLib.vSpace(6),
+                                for (var meaning in definition.meanings)
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(9.0),
+                                        child: Text(
+                                          '-- ${meaning.partOfSpeech} --',
+                                          style: const TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 18,
+                                            // fontFamily: 'Rubik',
+                                            fontWeight: FontWeight.w200,
+                                            letterSpacing: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      meaning.definitions!.isEmpty
+                                          ? Text('')
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: _getDefinitionList(
+                                                meaning.definitions!,
+                                              ),
+                                            )
+                                    ],
+                                  )
+                                // Text(
+                                //     '-- ${meaning.partOfSpeech}\n${meaning.definitions?[0].definition}')
                               ],
                             ),
                     ],
