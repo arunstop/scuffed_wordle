@@ -13,10 +13,12 @@ class BoardInitialize extends BoardEvent {
   // BoardInitialize({required this.guessWordList});
   final int length;
   final int lives;
+  final String answer;
 
   const BoardInitialize({
     required this.length,
     required this.lives,
+    required this.answer,
   });
 
   // @override
@@ -34,7 +36,13 @@ class BoardAddLetter extends BoardEvent {
 
 class BoardRemoveLetter extends BoardEvent {}
 
-class BoardSubmitGuess extends BoardEvent {}
+class BoardSubmitGuess extends BoardEvent {
+  final Settings settings;
+  final List<String> wordList;
+  final String answer;
+
+  BoardSubmitGuess({required this.settings, required this.wordList, required this.answer});
+}
 
 class BoardRestart extends BoardEvent {
   final int length;
@@ -44,7 +52,6 @@ class BoardRestart extends BoardEvent {
     required this.length,
     required this.lives,
   });
-
 }
 
 class BoardTest extends BoardEvent {}

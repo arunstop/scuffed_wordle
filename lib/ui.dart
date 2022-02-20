@@ -138,7 +138,7 @@ class UiLib {
     );
   }
 
-  static List<List<String>> keyboardTemplate = [
+  static List<List<String>> get keyboardTemplate => [
     [
       'Q',
       'W',
@@ -174,7 +174,7 @@ class UiLib {
       'ENTER',
     ]
   ];
-  static List<String> keyboardKeys =
+  static List<String> get keyboardKeys =>
       keyboardTemplate.expand((element) => element).toList();
   static Widget vSpace(double h) => SizedBox(
         height: h,
@@ -185,12 +185,12 @@ class UiLib {
 }
 
 class ColorList {
-  static Color tileBase = Colors.grey[800]!;
-  static Color tileActiveRow = Colors.blue[800]!;
-  static Color tileOkLetter = Colors.yellow[700]!;
-  static Color tilePinpoint = Colors.green;
-  static Color ok = Colors.green;
-  static String strOk = "#4caf50";
-  static Color error = Colors.red;
-  static String strError = "#f44336";
+  static Color get tileBase => Colors.grey[800]!;
+  static Color get tileActiveRow => Colors.blue[800]!;
+  static Color get tileOkLetter => Colors.yellow[700]!;
+  static Color get tilePinpoint => Colors.green;
+  static Color get ok => Colors.green;
+  static String get strOk => "#4caf50";
+  static Color get error => Colors.red;
+  static String get strError => "#f44336";
 }

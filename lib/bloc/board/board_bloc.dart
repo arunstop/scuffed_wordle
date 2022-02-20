@@ -10,6 +10,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
+import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -26,25 +27,25 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   static final BoardDefault _boardDefault = BoardDefault();
   // BoardDefault(word: _initWord, wordList: _initWordList);
 
-  final DictionaryBloc dictionaryBloc;
-  final SettingsBloc settingsBloc;
-  late final StreamSubscription dictionaryStream;
-  late final StreamSubscription settingsStream;
+  // final DictionaryBloc dictionaryBloc;
+  // final SettingsBloc settingsBloc;
+  // late final StreamSubscription dictionaryStream;
+  // late final StreamSubscription settingsStream;
   final BoardRepo boardRepo;
 
-  List<String> dictionaryList = [];
-  SettingsState settingsState = SettingsDefault(settings: Settings());
-  String keyword = "";
+  // List<String> dictionaryList = [];
+  // SettingsState settingsState = SettingsDefault(settings: Settings());
+  // String keyword = "";
 
   BoardBloc({
     required this.boardRepo,
-    required this.dictionaryBloc,
-    required this.settingsBloc,
+    // required this.dictionaryBloc,
+    // required this.settingsBloc,
   }) : super(_boardDefault) {
     // Listen to dictionaryBloc
-    dictionaryStream = dictionaryBloc.stream.listen(_dictionaryBlocListener);
+    // dictionaryStream = dictionaryBloc.stream.listen(_dictionaryBlocListener);
     // Listen to settingsBloc
-    settingsStream = settingsBloc.stream.listen(_settingsBlocListener);
+    // settingsStream = settingsBloc.stream.listen(_settingsBlocListener);
     // Initialize board (getting user's local guess)
     on<BoardInitialize>(_onBoardInitialize);
     // Add letter whenever an alphabet key is pressed
@@ -59,25 +60,25 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   @override
   Future<void> close() {
-    dictionaryStream.cancel();
-    settingsStream.cancel();
+    // dictionaryStream.cancel();
+    // settingsStream.cancel();
     return super.close();
   }
 
-  void _dictionaryBlocListener(DictionaryState state) {
-    // Set the word list
-    dictionaryList = state.dictionary.wordList
-        .map((e) => e.toLowerCase())
-        .toList()
-        .sortedBy((element) => element);
-    // dictionaryList.sortedBy((element) => element);
-    // Set the keyword
-    keyword = state.dictionary.answer;
+  // void _dictionaryBlocListener(DictionaryState state) {
+  //   // Set the word list
+  //   dictionaryList = state.dictionary.wordList
+  //       .map((e) => e.toLowerCase())
+  //       .toList()
+  //       .sortedBy((element) => element);
+  //   // dictionaryList.sortedBy((element) => element);
+  //   // Set the keyword
+  //   keyword = state.dictionary.answer;
 
-    // print(dictionaryList.toSet().map((e) => '"$e"').toList());
-  }
+  //   // print(dictionaryList.toSet().map((e) => '"$e"').toList());
+  // }
 
-  void _settingsBlocListener(SettingsState state) => settingsState = state;
+  // void _settingsBlocListener(SettingsState state) => settingsState = state;
 
   List<List<BoardLetter>> _getGameTemplate(int length, int lives) => [
         for (var i = 1; i <= lives; i++)
@@ -93,7 +94,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     // Get guesses form users latest session (if available)
     List<List<BoardLetter>> userGuessWordList =
         await boardRepo.getLocalGuessWordList(
-            answerWord: dictionaryBloc.state.dictionary.answer);
+            answerWord: event.answer);
     // print(userGuessWordList.map((e) => e.map((e) => e.letter).join()));
 
     // If user has played before.
@@ -111,7 +112,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
       bool hasWon =
-          lastGuess == dictionaryBloc.state.dictionary.answer.toLowerCase();
+          lastGuess == event.answer.toLowerCase();
       if (hasWon || userAttempts >= state.attemptLimit) {
         // No need to add user attempt since the game is over
         emit(BoardGameOver(
@@ -180,9 +181,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
-    // print((await boardRepo.getLocalGuessWordList(
-    //         answerWord: dictionaryBloc.state.dictionary.answer))
-    //     .map((e) => e.map((e) => e.letter).join()));
+    
+    
+
     // Submit word when the count is 5 letter
     if (state.word.length < 5) {
       Fluttertoast.showToast(
@@ -202,9 +203,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       bool err = false;
       bool gameOver = false;
       bool retypeOnWrongGuess =
-          settingsState.settings.retypeOnWrongGuess == true;
+          event.settings.retypeOnWrongGuess == true;
 
-      if (settingsState.settings.hardMode == true && state.attempt > 1) {
+      if (event.settings.hardMode == true && state.attempt > 1) {
         // Get latest answer
         List<BoardLetter> latestSubmittedWord =
             state.wordList[state.attempt - 2];
@@ -246,7 +247,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         }
       }
       // If the word is not in word list
-      if (!dictionaryList.contains(strWord)) {
+      if (!event.wordList.contains(strWord)) {
         UiLib.showToast(
           title: "${strWord.toUpperCase()} is not in word list",
           strColor: ColorList.strError,
@@ -264,7 +265,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // Process the typed word
       List<BoardLetter> coloredGuess = boardRepo.processGuessWord(
         guessWord: state.word.join().toUpperCase(),
-        answerWord: keyword.toUpperCase(),
+        answerWord: event.answer.toUpperCase(),
       );
 
       // Change wordList value based on attempt
@@ -273,7 +274,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // END the game if :
       // latest guess is correct OR
       // user has reached max attempt
-      bool hasWon = strWord.toLowerCase() == keyword.toLowerCase();
+      bool hasWon = strWord.toLowerCase() == event.answer.toLowerCase();
       if (hasWon || state.attempt >= state.attemptLimit) {
         // Not adding attempt if user guessed it right
         // var attempt = strWord.toLowerCase() == keyword.toLowerCase()
@@ -287,7 +288,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         ));
         // Show the keyword
         UiLib.showToast(
-          title: keyword.toUpperCase(),
+          title: event.answer.toUpperCase(),
           strColor: ColorList.strOk,
         );
         gameOver = true;

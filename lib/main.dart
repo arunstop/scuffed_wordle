@@ -69,8 +69,8 @@ class ScuffedWordleApp extends StatelessWidget {
         BlocProvider(
             create: (context) => BoardBloc(
                   boardRepo: BoardService(prefs: _prefs),
-                  dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
-                  settingsBloc: BlocProvider.of<SettingsBloc>(context),
+                  // dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
+                  // settingsBloc: BlocProvider.of<SettingsBloc>(context),
                 )),
       ],
       child: BlocBuilder<DictionaryBloc, DictionaryState>(
@@ -80,9 +80,9 @@ class ScuffedWordleApp extends StatelessWidget {
             if (dictionaryState is! DictionaryDefault) {
               context.read<BoardBloc>().add(
                     BoardInitialize(
-                      length: 5,
-                      lives: 6,
-                    ),
+                        length: 5,
+                        lives: 6,
+                        answer: dictionaryState.dictionary.answer),
                   );
             }
 

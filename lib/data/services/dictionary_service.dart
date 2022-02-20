@@ -84,16 +84,21 @@ class DictionaryService extends MainService implements DictionaryRepo {
     required String lang,
     required String word,
   }) async {
-    http.Response wordDefinition = await getData(
-        apiUri: Constants.api.freeDictionary.getWordDefinition(
-      lang: lang,
-      word: word,
-    ));
-    if (wordDefinition.statusCode == 200) {
-      // Get data from first array, because how that's the API works
-      Map<String, dynamic> firstItem = jsonDecode(wordDefinition.body)[0];
-      return Word.fromJson(firstItem);
-    } else {
+    try {
+      http.Response wordDefinition = await getData(
+          apiUri: Constants.api.freeDictionary.getWordDefinition(
+        lang: lang,
+        word: word,
+      ));
+      if (wordDefinition.statusCode == 200) {
+        // Get data from first array, because how that's the API works
+        Map<String, dynamic> firstItem = jsonDecode(wordDefinition.body)[0];
+        return Word.fromJson(firstItem);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
       return null;
     }
   }

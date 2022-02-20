@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
+import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:dartx/dartx.dart';
 
@@ -11,6 +14,9 @@ class Keyboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var boardBloc = context.watch<BoardBloc>();
+    DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
+    SettingsBloc settingsBloc = context.watch<SettingsBloc>();
+    
     List<BoardLetter> uniqTypedLetterList = [];
     var typedLetterList = boardBloc.state.submittedWordList.flatten().toList();
     // process the unqList
@@ -87,7 +93,12 @@ class Keyboard extends StatelessWidget {
       if (key == "BACKSPACE") {
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
-        boardBloc.add(BoardSubmitGuess());
+        Dictionary dictionary = dictionaryBloc.state.dictionary;
+            boardBloc.add(BoardSubmitGuess(
+              settings: settingsBloc.state.settings,
+              answer: dictionary.answer,
+              wordList: dictionary.wordList
+            ));
       } else {
         boardBloc.add(BoardAddLetter(letter: key));
       }

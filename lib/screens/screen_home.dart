@@ -20,36 +20,14 @@ import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 import 'package:animations/animations.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _loadUserLocalData();
-  }
-
-  _loadUserLocalData() {
-    // TODO: implement initState
-    // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    // dictionaryBloc.add(DictionaryInitialize());
-    // dictionaryBloc.add(DictionaryDefine());
-
-    // context.read<SettingsBloc>().add(SettingsInitialize());
-
-    // context.read<BoardBloc>().add(BoardInitialize());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print('s-home');
+    // print('s-home');
     BoardBloc boardBloc = context.watch<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
@@ -77,7 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
           if (backspaced) {
             boardBloc.add(BoardRemoveLetter());
           } else if (entered) {
-            boardBloc.add(BoardSubmitGuess());
+            Dictionary dictionary = dictionaryBloc.state.dictionary;
+            boardBloc.add(BoardSubmitGuess(
+              settings: settings,
+              answer: dictionary.answer,
+              wordList: dictionary.wordList
+            ));
           } else {
             boardBloc.add(BoardAddLetter(letter: letter));
           }
@@ -99,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: ctx,
         content: DialogResult(
           answer: dictionary.answer,
-          definition: dictionary.wordDefinition,
+          // definition: dictionary.wordDefinition,
         ),
       );
     }
@@ -107,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     void _boardBlocListener(
         BuildContext listenerCtx, BoardState listenerState) {
       // Finish the game if attempt has reached its limit
-      // print(listenerState);
+      // print();
       if (listenerState is BoardGameOver) {
         // UiLib.showSnackbar(
         //   context: context,
@@ -125,12 +108,13 @@ class _HomeScreenState extends State<HomeScreen> {
         //     ),
         //   );
         // }
-        _showResultDialog(listenerCtx);
+        // print('resd');
+        _showResultDialog(context);
       }
     }
 
     return ScreenTemplate(
-      title: widget.title,
+      title: title,
       actions: [
         IconButton(
           onPressed: () => Navigator.pushNamed(context, '/howtoplay'),
@@ -148,6 +132,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ],
       child: BlocListener<BoardBloc, BoardState>(
+        listenWhen: (previous, current) {
+          // print(previous.runtimeType);
+          // print(current.runtimeType);
+          return previous.runtimeType != current.runtimeType;
+        },
         listener: _boardBlocListener,
         child: RawKeyboardListener(
           autofocus: true,

@@ -13,19 +13,19 @@ import 'package:scuffed_wordle/ui.dart';
 
 class DialogResult extends StatelessWidget {
   final String answer;
-  final Word? definition;
+  // final Word? definition;
   const DialogResult({
     Key? key,
     required this.answer,
-    required this.definition,
+    // required this.definition,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
-    // Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
+    Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
 
     // Close dialog
     void _close() => Navigator.pop(context);
@@ -82,10 +82,11 @@ class DialogResult extends StatelessWidget {
 
     void _defineWord(String answer) {
       print('defineword');
-      // dictionaryBloc.add(DictionaryDefine(
-      //   lang: 'en',
-      //   word: answer,
-      // ));
+      // _close();
+      dictionaryBloc.add(DictionaryDefine(
+          // lang: 'en',
+          // word: answer,
+          ));
     }
 
     // Bordered button
@@ -121,7 +122,7 @@ class DialogResult extends StatelessWidget {
           ),
         );
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
-    bool _isDefinitionValid = definition != null && definition?.word == answer;
+    bool _isDefinitionValid = definition != null && definition.word == answer;
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
@@ -174,59 +175,44 @@ class DialogResult extends StatelessWidget {
                       ),
                     ],
                   ),
-                  UiLib.vSpace(18),
-                  // Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Row(
-                  //       children: [
-                  //         Text(
-                  //           "${answer}",
-                  //           style: Theme.of(context)
-                  //               .textTheme
-                  //               .subtitle1!
-                  //               .copyWith(
-                  //                   fontWeight: FontWeight.bold,
-                  //                   fontStyle: FontStyle.italic
-                  //                   // letterSpacing: 2.0,
-                  //                   // color: _resultColor,
-                  //                   ),
-                  //         ),
-                  //         UiLib.hSpace(9),
-                  //         _isDefinitionValid == false
-                  //             // Define word button
-                  //             ? ElevatedButton.icon(
-                  //                 onPressed: () => _defineWord(answer),
-                  //                 style: ButtonStyle(
-                  //                   foregroundColor:
-                  //                       MaterialStateProperty.all(Colors.white),
-                  //                 ),
-                  //                 icon: Icon(Icons.search),
-                  //                 label: Text('Define'),
-                  //               )
-                  //             : Text(
-                  //                 '${definition!.phonetic}',
-                  //                 style: TextStyle(
-                  //                   fontSize: 16,
-                  //                   fontFamily: 'Rubik',
-                  //                 ),
-                  //               ),
-                  //       ],
-                  //     ),
-                  //     UiLib.vSpace(9),
-                  //     _isDefinitionValid == false
-                  //         ? Text('-')
-                  //         : Column(
-                  //             crossAxisAlignment: CrossAxisAlignment.start,
-                  //             children: [
-                  //               for (var meaning in definition!.meanings)
-                  //                 Text(
-                  //                     '--${meaning.partOfSpeech}--\n${meaning.definitions?[0].definition}')
-                  //             ],
-                  //           ),
-                  //   ],
-                  // ),
-                  // UiLib.vSpace(24),
+                  UiLib.vSpace(9),
+                  Column(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _isDefinitionValid == false
+                          ? Center(
+                              child: _isDefinitionValid == false
+                                  // Define word button
+                                  ? ElevatedButton.icon(
+                                      onPressed: () => _defineWord(answer),
+                                      style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                      ),
+                                      icon: Icon(Icons.search),
+                                      label: Text('Define'),
+                                    )
+                                  : Text(
+                                      '${definition!.phonetic}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Rubik',
+                                      ),
+                                    ),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                for (var meaning in definition!.meanings)
+                                  Text(
+                                      '--${meaning.partOfSpeech}--\n${meaning.definitions?[0].definition}')
+                              ],
+                            ),
+                    ],
+                  ),
+                  UiLib.vSpace(24),
                   // Share Button
                   _borderedButton(
                     label: "Share Result",
