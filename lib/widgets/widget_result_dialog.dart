@@ -179,28 +179,30 @@ class DialogResult extends StatelessWidget {
                   Column(
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Center(
+                        child: _isDefinitionValid == false
+                            // Define word button
+                            ? ElevatedButton.icon(
+                                onPressed: () => _defineWord(answer),
+                                style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                ),
+                                icon: Icon(Icons.search),
+                                label: Text('Define'),
+                              )
+                            : Text(
+                                '${definition!.phonetic}',
+                                style: TextStyle(
+                                  fontSize: 21,
+                                  letterSpacing: 2,
+                                  fontFamily: 'Rubik',
+                                ),
+                              ),
+                      ),
+                  UiLib.vSpace(9),
                       _isDefinitionValid == false
-                          ? Center(
-                              child: _isDefinitionValid == false
-                                  // Define word button
-                                  ? ElevatedButton.icon(
-                                      onPressed: () => _defineWord(answer),
-                                      style: ButtonStyle(
-                                        foregroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white),
-                                      ),
-                                      icon: Icon(Icons.search),
-                                      label: Text('Define'),
-                                    )
-                                  : Text(
-                                      '${definition!.phonetic}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'Rubik',
-                                      ),
-                                    ),
-                            )
+                          ? Container()
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,

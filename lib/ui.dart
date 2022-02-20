@@ -116,6 +116,7 @@ class UiLib {
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
         content: Text(message),
         action: SnackBarAction(
           label: actionLabel,
