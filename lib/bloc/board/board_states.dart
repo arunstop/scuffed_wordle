@@ -59,7 +59,7 @@ class BoardDefault extends BoardState {
     this.word = const [],
     this.wordList = const [],
     this.attempt = 1,
-    this.attemptLimit = 6,
+    this.attemptLimit = 2,
     this.win = false,
   }) : super(
             word: word,

@@ -14,7 +14,7 @@ class BoardInitialize extends BoardEvent {
   final int length;
   final int lives;
 
-  BoardInitialize({
+  const BoardInitialize({
     required this.length,
     required this.lives,
   });
@@ -36,6 +36,15 @@ class BoardRemoveLetter extends BoardEvent {}
 
 class BoardSubmitGuess extends BoardEvent {}
 
-class BoardRestart extends BoardEvent {}
+class BoardRestart extends BoardEvent {
+  final int length;
+  final int lives;
+
+  const BoardRestart({
+    required this.length,
+    required this.lives,
+  });
+
+}
 
 class BoardTest extends BoardEvent {}

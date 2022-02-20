@@ -23,7 +23,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   // static const _initWord = ['', '', '', '', ''];
   static const List<String> _initWord = [];
 
-  static final BoardDefault _boardInit = BoardDefault();
+  static final BoardDefault _boardDefault = BoardDefault();
   // BoardDefault(word: _initWord, wordList: _initWordList);
 
   final DictionaryBloc dictionaryBloc;
@@ -40,7 +40,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     required this.boardRepo,
     required this.dictionaryBloc,
     required this.settingsBloc,
-  }) : super(_boardInit) {
+  }) : super(_boardDefault) {
     // Listen to dictionaryBloc
     dictionaryStream = dictionaryBloc.stream.listen(_dictionaryBlocListener);
     // Listen to settingsBloc
@@ -79,14 +79,17 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   void _settingsBlocListener(SettingsState state) => settingsState = state;
 
+  List<List<BoardLetter>> _getGameTemplate(int length, int lives) => [
+        for (var i = 1; i <= lives; i++)
+          [for (var i = 1; i <= length; i++) _boardLetter]
+      ];
+
   void _onBoardInitialize(
     BoardInitialize event,
     Emitter<BoardState> emit,
   ) async {
-    List<List<BoardLetter>> gameTemplate = [
-      for (var i = 1; i <= event.lives; i++)
-        [for (var i = 1; i <= event.length; i++) _boardLetter]
-    ];
+    List<List<BoardLetter>> gameTemplate =
+        _getGameTemplate(event.length, event.lives);
     // Get guesses form users latest session (if available)
     List<List<BoardLetter>> userGuessWordList =
         await boardRepo.getLocalGuessWordList(
@@ -120,13 +123,13 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         return;
       }
       // Add user attempt by 1 because the game is not over yet
-      emit(_boardInit.copyWith(
+      emit(_boardDefault.copyWith(
         attempt: userAttempts + 1,
         wordList: wordList,
         attemptLimit: event.lives,
       ));
     } else {
-      emit(_boardInit.copyWith(
+      emit(_boardDefault.copyWith(
         wordList: gameTemplate,
         attemptLimit: event.lives,
       ));
@@ -139,7 +142,6 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     //     ),
     //   );
     // dictionaryStream.cancel();
-
   }
 
   void _onBoardAddLetter(
@@ -213,7 +215,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           if (element.color == ColorList.tilePinpoint) {
             // if not show error and call don't proceed
             if (element.letter != state.word[idx]) {
-              UiController.showToast(
+              UiLib.showToast(
                 title: 'Letter no. ${idx + 1} must be ${element.letter}',
                 strColor: ColorList.strError,
               );
@@ -227,7 +229,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           if (element.color == ColorList.tileOkLetter) {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
-              UiController.showToast(
+              UiLib.showToast(
                 title: 'Letter ${element.letter} must be included',
                 strColor: ColorList.strError,
               );
@@ -245,7 +247,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       }
       // If the word is not in word list
       if (!dictionaryList.contains(strWord)) {
-        UiController.showToast(
+        UiLib.showToast(
           title: "${strWord.toUpperCase()} is not in word list",
           strColor: ColorList.strError,
         );
@@ -284,7 +286,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           win: hasWon,
         ));
         // Show the keyword
-        UiController.showToast(
+        UiLib.showToast(
           title: keyword.toUpperCase(),
           strColor: ColorList.strOk,
         );
@@ -346,7 +348,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   ) {
     boardRepo.clearLocalGuessWordList();
     print(state.runtimeType);
-    emit(_boardInit);
+    emit(_boardDefault.copyWith(
+      attemptLimit: event.lives,
+      wordList: _getGameTemplate(event.length, event.lives),
+    ));
     print(state.runtimeType);
   }
 }

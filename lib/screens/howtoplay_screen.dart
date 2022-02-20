@@ -82,48 +82,48 @@ class HowToPlayScreen extends StatelessWidget {
                   'Welcome to Scuffed Wordle!',
                   style: Theme.of(context).textTheme.headline5,
                 ),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 const Text(
                     "Yes, this is a wordle imitation, with some tweaks in it. How do i play this game, you asked? Simple."),
-                UiController.vSpace(6),
+                UiLib.vSpace(6),
                 const Text(
                     "So, try to find a certain word, with certain amount of guesses. So, basically just type a word and hit the Enter button."),
-                UiController.vSpace(6),
+                UiLib.vSpace(6),
                 const Text(
                     "After each guess you submitted, the tiles of each letter of your guess will change colors and/or shape. Those tiles will indicate how close your guess was to the answer."),
-                UiController.vSpace(6),
+                UiLib.vSpace(6),
                 const Text(
                     "The game condition are:\n- You found the answer, a.k.a you WIN\n- You used up all the attempts given yet still no answer, you LOSE\n- You submitted a duplicated guess, meaning you gave up and ofcourse you LOSE"),
-                UiController.vSpace(18),
+                UiLib.vSpace(18),
                 Text(
                   'For Example :',
                   style: Theme.of(context).textTheme.headline5?.copyWith(
                       // decoration: TextDecoration.underline,
                       ),
                 ),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 const Text(
                     "We\'ll give you a 5x6 game (meaning 5 letters word and 6 attempts). Pretend that you don\'t know this, but the answer is SMART."),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 Row(
                   children: [..._wordExample1],
                 ),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 const Text(
                     'Let\'s say you guessed TOOLS, so T & S are now yellow/diamond, because they exist in the answer, but in a wrong place.'),
                 const Text(
                     'The letters with black tiles, are wrong in both condition, so, don\'t mind them.'),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 Row(
                   children: [..._wordExample2],
                 ),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 const Text(
                     'Next one you guessed SMALL, so S, M & A are now green/circle, because they exist in the answer and are in the right place.'),
-                UiController.vSpace(12),
+                UiLib.vSpace(12),
                 const Text(
                     'Now guess the 5 letter word that:\n- Starts with S-M-A.\n- Has letter T in it but not in the first 3 letter\n- Has no letter O or L\n- Easy right?'),
-                UiController.vSpace(18),
+                UiLib.vSpace(18),
                 Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(

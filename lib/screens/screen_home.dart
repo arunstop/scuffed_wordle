@@ -38,11 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _loadUserLocalData() {
     // TODO: implement initState
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    dictionaryBloc.add(DictionaryInitialize());
+    // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    // dictionaryBloc.add(DictionaryInitialize());
     // dictionaryBloc.add(DictionaryDefine());
 
-    context.read<SettingsBloc>().add(SettingsInitialize());
+    // context.read<SettingsBloc>().add(SettingsInitialize());
 
     // context.read<BoardBloc>().add(BoardInitialize());
   }
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return;
         }
         // LogicalKeyboardKey.backspace;
-        if (UiController.keyboardKeys.contains(letter.toUpperCase())) {
+        if (UiLib.keyboardKeys.contains(letter.toUpperCase())) {
           if (backspaced) {
             boardBloc.add(BoardRemoveLetter());
           } else if (entered) {
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
       //     word: dictionaryBloc.state.dictionary.answer,
       //   ),
       // );
-      UiController.showBottomSheet(
+      UiLib.showBottomSheet(
         context: ctx,
         content: DialogResult(
           answer: dictionary.answer,
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // Finish the game if attempt has reached its limit
       // print(listenerState);
       if (listenerState is BoardGameOver) {
-        // UiController.showSnackbar(
+        // UiLib.showSnackbar(
         //   context: context,
         //   message: "Submitted",
         //   actionLabel: 'OK',
@@ -185,8 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         //   child:
                         //       Text('${dictionaryBloc.state.dictionary.answer}'),
                         // ),
-                        // Text(
-                        //     '${dictionaryBloc.state.dictionary.wordDefinition}'),
+                        Text(
+                            '${dictionaryBloc.state.dictionary.answer}'),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

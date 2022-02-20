@@ -19,7 +19,7 @@ class LoadingIndicator extends StatelessWidget {
               value: null,
             ),
           ),
-          UiController.vSpace(24),
+          UiLib.vSpace(24),
           Text(
             'Loading game...',
             style: Theme.of(context).textTheme.headline6!.copyWith(

@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 dynamic _doNothing() {}
 
-class UiController {
+class UiLib {
   static void showConfirmationDialog({
     required BuildContext context,
     required String title,

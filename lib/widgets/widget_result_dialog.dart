@@ -32,11 +32,20 @@ class DialogResult extends StatelessWidget {
     // Play again
     void _playAgain() {
       _close();
-      Timer(const Duration(milliseconds: 300), () {
-        boardBloc.add(BoardRestart());
-        dictionaryBloc.add(DictionaryRefreshKeyword());
-        // dictionaryBloc.add(DictionaryDefine());
-      });
+      // Timer(const Duration(milliseconds: 300), () {
+      boardBloc.add(const BoardRestart(
+        length: 5,
+        lives: 6,
+      ));
+      // boardBloc.add(
+      //           BoardInitialize(
+      //             length: 5,
+      //             lives: 6,
+      //           ),
+      //         );
+      dictionaryBloc.add(DictionaryRefreshKeyword());
+      //   // dictionaryBloc.add(DictionaryDefine());
+      // });
     }
 
     // Share result
@@ -64,7 +73,7 @@ class DialogResult extends StatelessWidget {
           "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
       //
-      UiController.showSnackbar(
+      UiLib.showSnackbar(
         context: context,
         message: 'Copied to clipboard',
       );
@@ -145,14 +154,15 @@ class DialogResult extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'The answer was : ',
+                        'The answer was:',
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.bold,
                               // letterSpacing: 1,
                               // color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
-                  UiController.vSpace(60/10),
+                      UiLib.vSpace(60 / 10),
+                      // ANSWER
                       Text(
                         '${answer.toUpperCase()}',
                         style: Theme.of(context).textTheme.headline3!.copyWith(
@@ -164,7 +174,7 @@ class DialogResult extends StatelessWidget {
                       ),
                     ],
                   ),
-                  UiController.vSpace(18),
+                  UiLib.vSpace(18),
                   // Column(
                   //   crossAxisAlignment: CrossAxisAlignment.start,
                   //   children: [
@@ -182,7 +192,7 @@ class DialogResult extends StatelessWidget {
                   //                   // color: _resultColor,
                   //                   ),
                   //         ),
-                  //         UiController.hSpace(9),
+                  //         UiLib.hSpace(9),
                   //         _isDefinitionValid == false
                   //             // Define word button
                   //             ? ElevatedButton.icon(
@@ -203,7 +213,7 @@ class DialogResult extends StatelessWidget {
                   //               ),
                   //       ],
                   //     ),
-                  //     UiController.vSpace(9),
+                  //     UiLib.vSpace(9),
                   //     _isDefinitionValid == false
                   //         ? Text('-')
                   //         : Column(
@@ -216,14 +226,14 @@ class DialogResult extends StatelessWidget {
                   //           ),
                   //   ],
                   // ),
-                  // UiController.vSpace(24),
+                  // UiLib.vSpace(24),
                   // Share Button
                   _borderedButton(
                     label: "Share Result",
                     icon: const Icon(Icons.share_rounded),
                     action: () => _shareResult(),
                   ),
-                  UiController.vSpace(9),
+                  UiLib.vSpace(9),
                   // Play again button
                   SizedBox(
                     width: double.infinity,
@@ -243,7 +253,7 @@ class DialogResult extends StatelessWidget {
                       ),
                     ),
                   ),
-                  UiController.vSpace(9),
+                  UiLib.vSpace(9),
                   // Close button
                   _borderedButton(
                     label: "Close",
@@ -251,7 +261,7 @@ class DialogResult extends StatelessWidget {
                     action: () => _close(),
                     noBorder: true,
                   ),
-                  UiController.vSpace(18),
+                  UiLib.vSpace(18),
                   // Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
                   // const BoardResult(),
                 ],

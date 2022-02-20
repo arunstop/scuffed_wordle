@@ -9,7 +9,6 @@ import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
 
 class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
-  final DictionaryRepo dictionaryRepo;
 
   DictionaryBloc({required this.dictionaryRepo})
       : super(DictionaryDefault(dictionary: DictionaryEmpty())) {
@@ -28,6 +27,8 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     // });
   }
 
+  final DictionaryRepo dictionaryRepo;
+  
   FutureOr<void> _onDictionaryInitialize(
       DictionaryInitialize event, Emitter<DictionaryState> emit) async {
     Dictionary localDictionary = await dictionaryRepo.getLocalDictionary();
@@ -46,7 +47,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       emit(state.copyWith(dictionary: localDictionary));
       // print('local ${localDictionary.answer}');
     }
-
+    // print(state.dictionary.answer);
     // print(await dictionaryRepo.getLocalAnswer());
   }
 

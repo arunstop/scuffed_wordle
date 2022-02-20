@@ -9,9 +9,9 @@ class DictionaryEvent extends Equatable {
 
 class DictionaryInitialize extends DictionaryEvent {
   // final List<String> list;
-  // final String keyword;
+  // final Function whenDone;
 
-  // DictionaryInitialize({required this.list, required this.keyword});
+  // DictionaryInitialize({required this.whenDone});
 
   // @override
   // List<Object> get props => [list,keyword];

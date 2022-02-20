@@ -128,7 +128,7 @@ class Keyboard extends StatelessWidget {
       );
     }
 
-    List<Widget> _keyboardButtons = UiController.keyboardTemplate
+    List<Widget> _keyboardButtons = UiLib.keyboardTemplate
         .map((kbRow) => Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,

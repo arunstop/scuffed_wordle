@@ -31,13 +31,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     void _showResetDialog() {
-      UiController.showConfirmationDialog(
+      UiLib.showConfirmationDialog(
         context: context,
         title: 'Reset Settings',
         content: 'Do you wish to restore all your settings to default?',
         actionY: () {
           settingsBloc.add(SettingsReset());
-          UiController.showSnackbar(
+          UiLib.showSnackbar(
             context: context,
             message: 'Settings has been reset to default',
             actionLabel: 'Done',
@@ -47,10 +47,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     // check if user is currently playing by checking submitted word
-    bool _isPlaying = boardBloc.state is! BoardGameOver &&
-        boardBloc.state.submittedWordList[0]
-            .filter((element) => element.letter.isNotEmpty)
-            .isNotEmpty;
+    bool _isPlaying =
+        boardBloc.state is! BoardGameOver && boardBloc.state.attempt > 1;
 
     Widget _getTitle(String title) => Text(
           title,
@@ -77,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SwitchListTile.adaptive(
             value: state.settings.hardMode,
             onChanged: (val) => _isPlaying
-                ? UiController.showToast(
+                ? UiLib.showToast(
                     title: 'Cannot change hard mode when playing',
                     strColor: "#f44336",
                   )
@@ -113,8 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (val) =>
                 _changeSettings(SettingsTypes.retypeOnWrongGuess, val),
             title: _getTitle('Re-type on wrong guess'),
-            subtitle: const Text(
-                'Delete current guess when it is INVALID (not in dictionary or does not meet the Hard Mode requirements)'),
+            subtitle: const Text('Delete current guess when it is INVALID'),
             secondary: const Icon(Icons.keyboard_return_rounded),
           ),
           SwitchListTile.adaptive(

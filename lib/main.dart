@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/services/board_service.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/data/services/settings_service.dart';
@@ -40,89 +43,106 @@ class ScuffedWordleApp extends StatelessWidget {
     // }else{
     //   print('light');
     // }
-    void _dictionaryBlocListener(BuildContext context, DictionaryState state) {
-      context.read<BoardBloc>().add(
-            BoardInitialize(
-              length: 5,
-              lives: 6,
-            ),
-          );
-    }
+    // void _dictionaryBlocListener(BuildContext context, DictionaryState state) {
+    //   context.read<BoardBloc>().add(
+    //         BoardInitialize(
+    //           length: 5,
+    //           lives: 6,
+    //         ),
+    //       );
+    // }
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => DictionaryBloc(
-            dictionaryRepo: DictionaryService(prefs: _prefs),
-          ),
-        ),
-        BlocProvider(
           create: (context) => SettingsBloc(
             settingsRepo: SettingsService(prefs: _prefs),
-          ),
+          )..add(SettingsInitialize()),
         ),
         BlocProvider(
-          create: (context) => BoardBloc(
-            boardRepo: BoardService(prefs: _prefs),
-            dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
-            settingsBloc: BlocProvider.of<SettingsBloc>(context),
-          ),
+          create: (context) => DictionaryBloc(
+            dictionaryRepo: DictionaryService(prefs: _prefs),
+          )..add(DictionaryInitialize()),
         ),
+        BlocProvider(
+            create: (context) => BoardBloc(
+                  boardRepo: BoardService(prefs: _prefs),
+                  dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
+                  settingsBloc: BlocProvider.of<SettingsBloc>(context),
+                )),
       ],
-      child: BlocListener<DictionaryBloc, DictionaryState>(
-        listener: _dictionaryBlocListener,
-        child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) => MaterialApp(
-            title: "Scuffed Wordle - A word guessing game",
-            theme: ThemeData(
-              fontFamily: 'RobotoMono',
-              brightness: Brightness.light,
-              // primaryColor: Colors.teal,
-              // primaryColorDark: Colors.teal,
-              // primarySwatch: Colors.teal,
-              scaffoldBackgroundColor: Colors.grey[50],
-              // colorScheme: ColorScheme.fromSwatch().copyWith(
-              //   primary: Colors.teal,
-              //   primaryVariant: Colors.teal[800],
-              //   secondary: Colors.orange,
-              //   secondaryVariant: Colors.orange[800],
-              // ),
-              colorScheme: const ColorScheme.light(
-                primary: Colors.teal,
-                primaryVariant: Colors.teal,
-                secondary: Colors.orange,
-                secondaryVariant: Colors.orange,
-              ),
-            ),
-            darkTheme: ThemeData(
-              fontFamily: 'RobotoMono',
-              brightness: Brightness.dark,
-              colorScheme: const ColorScheme.dark(
-                primary: Colors.teal,
-              ),
-              // primaryColorDark: Colors.teal[300],
-              // primarySwatch: Colors.teal,
-              // scaffoldBackgroundColor: Colors.grey[50],
-              // primaryColor: Colors.teal,
-              // primaryColorDark: Colors.teal,
-              // primarySwatch: Colors.teal,
-              // colorScheme: ColorScheme.light(
-              //   // primary: Colors.teal,
-              //   // primaryVariant: Colors.teal[800],
-              //   // secondary: Colors.orange,
-              //   // secondaryVariant: Colors.orange[800],
-              // ),
-            ),
-            themeMode:
-                state.settings.darkTheme ? ThemeMode.dark : ThemeMode.light,
-            // home: PageHome(title: title),
-            initialRoute: '/',
-            routes: _routes,
-          ),
+      child: BlocBuilder<DictionaryBloc, DictionaryState>(
+        builder: (context, dictionaryState) =>
+            BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, settingsState) {
+            if (dictionaryState is! DictionaryDefault) {
+              context.read<BoardBloc>().add(
+                    BoardInitialize(
+                      length: 5,
+                      lives: 6,
+                    ),
+                  );
+            }
+
+            return MaterialApp(
+              title: "Scuffed Wordle - A word guessing game",
+              theme: ScuffedWordleTheme.light,
+              darkTheme: ScuffedWordleTheme.dark,
+              themeMode: settingsState.settings.darkTheme
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+              // home: PageHome(title: title),
+              initialRoute: '/',
+              routes: _routes,
+            );
+          },
         ),
       ),
     );
   }
+}
+
+class ScuffedWordleTheme {
+  static ThemeData get light => ThemeData(
+        fontFamily: 'RobotoMono',
+        brightness: Brightness.light,
+        // primaryColor: Colors.teal,
+        // primaryColorDark: Colors.teal,
+        // primarySwatch: Colors.teal,
+        scaffoldBackgroundColor: Colors.grey[50],
+        // colorScheme: ColorScheme.fromSwatch().copyWith(
+        //   primary: Colors.teal,
+        //   primaryVariant: Colors.teal[800],
+        //   secondary: Colors.orange,
+        //   secondaryVariant: Colors.orange[800],
+        // ),
+        colorScheme: const ColorScheme.light(
+          primary: Colors.teal,
+          primaryVariant: Colors.teal,
+          secondary: Colors.orange,
+          secondaryVariant: Colors.orange,
+        ),
+      );
+
+  static ThemeData get dark => ThemeData(
+        fontFamily: 'RobotoMono',
+        brightness: Brightness.dark,
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.teal,
+        ),
+        // primaryColorDark: Colors.teal[300],
+        // primarySwatch: Colors.teal,
+        // scaffoldBackgroundColor: Colors.grey[50],
+        // primaryColor: Colors.teal,
+        // primaryColorDark: Colors.teal,
+        // primarySwatch: Colors.teal,
+        // colorScheme: ColorScheme.light(
+        //   // primary: Colors.teal,
+        //   // primaryVariant: Colors.teal[800],
+        //   // secondary: Colors.orange,
+        //   // secondaryVariant: Colors.orange[800],
+        // ),
+      );
 }
