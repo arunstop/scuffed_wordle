@@ -63,7 +63,7 @@ class DictionaryService extends MainService implements DictionaryRepo {
     http.Response getGameDictionary = await getData(
       apiUri: Constants.api.scuffedWordle.getDictionary(
         params: {
-          "length": "5",
+          "length": "${length}",
           "difficulty": "easy",
         },
       ),

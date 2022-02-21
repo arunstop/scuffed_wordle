@@ -7,8 +7,8 @@ part of 'phonetic_model.dart';
 // **************************************************************************
 
 Phonetic _$PhoneticFromJson(Map<String, dynamic> json) => Phonetic(
-      text: json['text'] as String,
-      audio: json['audio'] as String,
+      text: json['text'] as String?,
+      audio: json['audio'] as String?,
     );
 
 Map<String, dynamic> _$PhoneticToJson(Phonetic instance) => <String, dynamic>{

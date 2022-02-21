@@ -13,6 +13,8 @@ import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
+import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
+import 'package:scuffed_wordle/data/repositories/settings_repository.dart';
 import 'package:scuffed_wordle/ui.dart';
 part 'package:scuffed_wordle/bloc/board/board_events.dart';
 part 'package:scuffed_wordle/bloc/board/board_states.dart';
@@ -32,6 +34,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   // late final StreamSubscription dictionaryStream;
   // late final StreamSubscription settingsStream;
   final BoardRepo boardRepo;
+  final DictionaryRepo dictionaryRepo;
+  final SettingsRepo settingsRepo;
 
   // List<String> dictionaryList = [];
   // SettingsState settingsState = SettingsDefault(settings: Settings());
@@ -39,6 +43,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   BoardBloc({
     required this.boardRepo,
+    required this.dictionaryRepo,
+    required this.settingsRepo,
     // required this.dictionaryBloc,
     // required this.settingsBloc,
   }) : super(_boardDefault) {
@@ -89,12 +95,21 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardInitialize event,
     Emitter<BoardState> emit,
   ) async {
+    print('boardInit_');
+
+    Dictionary dictionaryLocal = await dictionaryRepo.getLocalDictionary();
+    Settings settingsLocal = await settingsRepo.getLocalSettings();
+
+    int guessLength = settingsLocal.guessLength;
+    int lives = settingsLocal.lives;
+    String answer = dictionaryLocal.answer;
     List<List<BoardLetter>> gameTemplate =
-        _getGameTemplate(event.length, event.lives);
+        _getGameTemplate(guessLength, settingsLocal.lives);
     // Get guesses form users latest session (if available)
     List<List<BoardLetter>> userGuessWordList =
         await boardRepo.getLocalGuessWordList(
-            answerWord: event.answer);
+      answerWord: answer,
+    );
     // print(userGuessWordList.map((e) => e.map((e) => e.letter).join()));
 
     // If user has played before.
@@ -111,15 +126,14 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       ];
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
-      bool hasWon =
-          lastGuess == event.answer.toLowerCase();
+      bool hasWon = lastGuess == answer.toLowerCase();
       if (hasWon || userAttempts >= state.attemptLimit) {
         // No need to add user attempt since the game is over
         emit(BoardGameOver(
           wordList: wordList,
           attempt: userAttempts,
           win: hasWon,
-          attemptLimit: event.lives,
+          attemptLimit: settingsLocal.lives,
         ));
         return;
       }
@@ -127,12 +141,12 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       emit(_boardDefault.copyWith(
         attempt: userAttempts + 1,
         wordList: wordList,
-        attemptLimit: event.lives,
+        attemptLimit: settingsLocal.lives,
       ));
     } else {
       emit(_boardDefault.copyWith(
         wordList: gameTemplate,
-        attemptLimit: event.lives,
+        attemptLimit: settingsLocal.lives,
       ));
     }
 
@@ -149,10 +163,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardAddLetter event,
     Emitter<BoardState> emit,
   ) {
+    int wordLength = state.wordLength;
     // Count typed letters
     var typedLetters = [...state.word, event.letter];
-    // if typed letters is 5 or more, do nothing
-    if (typedLetters.length > 5) {
+    // if typed letters more than [word length]
+    if (typedLetters.length > wordLength) {
       return;
     }
     // Apply changes on the bloc
@@ -181,11 +196,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
-    
-    
-
-    // Submit word when the count is 5 letter
-    if (state.word.length < 5) {
+    // if the [current guess] is length less than [word length]
+    if (state.word.length < state.wordLength) {
       Fluttertoast.showToast(
         msg: "Not enough letter",
         toastLength: Toast.LENGTH_SHORT,
@@ -202,8 +214,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       var strWord = state.word.join().toLowerCase();
       bool err = false;
       bool gameOver = false;
-      bool retypeOnWrongGuess =
-          event.settings.retypeOnWrongGuess == true;
+      bool retypeOnWrongGuess = event.settings.retypeOnWrongGuess == true;
 
       if (event.settings.hardMode == true && state.attempt > 1) {
         // Get latest answer
@@ -343,15 +354,17 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     }
   }
 
-  void _onBoardRestart(
+  FutureOr<void> _onBoardRestart(
     BoardRestart event,
     Emitter<BoardState> emit,
-  ) {
+  ) async {
+    Dictionary dictionaryLocal = await dictionaryRepo.getLocalDictionary();
+    Settings settingsLocal = await settingsRepo.getLocalSettings();
     boardRepo.clearLocalGuessWordList();
     print(state.runtimeType);
     emit(_boardDefault.copyWith(
-      attemptLimit: event.lives,
-      wordList: _getGameTemplate(event.length, event.lives),
+      attemptLimit: settingsLocal.lives,
+      wordList: _getGameTemplate(settingsLocal.guessLength, settingsLocal.lives),
     ));
     print(state.runtimeType);
   }

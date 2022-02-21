@@ -41,13 +41,16 @@ class HomeScreen extends StatelessWidget {
         bool entered = event.logicalKey == LogicalKeyboardKey.enter ||
             event.logicalKey == LogicalKeyboardKey.numpadEnter;
         // if guess is empty & backspace is pressed, do nothing
+        // print('${settings.guessLength}');
         if (boardState.word.isEmpty && backspaced) {
           return;
         }
         // if guess reached max required letter
         // and the key is not enter or backspace
         // do nothing
-        else if (boardState.word.length == 5 && !backspaced && !entered) {
+        else if (boardState.word.length == settings.guessLength &&
+            !backspaced &&
+            !entered) {
           return;
         }
         // LogicalKeyboardKey.backspace;
@@ -57,10 +60,9 @@ class HomeScreen extends StatelessWidget {
           } else if (entered) {
             Dictionary dictionary = dictionaryBloc.state.dictionary;
             boardBloc.add(BoardSubmitGuess(
-              settings: settings,
-              answer: dictionary.answer,
-              wordList: dictionary.wordList
-            ));
+                settings: settings,
+                answer: dictionary.answer,
+                wordList: dictionary.wordList));
           } else {
             boardBloc.add(BoardAddLetter(letter: letter));
           }
@@ -152,7 +154,8 @@ class HomeScreen extends StatelessWidget {
               secondaryAnimation: secondaryAnimation,
               child: child,
             ),
-            child: boardBloc.state is BoardDefault
+            child: boardBloc.state is BoardDefault ||
+                    dictionaryBloc.state is DictionaryDefault
                 ? const LoadingIndicator()
                 : SingleChildScrollView(
                     key: ValueKey<String>(
@@ -174,8 +177,7 @@ class HomeScreen extends StatelessWidget {
                         //   child:
                         //       Text('${dictionaryBloc.state.dictionary.answer}'),
                         // ),
-                        // Text(
-                        //     '${dictionaryBloc.state.dictionary.answer}'),
+                        Text('${dictionaryBloc.state.dictionary.answer}'),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

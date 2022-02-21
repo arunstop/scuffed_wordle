@@ -8,6 +8,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -31,22 +32,22 @@ class DialogResult extends StatelessWidget {
     // Close dialog
     void _close() => Navigator.pop(context);
     // Play again
-    void _playAgain() {
+    void _playAgain() async {
       _close();
-      Timer(const Duration(milliseconds: 300), () {
-        boardBloc.add(const BoardRestart(
-          length: 5,
-          lives: 6,
-        ));
-        // boardBloc.add(
-        //           BoardInitialize(
-        //             length: 5,
-        //             lives: 6,
-        //           ),
-        //         );
-        dictionaryBloc.add(DictionaryRefreshKeyword());
-        //   // dictionaryBloc.add(DictionaryDefine());
-      });
+      await Future.delayed(Duration(milliseconds: 300));
+      Settings settings = settingsBloc.state.settings;
+      boardBloc.add(BoardRestart(
+        // length: settings.guessLength,
+        // lives: settings.lives,
+      ));
+      // boardBloc.add(
+      //           BoardInitialize(
+      //             length: 5,
+      //             lives: 6,
+      //           ),
+      //         );
+      dictionaryBloc.add(DictionaryRefreshKeyword());
+      //   // dictionaryBloc.add(DictionaryDefine());
     }
 
     // Share result
@@ -96,48 +97,53 @@ class DialogResult extends StatelessWidget {
       Icon? icon,
       required void Function()? action,
       bool noBorder = false,
-    }) =>
-        SizedBox(
-          width: double.infinity,
-          height: 45,
-          child: OutlinedButton.icon(
-            onPressed: action,
-            icon: icon ?? const Text(''),
-            label: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 20,
-              ),
+    }) {
+      return SizedBox(
+        width: double.infinity,
+        height: 45,
+        child: OutlinedButton.icon(
+          onPressed: action,
+          icon: icon ?? const Text(''),
+          label: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 20,
             ),
-            // give no border coloring if noBorder is true
-            style: noBorder
-                ? null
-                : ButtonStyle(
-                    side: MaterialStateProperty.all(
-                      BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+          ),
+          // give no border coloring if noBorder is true
+          style: noBorder
+              ? null
+              : ButtonStyle(
+                  side: MaterialStateProperty.all(
+                    BorderSide(
+                      width: 2,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-          ),
-        );
+                ),
+        ),
+      );
+    }
+
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
     bool _isDefinitionValid = definition != null && definition.word == answer;
     List<Widget> _getDefinitionList(List<Definition> defList) {
       return defList
-          .mapIndexed((index, def) => Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${index + 1}. ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+          .mapIndexed((index, def) => Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${index + 1}. ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Flexible(child: Text('${def.definition}')),
-                ],
+                    Flexible(child: Text('${def.definition}')),
+                  ],
+                ),
               ))
           .toList();
     }
@@ -169,6 +175,7 @@ class DialogResult extends StatelessWidget {
               padding: const EdgeInsets.only(left: 18, right: 18),
               child: Column(
                 children: [
+                  // Header
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -193,13 +200,14 @@ class DialogResult extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // Content
                   // UiLib.vSpace(6),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _isDefinitionValid == false
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 9.0),
+                              padding: const EdgeInsets.only(top: 12.0),
                               child: ElevatedButton.icon(
                                 onPressed: () => _defineWord(answer),
                                 style: ButtonStyle(
@@ -214,6 +222,7 @@ class DialogResult extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                // Phonetic
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -234,6 +243,7 @@ class DialogResult extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                // Meanings
                                 // UiLib.vSpace(6),
                                 for (var meaning in definition.meanings)
                                   Column(
@@ -262,12 +272,11 @@ class DialogResult extends StatelessWidget {
                                             )
                                     ],
                                   )
-                                // Text(
-                                //     '-- ${meaning.partOfSpeech}\n${meaning.definitions?[0].definition}')
                               ],
                             ),
                     ],
                   ),
+                  // Buttons
                   UiLib.vSpace(24),
                   // Share Button
                   _borderedButton(

@@ -7,10 +7,10 @@ part of 'word_model.dart';
 // **************************************************************************
 
 Word _$WordFromJson(Map<String, dynamic> json) => Word(
-      word: json['word'] as String,
-      phonetic: json['phonetic'] as String,
-      phonetics: (json['phonetics'] as List<dynamic>)
-          .map((e) => Phonetic.fromJson(e as Map<String, dynamic>))
+      word: json['word'] as String?,
+      phonetic: json['phonetic'] as String?,
+      phonetics: (json['phonetics'] as List<dynamic>?)
+          ?.map((e) => Phonetic.fromJson(e as Map<String, dynamic>))
           .toList(),
       meanings: (json['meanings'] as List<dynamic>)
           .map((e) => Meaning.fromJson(e as Map<String, dynamic>))

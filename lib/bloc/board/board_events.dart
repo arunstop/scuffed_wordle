@@ -11,15 +11,15 @@ class BoardInitialize extends BoardEvent {
   // final List<List<BoardLetter>> guessWordList;
 
   // BoardInitialize({required this.guessWordList});
-  final int length;
-  final int lives;
-  final String answer;
+  // final int length;
+  // final int lives;
+  // final String answer;
 
-  const BoardInitialize({
-    required this.length,
-    required this.lives,
-    required this.answer,
-  });
+  // const BoardInitialize({
+  //   required this.length,
+  //   required this.lives,
+  //   required this.answer,
+  // });
 
   // @override
   // List<Object> get props => [guessWordList];
@@ -45,13 +45,13 @@ class BoardSubmitGuess extends BoardEvent {
 }
 
 class BoardRestart extends BoardEvent {
-  final int length;
-  final int lives;
+  // final int length;
+  // final int lives;
 
-  const BoardRestart({
-    required this.length,
-    required this.lives,
-  });
+  // const BoardRestart({
+  //   required this.length,
+  //   required this.lives,
+  // });
 }
 
 class BoardTest extends BoardEvent {}

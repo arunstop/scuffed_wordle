@@ -8,6 +8,8 @@ import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
+import 'package:scuffed_wordle/data/repositories/settings_repository.dart';
 import 'package:scuffed_wordle/data/services/board_service.dart';
 import 'package:scuffed_wordle/data/services/dictionary_service.dart';
 import 'package:scuffed_wordle/data/services/settings_service.dart';
@@ -53,17 +55,19 @@ class ScuffedWordleApp extends StatelessWidget {
     // }
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    SettingsRepo _settingsRepo = SettingsService(prefs: _prefs);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) => SettingsBloc(
-            settingsRepo: SettingsService(prefs: _prefs),
+            settingsRepo: _settingsRepo,
           )..add(SettingsInitialize()),
         ),
         BlocProvider(
           create: (context) => DictionaryBloc(
             dictionaryRepo: DictionaryService(prefs: _prefs),
+            settingsRepo: _settingsRepo,
           )..add(DictionaryInitialize()),
         ),
         BlocProvider(
@@ -71,34 +75,25 @@ class ScuffedWordleApp extends StatelessWidget {
                   boardRepo: BoardService(prefs: _prefs),
                   // dictionaryBloc: BlocProvider.of<DictionaryBloc>(context),
                   // settingsBloc: BlocProvider.of<SettingsBloc>(context),
-                )),
+                  dictionaryRepo: DictionaryService(prefs: _prefs),
+                  settingsRepo: _settingsRepo,
+                )..add(BoardInitialize())),
       ],
-      child: BlocBuilder<DictionaryBloc, DictionaryState>(
-        builder: (context, dictionaryState) =>
-            BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, settingsState) {
-            if (dictionaryState is! DictionaryDefault) {
-              context.read<BoardBloc>().add(
-                    BoardInitialize(
-                        length: 5,
-                        lives: 6,
-                        answer: dictionaryState.dictionary.answer),
-                  );
-            }
-
-            return MaterialApp(
-              title: "Scuffed Wordle - A word guessing game",
-              theme: ScuffedWordleTheme.light,
-              darkTheme: ScuffedWordleTheme.dark,
-              themeMode: settingsState.settings.darkTheme
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
-              // home: PageHome(title: title),
-              initialRoute: '/',
-              routes: _routes,
-            );
-          },
-        ),
+      child: BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (context, settingsState) {
+          print('board');
+          return MaterialApp(
+            title: "Scuffed Wordle - A word guessing game",
+            theme: ScuffedWordleTheme.light,
+            darkTheme: ScuffedWordleTheme.dark,
+            themeMode: settingsState.settings.darkTheme
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            // home: PageHome(title: title),
+            initialRoute: '/',
+            routes: _routes,
+          );
+        },
       ),
     );
   }

@@ -35,9 +35,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         return;
       }
       // changed
-      emit(SettingsDefault(
+      // print(state.settings.wordLength);
+      emit(state.copyWith(
         settings: userLocalSettings,
       ));
+      // print(state.settings.wordLength);
     });
 
     on<SettingsChange>((event, emit) {
@@ -74,6 +76,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         case SettingsTypes.useMobileKeyboard:
           emit(state.copyWith(
             settings: state.settings.copyWith(useMobileKeyboard: event.value),
+          ));
+          break;
+        case SettingsTypes.wordLength:
+          emit(state.copyWith(
+            settings: state.settings.copyWith(wordLength: event.value),
           ));
           break;
         default:

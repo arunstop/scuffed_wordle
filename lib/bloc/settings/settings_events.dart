@@ -10,7 +10,7 @@ class SettingsEvent extends Equatable {
 
 class SettingsChange extends SettingsEvent {
   final SettingsTypes type;
-  final bool value;
+  final dynamic value;
 
   const SettingsChange({required this.type, required this.value});
 }

@@ -5,17 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
+import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
+import 'package:scuffed_wordle/data/repositories/settings_repository.dart';
 
 class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
-
-  DictionaryBloc({required this.dictionaryRepo})
-      : super(DictionaryDefault(dictionary: DictionaryEmpty())) {
+  DictionaryBloc({
+    required this.dictionaryRepo,
+    required this.settingsRepo,
+  }) : super(DictionaryDefault(dictionary: DictionaryEmpty())) {
     // Initialize state
     on<DictionaryInitialize>(_onDictionaryInitialize);
-
+    // Refresh keyword
     on<DictionaryRefreshKeyword>(_onDictionaryRefreshKeyword);
+    // Define answer
     on<DictionaryDefine>(_onDictionaryDefine);
 
     // on<DictionaryTest>((event, emit) {
@@ -28,14 +32,26 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
   }
 
   final DictionaryRepo dictionaryRepo;
-  
+  final SettingsRepo settingsRepo;
+
   FutureOr<void> _onDictionaryInitialize(
       DictionaryInitialize event, Emitter<DictionaryState> emit) async {
+    // check if it is re-initialize
+    // or initialize
+    // by checking the type
+    if (state is! DictionaryDefault) {
+      emit(DictionaryDefault(dictionary: DictionaryEmpty()));
+    }
     Dictionary localDictionary = await dictionaryRepo.getLocalDictionary();
+    Settings settingsLocal = await settingsRepo.getLocalSettings();
 
+    print('ld : ${localDictionary.letterCount}');
+    print('ev : ${settingsLocal.guessLength}');
     // If there is no local dictionary
-    if (localDictionary is DictionaryEmpty) {
-      Dictionary dictionary = await dictionaryRepo.getDictionary(length: 5);
+    if (localDictionary is DictionaryEmpty ||
+        localDictionary.letterCount != settingsLocal.guessLength) {
+      Dictionary dictionary =
+          await dictionaryRepo.getDictionary(length: settingsLocal.guessLength);
       // Apply changes
       emit(state.copyWith(dictionary: dictionary));
       // Save answer locally
@@ -91,7 +107,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     // If there is a definition
     // or it is not error
     if (wordDefinition != null) {
-      print("before: ${state.dictionary.wordDefinition?.phonetic}");
+      // print("before: ${state.dictionary.wordDefinition?.phonetic}");
       emit(
         state.copyWith(
           dictionary: state.dictionary.copyWith(
@@ -99,7 +115,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
           ),
         ),
       );
-      print("after: ${state.dictionary.wordDefinition?.phonetic}");
+      // print("after: ${state.dictionary.wordDefinition?.phonetic}");
     }
     // If there is local answer, set it to the state.
     else {

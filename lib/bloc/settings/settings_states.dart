@@ -19,7 +19,7 @@ class SettingsState extends Equatable {
 // }
 
 class SettingsDefault extends SettingsState {
-  SettingsDefault({required Settings settings}) : super(settings: settings);
+    SettingsDefault({required Settings settings}) : super(settings: settings);
 }
 
 // class SettingsInit extends SettingsState {

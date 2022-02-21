@@ -7,9 +7,9 @@ part of 'meaning_model.dart';
 // **************************************************************************
 
 Meaning _$MeaningFromJson(Map<String, dynamic> json) => Meaning(
-      partOfSpeech: json['partOfSpeech'] as String,
-      definitions: (json['definitions'] as List<dynamic>)
-          .map((e) => Definition.fromJson(e as Map<String, dynamic>))
+      partOfSpeech: json['partOfSpeech'] as String?,
+      definitions: (json['definitions'] as List<dynamic>?)
+          ?.map((e) => Definition.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

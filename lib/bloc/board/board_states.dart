@@ -41,6 +41,7 @@ class BoardState extends Equatable {
       // set end index to not to go beyond wordlist Index
       // (attempt > attemptLimit ? attemptLimit : attempt),
       attempt);
+  int get wordLength => wordList[0].length;
   // get guesses as string
   List<String> get strGuessList => wordList
       .map((letterList) => letterList.map((letter) => letter.letter).join())
