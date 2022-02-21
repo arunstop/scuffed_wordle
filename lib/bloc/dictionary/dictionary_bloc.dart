@@ -115,6 +115,9 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
           ),
         ),
       );
+
+      dictionaryRepo.setLocalDictionary(dictionary: state.dictionary);
+
       // print("after: ${state.dictionary.wordDefinition?.phonetic}");
     }
     // If there is local answer, set it to the state.

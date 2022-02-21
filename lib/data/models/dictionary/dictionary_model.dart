@@ -14,7 +14,7 @@ class Dictionary {
   final List<String> answerList;
   final List<String> wordList;
   // final DictionaryStatus status;
-  @JsonKey(ignore: true)
+  // @JsonKey(ignore: true)
   final Word? wordDefinition;
 
   Dictionary({

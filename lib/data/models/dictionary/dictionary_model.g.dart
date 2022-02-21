@@ -16,6 +16,9 @@ Dictionary _$DictionaryFromJson(Map<String, dynamic> json) => Dictionary(
           .toList(),
       wordList:
           (json['wordList'] as List<dynamic>).map((e) => e as String).toList(),
+      wordDefinition: json['wordDefinition'] == null
+          ? null
+          : Word.fromJson(json['wordDefinition'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DictionaryToJson(Dictionary instance) =>
@@ -26,4 +29,5 @@ Map<String, dynamic> _$DictionaryToJson(Dictionary instance) =>
       'difficulty': instance.difficulty,
       'answerList': instance.answerList,
       'wordList': instance.wordList,
+      'wordDefinition': instance.wordDefinition,
     };

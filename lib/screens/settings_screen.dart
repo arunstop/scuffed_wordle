@@ -62,12 +62,16 @@ class SettingsScreen extends StatelessWidget {
       // Text('$_isPlaying'),
       SwitchListTile.adaptive(
         value: settings.hardMode,
-        onChanged: (val) => _isPlaying
-            ? UiLib.showToast(
-                title: 'Cannot change hard mode when playing',
-                strColor: ColorList.strError,
-              )
-            : _changeSettings(SettingsTypes.hardMode, val),
+        onChanged: (val) {
+          if (_isPlaying) {
+            UiLib.showToast(
+              title: 'Cannot change hard mode when playing',
+              strColor: ColorList.strError,
+            );
+            return;
+          }
+          _changeSettings(SettingsTypes.hardMode, val);
+        },
         title: _getTitle('Hard Mode'),
         subtitle: const Text('User must use the green letters they found'),
         secondary: const Icon(Icons.whatshot_rounded),
@@ -130,15 +134,18 @@ class SettingsScreen extends StatelessWidget {
                 strColor: ColorList.strError,
               );
             } else {
+              if (value == settings.wordLength) {
+                return;
+              }
               _changeSettings(SettingsTypes.wordLength, value);
               // print(value);
               // print(settings.wordLength);
               dictionaryBloc.add(DictionaryInitialize());
               boardBloc.add(
                 BoardRestart(
-                  // length: settings.guessLength,
-                  // lives: settings.lives,
-                ),
+                    // length: settings.guessLength,
+                    // lives: settings.lives,
+                    ),
               );
               Navigator.pop(context);
             }
