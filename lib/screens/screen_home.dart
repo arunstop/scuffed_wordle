@@ -177,7 +177,7 @@ class HomeScreen extends StatelessWidget {
                         //   child:
                         //       Text('${dictionaryBloc.state.dictionary.answer}'),
                         // ),
-                        Text('${dictionaryBloc.state.dictionary.answer}'),
+                        // Text('${dictionaryBloc.state.dictionary.answer}'),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

@@ -34,12 +34,12 @@ class DialogResult extends StatelessWidget {
     // Play again
     void _playAgain() async {
       _close();
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       Settings settings = settingsBloc.state.settings;
       boardBloc.add(BoardRestart(
-        // length: settings.guessLength,
-        // lives: settings.lives,
-      ));
+          // length: settings.guessLength,
+          // lives: settings.lives,
+          ));
       // boardBloc.add(
       //           BoardInitialize(
       //             length: 5,
@@ -137,7 +137,7 @@ class DialogResult extends StatelessWidget {
                   children: [
                     Text(
                       '${index + 1}. ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -202,11 +202,15 @@ class DialogResult extends StatelessWidget {
                   ),
                   // Content
                   // UiLib.vSpace(6),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _isDefinitionValid == false
-                          ? Padding(
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 600),
+                    transitionBuilder: (child, animation) => SizeTransition(
+                      sizeFactor: animation,
+                      child: child,
+                    ),
+                    child: _isDefinitionValid == false
+                        ? Center(
+                          child: Padding(
                               padding: const EdgeInsets.only(top: 12.0),
                               child: ElevatedButton.icon(
                                 onPressed: () => _defineWord(answer),
@@ -214,42 +218,44 @@ class DialogResult extends StatelessWidget {
                                   foregroundColor:
                                       MaterialStateProperty.all(Colors.white),
                                 ),
-                                icon: Icon(Icons.search),
-                                label: Text('Define'),
+                                icon: const Icon(Icons.search),
+                                label: const Text('Define'),
                               ),
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // Phonetic
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.volume_up_rounded),
-                                      color: Colors.lightBlue,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        '${definition!.phonetic}',
-                                        style: const TextStyle(
-                                          fontSize: 21,
-                                          letterSpacing: 2,
-                                          fontFamily: 'Rubik',
-                                        ),
+                            ),
+                        )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Phonetic
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.volume_up_rounded),
+                                    color: Colors.lightBlue,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      '${definition!.phonetic}',
+                                      style: const TextStyle(
+                                        fontSize: 21,
+                                        letterSpacing: 2,
+                                        fontFamily: 'Rubik',
                                       ),
                                     ),
-                                  ],
-                                ),
-                                // Meanings
-                                // UiLib.vSpace(6),
-                                for (var meaning in definition.meanings)
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(9.0),
+                                  ),
+                                ],
+                              ),
+                              // Meanings
+                              // UiLib.vSpace(6),
+                              for (var meaning in definition.meanings)
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(9.0),
+                                      child: Center(
                                         child: Text(
                                           '-- ${meaning.partOfSpeech} --',
                                           style: const TextStyle(
@@ -261,20 +267,20 @@ class DialogResult extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      meaning.definitions!.isEmpty
-                                          ? Text('')
-                                          : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: _getDefinitionList(
-                                                meaning.definitions!,
-                                              ),
-                                            )
-                                    ],
-                                  )
-                              ],
-                            ),
-                    ],
+                                    ),
+                                    meaning.definitions!.isEmpty
+                                        ? const Text('')
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: _getDefinitionList(
+                                              meaning.definitions!,
+                                            ),
+                                          )
+                                  ],
+                                )
+                            ],
+                          ),
                   ),
                   // Buttons
                   UiLib.vSpace(24),
