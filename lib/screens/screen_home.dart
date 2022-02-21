@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
@@ -84,6 +85,12 @@ class HomeScreen extends StatelessWidget {
         context: ctx,
         content: DialogResult(
           answer: dictionary.answer,
+          tts: FlutterTts()
+            ..awaitSpeakCompletion(true)
+            ..setLanguage('en-GB')
+            ..setVolume(1.0)
+            ..setPitch(1.0)
+            ..setSpeechRate(0.4),
           // definition: dictionary.wordDefinition,
         ),
       );

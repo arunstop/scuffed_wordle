@@ -4,6 +4,8 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_tts/flutter_tts_web.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
@@ -13,14 +15,25 @@ import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
-class DialogResult extends StatelessWidget {
+class DialogResult extends StatefulWidget {
   final String answer;
+  final FlutterTts tts;
   // final Word? definition;
-  const DialogResult({
+  DialogResult({
     Key? key,
     required this.answer,
+    required this.tts,
     // required this.definition,
   }) : super(key: key);
+
+  @override
+  State<DialogResult> createState() => _DialogResultState();
+}
+
+class _DialogResultState extends State<DialogResult> {
+  
+
+  TtsState ttsState = TtsState.stopped;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +139,8 @@ class DialogResult extends StatelessWidget {
     }
 
     Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
-    bool _isDefinitionValid = definition != null && definition.word == answer;
+    bool _isDefinitionValid =
+        definition != null && definition.word == widget.answer;
     List<Widget> _getDefinitionList(List<Definition> defList) {
       return defList
           .mapIndexed((index, def) => Padding(
@@ -147,6 +161,25 @@ class DialogResult extends StatelessWidget {
               ))
           .toList();
     }
+
+    Future _speak(String text) async {
+      setState(() => ttsState = TtsState.playing);
+      await widget.tts.speak(text);
+    }
+
+
+    // change ttsstate when done
+    widget.tts.setCompletionHandler(() {
+      setState(() {
+        ttsState = TtsState.stopped;
+      });
+    });
+    // change tts state when playing
+    widget.tts.setStartHandler(() {
+      setState(() {
+        ttsState = TtsState.playing;
+      });
+    });
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
@@ -189,17 +222,45 @@ class DialogResult extends StatelessWidget {
                       ),
                       UiLib.vSpace(60 / 10),
                       // ANSWER
-                      Text(
-                        '${answer.toUpperCase()}',
-                        style: Theme.of(context).textTheme.headline3!.copyWith(
-                              fontFamily: 'Rubik',
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                              color: _resultColor,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              // color: Colors.red,
+                              border: Border.all(color: Colors.lightBlue)
                             ),
+                            child: IconButton(
+                              onPressed: ttsState == TtsState.playing
+                                  ? null
+                                  : () => _speak(widget.answer),
+                              icon: ttsState == TtsState.playing
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.lightBlue,
+                                    )
+                                  : const Icon(Icons.volume_up_rounded),
+                              color: Colors.lightBlue,
+                              iconSize: 30,
+                            ),
+                          ),
+                          UiLib.hSpace(12),
+                          Text(
+                            '${widget.answer.toUpperCase()}',
+                            style:
+                                Theme.of(context).textTheme.headline3!.copyWith(
+                                      fontFamily: 'Rubik',
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 2,
+                                      color: _resultColor,
+                                    ),
+                          ),
+                          UiLib.hSpace(12),
+                        ],
                       ),
                     ],
                   ),
+
                   // Content
                   // UiLib.vSpace(6),
                   AnimatedSwitcher(
@@ -210,10 +271,10 @@ class DialogResult extends StatelessWidget {
                     ),
                     child: _isDefinitionValid == false
                         ? Center(
-                          child: Padding(
+                            child: Padding(
                               padding: const EdgeInsets.only(top: 12.0),
                               child: ElevatedButton.icon(
-                                onPressed: () => _defineWord(answer),
+                                onPressed: () => _defineWord(widget.answer),
                                 style: ButtonStyle(
                                   foregroundColor:
                                       MaterialStateProperty.all(Colors.white),
@@ -222,7 +283,7 @@ class DialogResult extends StatelessWidget {
                                 label: const Text('Define'),
                               ),
                             ),
-                        )
+                          )
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -231,14 +292,14 @@ class DialogResult extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.volume_up_rounded),
-                                    color: Colors.lightBlue,
-                                  ),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: const Icon(Icons.volume_up_rounded),
+                                  //   color: Colors.lightBlue,
+                                  // ),
                                   Flexible(
                                     child: Text(
-                                      '${definition!.phonetic}',
+                                      definition?.phonetic ?? widget.answer,
                                       style: const TextStyle(
                                         fontSize: 21,
                                         letterSpacing: 2,
@@ -250,7 +311,7 @@ class DialogResult extends StatelessWidget {
                               ),
                               // Meanings
                               // UiLib.vSpace(6),
-                              for (var meaning in definition.meanings)
+                              for (var meaning in definition!.meanings)
                                 Column(
                                   children: [
                                     Padding(
