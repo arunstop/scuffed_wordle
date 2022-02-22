@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_tts/flutter_tts_web.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
+
 
 class DialogResult extends StatefulWidget {
   final String answer;
@@ -236,8 +238,9 @@ class _DialogResultState extends State<DialogResult> {
                                   ? null
                                   : () => _speak(widget.answer),
                               icon: ttsState == TtsState.playing
-                                  ? const CircularProgressIndicator(
+                                  ? const SpinKitDoubleBounce(
                                       color: Colors.lightBlue,
+                                      size: 30,
                                     )
                                   : const Icon(Icons.volume_up_rounded),
                               color: Colors.lightBlue,

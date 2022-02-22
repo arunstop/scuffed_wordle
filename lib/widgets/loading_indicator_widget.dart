@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:scuffed_wordle/ui.dart';
 
 class LoadingIndicator extends StatelessWidget {
@@ -10,14 +11,29 @@ class LoadingIndicator extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 120,
-            width: 120,
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.primary,
-              strokeWidth: 12,
-              value: null,
-            ),
+          // SpinKitDoubleBounce(
+          //   size: 90,
+          //   color: Theme.of(context).colorScheme.primary,
+          // ),
+          // SpinKitChasingDots(
+          //   size: 90,
+          //   color: Theme.of(context).colorScheme.primary,
+          // ),
+          // SpinKitRotatingCircle(
+          //   size: 90,
+          //   color: Theme.of(context).colorScheme.primary,
+          // ),
+          // SpinKitSpinningLines(
+          //   size: 90,
+          //   color: Theme.of(context).colorScheme.primary,
+          // ),
+          // SpinKitPulse(
+          //   size: 90,
+          //   color: Theme.of(context).colorScheme.primary,
+          // ),
+          SpinKitSquareCircle(
+            size: 120,
+            color: Theme.of(context).colorScheme.primary,
           ),
           UiLib.vSpace(24),
           Text(
