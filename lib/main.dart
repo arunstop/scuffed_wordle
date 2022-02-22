@@ -17,6 +17,7 @@ import 'package:scuffed_wordle/screens/howtoplay_screen.dart';
 import 'package:scuffed_wordle/screens/screen_home.dart';
 import 'package:scuffed_wordle/screens/settings_screen.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:scuffed_wordle/widgets/widget_confetti.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -92,6 +93,7 @@ class ScuffedWordleApp extends StatelessWidget {
             // home: PageHome(title: title),
             initialRoute: '/',
             routes: _routes,
+            builder: (context, child) => ConfettiLayout(child: child!),
           );
         },
       ),

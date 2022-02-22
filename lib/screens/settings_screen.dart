@@ -130,7 +130,7 @@ class SettingsScreen extends StatelessWidget {
           onChanged: (value) {
             if (_isPlaying) {
               UiLib.showToast(
-                title: 'Cannot change hard mode when playing',
+                title: 'Cannot change game mode when playing',
                 strColor: ColorList.strError,
               );
             } else {
