@@ -7,7 +7,7 @@ class Label {
     "That was close.",
     "Better luck next time!",
     "Actually, that was a nice try",
-    "At this moment. Lady fortuna is not in your side.",
+    "At this moment. Lady fortuna is not on your side.",
     "Never heard of it?",
     "Nice try for a 5 years old.",
     "We thought you were better than that...",

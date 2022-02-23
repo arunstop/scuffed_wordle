@@ -122,7 +122,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
       bool hasWon = lastGuess == answer.toLowerCase();
-      if (hasWon || userAttempts >= state.attemptLimit) {
+      print("userAttempts : ${userAttempts}");
+      print("state.attemptLimit : ${settingsLocal.lives}");
+      if (hasWon || userAttempts >= settingsLocal.lives) {
         // No need to add user attempt since the game is over
         emit(BoardGameOver(
           wordList: wordList,
@@ -144,6 +146,12 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         attemptLimit: settingsLocal.lives,
       ));
     }
+
+    UiLib.showToast(
+      status: Status.def,
+      text: 'Good Luck!',
+      duration: 3600,
+    );
 
     // dictionaryBloc.add(
     //     DictionaryDefine(
@@ -365,12 +373,17 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     Dictionary dictionaryLocal = await dictionaryRepo.getLocalDictionary();
     Settings settingsLocal = await settingsRepo.getLocalSettings();
     boardRepo.clearLocalGuessWordList();
-    print(state.runtimeType);
+    // print(state.runtimeType);
     emit(_boardDefault.copyWith(
       attemptLimit: settingsLocal.lives,
       wordList:
           _getGameTemplate(settingsLocal.guessLength, settingsLocal.lives),
     ));
-    print(state.runtimeType);
+    // print(state.runtimeType);
+    UiLib.showToast(
+      status: Status.def,
+      text: 'Good Luck!',
+      duration: 3600,
+    );
   }
 }

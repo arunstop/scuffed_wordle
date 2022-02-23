@@ -187,11 +187,11 @@ class HomeScreen extends StatelessWidget {
                         //       Text('${dictionaryBloc.state.dictionary.answer}'),
                         // ),
                         // Text('${dictionaryBloc.state.dictionary.answer}'),
-                        // ElevatedButton(
-                        //     onPressed: () {
-                        //       UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
-                        //     },
-                        //     child: Text('Toast')),
+                        ElevatedButton(
+                            onPressed: () {
+                              UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
+                            },
+                            child: Text('Toast')),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

@@ -28,7 +28,7 @@ class Settings {
     this.darkTheme = true,
     this.highContrast = false,
     this.colorBlindMode = false,
-    this.retypeOnWrongGuess = true,
+    this.retypeOnWrongGuess = false,
     this.useMobileKeyboard = false,
     this.wordLength = '5x6',
   });
