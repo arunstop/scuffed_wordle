@@ -196,11 +196,12 @@ class UiLib {
                           child: Text(
                             text,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.white,
                               decoration: TextDecoration.none,
                               fontWeight: FontWeight.normal,
                               letterSpacing: 0.5,
+                              fontFamily: 'RobotoMono'
                             ),
                           ),
                         ),
