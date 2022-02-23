@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:scuffed_wordle/data/models/status_model.dart';
 
 dynamic _doNothing() {}
 
@@ -101,7 +104,7 @@ class UiLib {
       ),
       // isScrollControlled: true,
       builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 12,bottom: 12),
+        padding: const EdgeInsets.only(top: 12, bottom: 12),
         child: content,
       ),
     );
@@ -126,55 +129,121 @@ class UiLib {
       ));
   }
 
-  static void showToast({String title = '', String strColor = '#00b09b'}) {
-    Fluttertoast.showToast(
-      msg: title,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
-      webPosition: 'center',
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.red,
-      webBgColor: strColor,
-      textColor: Colors.white,
+  // static void showToast({String title = '', String strColor = '#00b09b'}) {
+  //   Fluttertoast.showToast(
+  //     msg: title,
+  //     toastLength: Toast.LENGTH_SHORT,
+  //     gravity: ToastGravity.TOP,
+  //     webPosition: 'center',
+  //     timeInSecForIosWeb: 2,
+  //     backgroundColor: Colors.red,
+  //     webBgColor: strColor,
+  //     textColor: Colors.white,
+  //   );
+  // }
+
+  static void showToast(
+      {required Status status, required String text, int duration = 2400}) {
+    Color color = Colors.grey[800]!;
+    IconData icon = Icons.circle_outlined;
+
+    if (status == Status.ok) {
+      color = ColorList.ok;
+      icon = Icons.check_rounded;
+    } else if (status == Status.error) {
+      color = ColorList.error;
+      icon = Icons.close_rounded;
+    }
+
+    showToastWidget(
+      FittedBox(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(60.0),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 6,sigmaY: 6,),
+            child: Container(
+              color: color.withOpacity(0.6),
+              // color: ColorList.error,
+              child: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(60.0),
+                      child: Container(
+                        color: Colors.white,
+                        child: Icon(
+                          icon,
+                          size: 30,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(9, 0, 9, 3),
+                      child: Text(
+                        text,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      // animationBuilder: (context, child, controller, percent) => FadeScaleTransition(animation: percent,child: child,),
+      duration: Duration(milliseconds: duration),
+      dismissOtherToast: true,
+      position: ToastPosition.top,
+      // backgroundColor: ColorList.error,
     );
   }
 
   static List<List<String>> get keyboardTemplate => [
-    [
-      'Q',
-      'W',
-      'E',
-      'R',
-      'T',
-      'Y',
-      'U',
-      'I',
-      'O',
-      'P',
-    ],
-    [
-      'A',
-      'S',
-      'D',
-      'F',
-      'G',
-      'H',
-      'J',
-      'K',
-      'L',
-    ],
-    [
-      'BACKSPACE',
-      'Z',
-      'X',
-      'C',
-      'V',
-      'B',
-      'N',
-      'M',
-      'ENTER',
-    ]
-  ];
+        [
+          'Q',
+          'W',
+          'E',
+          'R',
+          'T',
+          'Y',
+          'U',
+          'I',
+          'O',
+          'P',
+        ],
+        [
+          'A',
+          'S',
+          'D',
+          'F',
+          'G',
+          'H',
+          'J',
+          'K',
+          'L',
+        ],
+        [
+          'BACKSPACE',
+          'Z',
+          'X',
+          'C',
+          'V',
+          'B',
+          'N',
+          'M',
+          'ENTER',
+        ]
+      ];
   static List<String> get keyboardKeys =>
       keyboardTemplate.expand((element) => element).toList();
   static Widget vSpace(double h) => SizedBox(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
@@ -13,6 +14,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
+import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
@@ -185,6 +187,11 @@ class HomeScreen extends StatelessWidget {
                         //       Text('${dictionaryBloc.state.dictionary.answer}'),
                         // ),
                         // Text('${dictionaryBloc.state.dictionary.answer}'),
+                        // ElevatedButton(
+                        //     onPressed: () {
+                        //       UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
+                        //     },
+                        //     child: Text('Toast')),
                         const Board(),
                         settings.useMobileKeyboard
                             ? Container(

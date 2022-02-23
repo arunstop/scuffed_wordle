@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
@@ -93,7 +94,7 @@ class ScuffedWordleApp extends StatelessWidget {
             // home: PageHome(title: title),
             initialRoute: '/',
             routes: _routes,
-            builder: (context, child) => ConfettiLayout(child: child!),
+            builder: (context, child) => OKToast(child: ConfettiLayout(child: child!)),
           );
         },
       ),

@@ -17,23 +17,31 @@ class _ConfettiLayoutState extends State<ConfettiLayout> {
   late ConfettiController _controller;
 
   static final double left = pi;
-  static final double top = -pi/2;
+  static final double top = -pi / 2;
   static final double right = 0;
-  static final double bottom = pi/2;
+  static final double bottom = pi / 2;
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        ConfettiController(duration: const Duration(milliseconds: 1200));
+    _controller = ConfettiController(duration: const Duration(milliseconds: 1));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<BoardBloc, BoardState>(
       listener: (context, state) {
-        if (state is BoardGameOver && state.win==true) {
+        if (state is BoardGameOver && state.win == true) {
           _controller.play();
+        } else {
+          _controller.stop();
         }
       },
       child: Stack(
@@ -54,9 +62,9 @@ class _ConfettiLayoutState extends State<ConfettiLayout> {
               // shouldLoop: true,
               blastDirectionality: BlastDirectionality.explosive,
               // blastDirection: top,
-              emissionFrequency: 0.12,
+              emissionFrequency: 0.3,
               numberOfParticles: 18,
-              gravity: 0.24,
+              gravity: 0.18,
               // minBlastForce: 24,
               // maxBlastForce: 60,
             ),

@@ -9,6 +9,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
+import 'package:scuffed_wordle/data/models/status_model.dart';
 // import 'package:scuffed_wordle/data/models/model_settings.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
@@ -65,8 +66,8 @@ class SettingsScreen extends StatelessWidget {
         onChanged: (val) {
           if (_isPlaying) {
             UiLib.showToast(
-              title: 'Cannot change hard mode when playing',
-              strColor: ColorList.strError,
+              text: 'Cannot change hard mode when playing',
+              status: Status.error,
             );
             return;
           }
@@ -130,8 +131,8 @@ class SettingsScreen extends StatelessWidget {
           onChanged: (value) {
             if (_isPlaying) {
               UiLib.showToast(
-                title: 'Cannot change game mode when playing',
-                strColor: ColorList.strError,
+                status: Status.error,
+                text: 'Cannot change game mode when playing',
               );
             } else {
               if (value == settings.wordLength) {

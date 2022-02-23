@@ -3,7 +3,6 @@ import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
@@ -12,6 +11,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
+import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
 import 'package:scuffed_wordle/data/repositories/dictionary_repository.dart';
 import 'package:scuffed_wordle/data/repositories/settings_repository.dart';
@@ -196,17 +196,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
-    // if the [current guess] is length less than [word length]
+    // if the [current guess] length less than [word length]
     if (state.word.length < state.wordLength) {
-      Fluttertoast.showToast(
-        msg: "Not enough letter",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        webPosition: 'center',
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.red,
-        webBgColor: ColorList.strError,
-        textColor: Colors.white,
+      UiLib.showToast(
+        status: Status.error,
+        text: "Not enough letter",
       );
     }
     // If user is in the hard mode and not using the green letters they found
@@ -228,9 +222,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
             // if not show error and call don't proceed
             if (element.letter != state.word[idx]) {
               UiLib.showToast(
-                title: 'Letter no. ${idx + 1} must be ${element.letter}',
-                strColor: ColorList.strError,
+                status: Status.error,
+                text: 'Letter no. ${idx + 1} must be ${element.letter}',
               );
+
               err = true;
             }
           }
@@ -242,8 +237,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
               UiLib.showToast(
-                title: 'Letter ${element.letter} must be included',
-                strColor: ColorList.strError,
+                status: Status.error,
+                text: 'Letter ${element.letter} must be included',
               );
               err = true;
             }
@@ -260,8 +255,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       // If the word is not in word list
       if (!event.wordList.contains(strWord)) {
         UiLib.showToast(
-          title: "${strWord.toUpperCase()} is not in word list",
-          strColor: ColorList.strError,
+          status: Status.error,
+          text: "${strWord.toUpperCase()} is not in word list",
         );
         if (retypeOnWrongGuess) {
           emit(state.copyWith(word: []));
@@ -298,10 +293,19 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           win: hasWon,
         ));
         // Show the keyword
-        UiLib.showToast(
-          title: event.answer.toUpperCase(),
-          strColor: ColorList.strOk,
-        );
+        if (hasWon) {
+          UiLib.showToast(
+            status: Status.ok,
+            text: "VIOLA! You did it! YES you did!!",
+            duration: 4800,
+          );
+        } else {
+          UiLib.showToast(
+            status: Status.error,
+            text: "Unlucky... I guess",
+            duration: 4800,
+          );
+        }
         gameOver = true;
       }
       // END THE GAME
@@ -326,6 +330,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           attempt: state.attemptLimit,
           win: false,
         ));
+        UiLib.showToast(
+          status: Status.error,
+          text: "Try to be a bit more creative, yeah?",
+          duration: 4800,
+        );
         gameOver = true;
       }
       // if game is not over
@@ -364,7 +373,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     print(state.runtimeType);
     emit(_boardDefault.copyWith(
       attemptLimit: settingsLocal.lives,
-      wordList: _getGameTemplate(settingsLocal.guessLength, settingsLocal.lives),
+      wordList:
+          _getGameTemplate(settingsLocal.guessLength, settingsLocal.lives),
     ));
     print(state.runtimeType);
   }
