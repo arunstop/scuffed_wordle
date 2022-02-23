@@ -35,7 +35,7 @@ class Label {
     "[People holding back their laughters]",
     // Sarcastic
     "Did we not explain the rule well enough?",
-    "Pretty sure we written a rule about how to play this.",
+    "Pretty sure we have written a how-to-play.",
     "Please read the rule and come back.",
     "Hellooo! Maybe you can put a little bit of effort to this.",
     "God. You. Are. So. Bad.",

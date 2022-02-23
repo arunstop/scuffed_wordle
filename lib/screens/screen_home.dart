@@ -211,7 +211,17 @@ class HomeScreen extends StatelessWidget {
                                 : Container(
                                     alignment: Alignment.bottomCenter,
                                     // color: Theme.of(context).colorScheme.secondary,
-                                    child: const Keyboard(),
+                                    child: AnimatedSwitcher(
+                                      duration: Duration(milliseconds: 600),
+                                      transitionBuilder: (child, animation) =>
+                                          ScaleTransition(
+                                        scale: animation,
+                                        child: child,
+                                      ),
+                                      child: boardBloc.state is BoardGameOver
+                                          ? Container()
+                                          : const Keyboard(),
+                                    ),
                                   )
                           ],
                         ),

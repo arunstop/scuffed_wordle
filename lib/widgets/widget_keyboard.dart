@@ -16,7 +16,7 @@ class Keyboard extends StatelessWidget {
     var boardBloc = context.watch<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.watch<SettingsBloc>();
-    
+
     List<BoardLetter> uniqTypedLetterList = [];
     var typedLetterList = boardBloc.state.submittedWordList.flatten().toList();
     // process the unqList
@@ -69,10 +69,10 @@ class Keyboard extends StatelessWidget {
     // });
 
     // var
-    TextStyle getTextStyle() => const TextStyle(
+    TextStyle _getTextStyle() => const TextStyle(
           // fontWeight: FontWeight.bold,
           color: Colors.white,
-          // fontSize: 10,
+          fontSize: 18,
         );
 
     Color? _getColor(String key) {
@@ -94,11 +94,10 @@ class Keyboard extends StatelessWidget {
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
         Dictionary dictionary = dictionaryBloc.state.dictionary;
-            boardBloc.add(BoardSubmitGuess(
-              settings: settingsBloc.state.settings,
-              answer: dictionary.answer,
-              wordList: dictionary.wordList
-            ));
+        boardBloc.add(BoardSubmitGuess(
+            settings: settingsBloc.state.settings,
+            answer: dictionary.answer,
+            wordList: dictionary.wordList));
       } else {
         boardBloc.add(BoardAddLetter(letter: key));
       }
@@ -108,8 +107,9 @@ class Keyboard extends StatelessWidget {
     Widget getKey(String key) {
       double width = 48;
       double height = 30;
-      Widget label = Text(key, style: getTextStyle());
-      if (key == 'ENTER' || key == 'BACKSPACE') {
+      Widget label = Text(key, style: _getTextStyle());
+      bool nonLetter = key == 'ENTER' || key == 'BACKSPACE';
+      if (nonLetter) {
         height = height * 2;
         label = key == 'ENTER'
             ? const Icon(
@@ -119,20 +119,24 @@ class Keyboard extends StatelessWidget {
             : label;
         label = key == 'BACKSPACE'
             ? const Icon(
-                Icons.backspace_rounded,
+                Icons.backspace_outlined,
                 color: Colors.white,
               )
             : label;
       }
-      return SizedBox(
-        height: width,
-        width: height,
-        child: Card(
-          color: _getColor(key),
-          child: InkWell(
-            onTap: boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
-            child: Center(
-              child: label,
+      return Expanded(
+        flex: nonLetter? 9:6,
+        child: SizedBox(
+          height: 48,
+          child: Card(
+            margin: EdgeInsets.all(3),
+            color: _getColor(key),
+            child: InkWell(
+              onTap:
+                  boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
+              child: Center(
+                child: FittedBox(child: label),
+              ),
             ),
           ),
         ),
@@ -140,20 +144,54 @@ class Keyboard extends StatelessWidget {
     }
 
     List<Widget> _keyboardButtons = UiLib.keyboardTemplate
-        .map((kbRow) => Row(
+        .mapIndexed((index, kbRow) => Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [for (var key in kbRow) getKey(key)],
+              children: [
+                // Give 2nd row, a spacer
+                index == 1
+                    ? Expanded(flex: 3, child: Container())
+                    : Container(),
+                for (var key in kbRow) getKey(key),
+                index == 1
+                    ? Expanded(flex: 3, child: Container())
+                    : Container(),
+              ],
             ))
         .toList();
 
     return Container(
-      padding: EdgeInsetsDirectional.all(6),
+      padding: EdgeInsets.all(12),
       child: Column(
         children: [
           // Text('${boardBloc.state.toString()}'),
           ..._keyboardButtons,
+
+          // Row(
+          //   // mainAxisSize: MainAxisSize.max,
+          //   children: [
+          //     Expanded(
+          //       flex: 1,
+          //       child: Container(
+          //         color: Colors.blue,
+          //         child: Text('123'),
+          //       ),
+          //     ),
+          //     Expanded(
+          //       child: Container(
+          //         color: Colors.red,
+          //         child: Text('123'),
+          //       ),
+          //     ),
+          //     Expanded(
+          //       child: Container(
+          //         color: Colors.green,
+          //         child: Text('123'),
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
     );

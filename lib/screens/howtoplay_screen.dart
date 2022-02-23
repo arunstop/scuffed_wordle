@@ -105,8 +105,10 @@ class HowToPlayScreen extends StatelessWidget {
                 const Text(
                     "We\'ll give you a 5x6 game (meaning 5 letters word and 6 attempts). Pretend that you don\'t know this, but the answer is SMART."),
                 UiLib.vSpace(12),
-                Row(
-                  children: [..._wordExample1],
+                FittedBox(
+                  child: Row(
+                    children: [..._wordExample1],
+                  ),
                 ),
                 UiLib.vSpace(12),
                 const Text(
@@ -114,8 +116,10 @@ class HowToPlayScreen extends StatelessWidget {
                 const Text(
                     'The letters with black tiles, are wrong in both condition, so, don\'t mind them.'),
                 UiLib.vSpace(12),
-                Row(
-                  children: [..._wordExample2],
+                FittedBox(
+                  child: Row(
+                    children: [..._wordExample2],
+                  ),
                 ),
                 UiLib.vSpace(12),
                 const Text(

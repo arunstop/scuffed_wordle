@@ -178,15 +178,16 @@ class _DialogResultState extends State<DialogResult> {
 
     // change ttsstate when done
     widget.tts.setCompletionHandler(() {
-      if(mounted){
+      if(this.mounted){
         setState(() {
         ttsState = TtsState.stopped;
       });
      }
+
     });
     // change tts state when playing
     widget.tts.setStartHandler(() {
-     if(mounted){
+     if(this.mounted){
         setState(() {
         ttsState = TtsState.playing;
       });
@@ -234,42 +235,44 @@ class _DialogResultState extends State<DialogResult> {
                       ),
                       UiLib.vSpace(60 / 10),
                       // ANSWER
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Colors.red,
-                              border: Border.all(color: Colors.lightBlue)
+                      FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // color: Colors.red,
+                                border: Border.all(color: Colors.lightBlue)
+                              ),
+                              child: IconButton(
+                                onPressed: ttsState == TtsState.playing
+                                    ? null
+                                    : () => _speak(widget.answer),
+                                icon: ttsState == TtsState.playing
+                                    ? const SpinKitDoubleBounce(
+                                        color: Colors.lightBlue,
+                                        size: 30,
+                                      )
+                                    : const Icon(Icons.volume_up_rounded),
+                                color: Colors.lightBlue,
+                                iconSize: 30,
+                              ),
                             ),
-                            child: IconButton(
-                              onPressed: ttsState == TtsState.playing
-                                  ? null
-                                  : () => _speak(widget.answer),
-                              icon: ttsState == TtsState.playing
-                                  ? const SpinKitDoubleBounce(
-                                      color: Colors.lightBlue,
-                                      size: 30,
-                                    )
-                                  : const Icon(Icons.volume_up_rounded),
-                              color: Colors.lightBlue,
-                              iconSize: 30,
+                            UiLib.hSpace(12),
+                            Text(
+                              '${widget.answer.toUpperCase()}',
+                              style:
+                                  Theme.of(context).textTheme.headline3!.copyWith(
+                                        fontFamily: 'Rubik',
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 2,
+                                        color: _resultColor,
+                                      ),
                             ),
-                          ),
-                          UiLib.hSpace(12),
-                          Text(
-                            '${widget.answer.toUpperCase()}',
-                            style:
-                                Theme.of(context).textTheme.headline3!.copyWith(
-                                      fontFamily: 'Rubik',
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 2,
-                                      color: _resultColor,
-                                    ),
-                          ),
-                          UiLib.hSpace(12),
-                        ],
+                            UiLib.hSpace(12),
+                          ],
+                        ),
                       ),
                     ],
                   ),

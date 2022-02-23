@@ -28,7 +28,7 @@ class ScreenTemplate extends StatelessWidget {
                 elevation: 0,
                 // Here we take the value from the PageHome object that was created by
                 // the App.build method, and use it to set our appbar title.
-                title: Text(title),
+                title: FittedBox(child: Text(title)),
                 actions: actions
               ),
               body: child,
