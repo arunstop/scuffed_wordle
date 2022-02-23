@@ -1,20 +1,13 @@
-import 'dart:math';
-
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
-import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
-import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
-import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
@@ -149,78 +142,99 @@ class HomeScreen extends StatelessWidget {
           return previous.runtimeType != current.runtimeType;
         },
         listener: _boardBlocListener,
-        child: RawKeyboardListener(
-          autofocus: true,
-          focusNode: FocusNode(),
-          onKey: boardBloc.state is BoardGameOver
-              ? null
-              : (event) => _onKeyboardPressed(context, event),
-          child: PageTransitionSwitcher(
-            duration: const Duration(milliseconds: 600),
-            transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
-                FadeThroughTransition(
-              animation: primaryAnimation,
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            ),
-            child: boardBloc.state is BoardDefault ||
-                    dictionaryBloc.state is DictionaryDefault
-                ? const LoadingIndicator()
-                : SingleChildScrollView(
-                    key: ValueKey<String>(
-                        dictionaryBloc.state.dictionary.answer),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Text('${boardBloc.state.runtimeType}'),
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     dictionaryBloc.add(
-                        //       DictionaryDefine(
-                        //         lang: 'en',
-                        //         word: dictionaryBloc.state.dictionary.answer,
-                        //       ),
-                        //     );
-                        //     // boardBloc.add(BoardRestart());
-                        //   },
-                        //   child:
-                        //       Text('${dictionaryBloc.state.dictionary.answer}'),
-                        // ),
-                        // Text('${dictionaryBloc.state.dictionary.answer}'),
-                        ElevatedButton(
-                            onPressed: () {
-                              UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
-                            },
-                            child: Text('Toast')),
-                        const Board(),
-                        settings.useMobileKeyboard
-                            ? Container(
-                                alignment: Alignment.center,
-                                child: SizedBox(
-                                  height: 45,
-                                  child: ElevatedButton.icon(
-                                    style: ButtonStyle(
-                                      foregroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.white),
-                                      // padding: EdgeInsets.all(8)
+        child: Stack(
+          children: [
+            RawKeyboardListener(
+              autofocus: true,
+              focusNode: FocusNode(),
+              onKey: boardBloc.state is BoardGameOver
+                  ? null
+                  : (event) => _onKeyboardPressed(context, event),
+              child: PageTransitionSwitcher(
+                duration: const Duration(milliseconds: 600),
+                transitionBuilder:
+                    (child, primaryAnimation, secondaryAnimation) =>
+                        FadeThroughTransition(
+                  animation: primaryAnimation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child,
+                ),
+                child: boardBloc.state is BoardDefault ||
+                        dictionaryBloc.state is DictionaryDefault
+                    ? const LoadingIndicator()
+                    : SingleChildScrollView(
+                        key: ValueKey<String>(
+                            dictionaryBloc.state.dictionary.answer),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Text('${boardBloc.state.runtimeType}'),
+                            // ElevatedButton(
+                            //   onPressed: () {
+                            //     dictionaryBloc.add(
+                            //       DictionaryDefine(
+                            //         lang: 'en',
+                            //         word: dictionaryBloc.state.dictionary.answer,
+                            //       ),
+                            //     );
+                            //     // boardBloc.add(BoardRestart());
+                            //   },
+                            //   child:
+                            //       Text('${dictionaryBloc.state.dictionary.answer}'),
+                            // ),
+                            // Text('${dictionaryBloc.state.dictionary.answer}'),
+                            // ElevatedButton(
+                            //     onPressed: () {
+                            //       UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
+                            //     },
+                            //     child: Text('Toast')),
+                            const Board(),
+                            settings.useMobileKeyboard
+                                ? Container(
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 45,
+                                      child: ElevatedButton.icon(
+                                        style: ButtonStyle(
+                                          foregroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.white),
+                                          // padding: EdgeInsets.all(8)
+                                        ),
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                            Icons.keyboard_alt_outlined),
+                                        label: const Text('Toggle Keyboard'),
+                                      ),
                                     ),
-                                    onPressed: () {},
-                                    icon:
-                                        const Icon(Icons.keyboard_alt_outlined),
-                                    label: const Text('Toggle Keyboard'),
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                alignment: Alignment.bottomCenter,
-                                // color: Theme.of(context).colorScheme.secondary,
-                                child: const Keyboard(),
-                              )
-                      ],
+                                  )
+                                : Container(
+                                    alignment: Alignment.bottomCenter,
+                                    // color: Theme.of(context).colorScheme.secondary,
+                                    child: const Keyboard(),
+                                  )
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+            boardBloc.state is! BoardGameOver
+                ? Container()
+                : Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          boardBloc.add(BoardRestart());
+                        },
+                        child: Icon(Icons.replay_rounded),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
-                  ),
-          ),
+                  )
+          ],
         ),
       ),
     );

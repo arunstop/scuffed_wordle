@@ -122,8 +122,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       String lastGuess =
           userGuessWordList.last.map((e) => e.letter).join().toLowerCase();
       bool hasWon = lastGuess == answer.toLowerCase();
-      print("userAttempts : ${userAttempts}");
-      print("state.attemptLimit : ${settingsLocal.lives}");
+      // print("userAttempts : ${userAttempts}");
+      // print("state.attemptLimit : ${settingsLocal.lives}");
       if (hasWon || userAttempts >= settingsLocal.lives) {
         // No need to add user attempt since the game is over
         emit(BoardGameOver(

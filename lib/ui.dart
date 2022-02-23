@@ -192,7 +192,7 @@ class UiLib {
                       ),
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(9, 0, 9, 3),
+                          padding: const EdgeInsets.fromLTRB(9, 6, 12, 9),
                           child: Text(
                             text,
                             style: const TextStyle(

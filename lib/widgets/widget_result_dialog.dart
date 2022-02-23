@@ -36,6 +36,12 @@ class _DialogResultState extends State<DialogResult> {
   
 
   TtsState ttsState = TtsState.stopped;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.tts.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,15 +178,19 @@ class _DialogResultState extends State<DialogResult> {
 
     // change ttsstate when done
     widget.tts.setCompletionHandler(() {
-      setState(() {
+      if(mounted){
+        setState(() {
         ttsState = TtsState.stopped;
       });
+     }
     });
     // change tts state when playing
     widget.tts.setStartHandler(() {
-      setState(() {
+     if(mounted){
+        setState(() {
         ttsState = TtsState.playing;
       });
+     }
     });
 
     return Column(
