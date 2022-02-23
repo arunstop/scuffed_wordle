@@ -1,15 +1,10 @@
 import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
-import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
-import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
-import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
-import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
+import 'package:scuffed_wordle/data/models/label_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/data/repositories/board_repository.dart';
@@ -292,17 +287,17 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           attempt: state.attempt,
           win: hasWon,
         ));
-        // Show the keyword
+        // If user has won
         if (hasWon) {
           UiLib.showToast(
             status: Status.ok,
-            text: "VIOLA! You did it! YES you did!!",
+            text: Label.randomWinLabel,
             duration: 4800,
           );
         } else {
           UiLib.showToast(
             status: Status.error,
-            text: "Unlucky... I guess",
+            text: Label.randomLoseLabel,
             duration: 4800,
           );
         }
@@ -332,7 +327,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         ));
         UiLib.showToast(
           status: Status.error,
-          text: "Try to be a bit more creative, yeah?",
+          text: Label.randomLoseLabel,
           duration: 4800,
         );
         gameOver = true;
