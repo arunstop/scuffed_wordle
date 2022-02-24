@@ -78,9 +78,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             settings: state.settings.copyWith(useMobileKeyboard: event.value),
           ));
           break;
-        case SettingsTypes.wordLength:
+        case SettingsTypes.matrix:
           emit(state.copyWith(
-            settings: state.settings.copyWith(wordLength: event.value),
+            settings: state.settings.copyWith(matrix: event.value),
           ));
           break;
         default:

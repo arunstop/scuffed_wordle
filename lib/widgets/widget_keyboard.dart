@@ -125,10 +125,13 @@ class Keyboard extends StatelessWidget {
             : label;
       }
       return Expanded(
-        flex: nonLetter? 9:6,
+        flex: nonLetter ? 9 : 6,
         child: SizedBox(
           height: 48,
           child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3),
+            ),
             margin: EdgeInsets.all(3),
             color: _getColor(key),
             child: InkWell(

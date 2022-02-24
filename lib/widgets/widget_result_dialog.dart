@@ -16,7 +16,6 @@ import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 
-
 class DialogResult extends StatefulWidget {
   final String answer;
   final FlutterTts tts;
@@ -33,8 +32,6 @@ class DialogResult extends StatefulWidget {
 }
 
 class _DialogResultState extends State<DialogResult> {
-  
-
   TtsState ttsState = TtsState.stopped;
   @override
   void dispose() {
@@ -93,7 +90,7 @@ class _DialogResultState extends State<DialogResult> {
       bool gameOver = state.attempt > state.attemptLimit || !state.win;
       var totalAttempt = gameOver ? 'X' : state.attempt;
       var text =
-          "SCUFFED WORDLE ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
+          "SCUFFED WORDLE - ${settingsBloc.state.settings.matrix} : ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
       //
       UiLib.showSnackbar(
@@ -175,234 +172,203 @@ class _DialogResultState extends State<DialogResult> {
       await widget.tts.speak(text);
     }
 
-
     // change ttsstate when done
     widget.tts.setCompletionHandler(() {
-      if(this.mounted){
+      if (this.mounted) {
         setState(() {
-        ttsState = TtsState.stopped;
-      });
-     }
-
+          ttsState = TtsState.stopped;
+        });
+      }
     });
     // change tts state when playing
     widget.tts.setStartHandler(() {
-     if(this.mounted){
+      if (this.mounted) {
         setState(() {
-        ttsState = TtsState.playing;
-      });
-     }
+          ttsState = TtsState.playing;
+        });
+      }
     });
 
     return Column(
-      // mainAxisSize: MainAxisSize.min,
       children: [
-        // Text('The word was : ${answer}'),
-        // Answer Chip
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Center(
-            child: Container(
-              height: 6,
-              width: 60,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6),
-                ),
-                color: Colors.grey,
-              ),
-              // child: Text('-'),
+        // Header
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'The answer was:',
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    // letterSpacing: 1,
+                    // color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
-          ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 18, right: 18),
-              child: Column(
+            UiLib.vSpace(60 / 10),
+            // ANSWER
+            FittedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Header
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'The answer was:',
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              // letterSpacing: 1,
-                              // color: Theme.of(context).colorScheme.primary,
-                            ),
-                      ),
-                      UiLib.vSpace(60 / 10),
-                      // ANSWER
-                      FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                // color: Colors.red,
-                                border: Border.all(color: Colors.lightBlue)
-                              ),
-                              child: IconButton(
-                                onPressed: ttsState == TtsState.playing
-                                    ? null
-                                    : () => _speak(widget.answer),
-                                icon: ttsState == TtsState.playing
-                                    ? const SpinKitDoubleBounce(
-                                        color: Colors.lightBlue,
-                                        size: 30,
-                                      )
-                                    : const Icon(Icons.volume_up_rounded),
-                                color: Colors.lightBlue,
-                                iconSize: 30,
-                              ),
-                            ),
-                            UiLib.hSpace(12),
-                            Text(
-                              '${widget.answer.toUpperCase()}',
-                              style:
-                                  Theme.of(context).textTheme.headline3!.copyWith(
-                                        fontFamily: 'Rubik',
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 2,
-                                        color: _resultColor,
-                                      ),
-                            ),
-                            UiLib.hSpace(12),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Content
-                  // UiLib.vSpace(6),
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 600),
-                    transitionBuilder: (child, animation) => SizeTransition(
-                      sizeFactor: animation,
-                      child: child,
-                    ),
-                    child: _isDefinitionValid == false
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 12.0),
-                              child: ElevatedButton.icon(
-                                onPressed: () => _defineWord(widget.answer),
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                ),
-                                icon: const Icon(Icons.search),
-                                label: const Text('Define'),
-                              ),
-                            ),
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // Phonetic
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // IconButton(
-                                  //   onPressed: () {},
-                                  //   icon: const Icon(Icons.volume_up_rounded),
-                                  //   color: Colors.lightBlue,
-                                  // ),
-                                  Flexible(
-                                    child: Text(
-                                      definition?.phonetic ?? widget.answer,
-                                      style: const TextStyle(
-                                        fontSize: 21,
-                                        letterSpacing: 2,
-                                        fontFamily: 'Rubik',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              // Meanings
-                              // UiLib.vSpace(6),
-                              for (var meaning in definition!.meanings)
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(9.0),
-                                      child: Center(
-                                        child: Text(
-                                          '-- ${meaning.partOfSpeech} --',
-                                          style: const TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            fontSize: 18,
-                                            // fontFamily: 'Rubik',
-                                            fontWeight: FontWeight.w200,
-                                            letterSpacing: 2,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    meaning.definitions!.isEmpty
-                                        ? const Text('')
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: _getDefinitionList(
-                                              meaning.definitions!,
-                                            ),
-                                          )
-                                  ],
-                                )
-                            ],
-                          ),
-                  ),
-                  // Buttons
-                  UiLib.vSpace(24),
-                  // Share Button
-                  _borderedButton(
-                    label: "Share Result",
-                    icon: const Icon(Icons.share_rounded),
-                    action: () => _shareResult(),
-                  ),
-                  UiLib.vSpace(9),
-                  // Play again button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 45,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _playAgain(),
-                      icon: const Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Play Again",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        // color: Colors.red,
+                        border: Border.all(color: Colors.lightBlue)),
+                    child: IconButton(
+                      onPressed: ttsState == TtsState.playing
+                          ? null
+                          : () => _speak(widget.answer),
+                      icon: ttsState == TtsState.playing
+                          ? const SpinKitDoubleBounce(
+                              color: Colors.lightBlue,
+                              size: 30,
+                            )
+                          : const Icon(Icons.volume_up_rounded),
+                      color: Colors.lightBlue,
+                      iconSize: 30,
                     ),
                   ),
-                  UiLib.vSpace(9),
-                  // Close button
-                  _borderedButton(
-                    label: "Close",
-                    icon: const Icon(Icons.close_rounded),
-                    action: () => _close(),
-                    noBorder: true,
+                  UiLib.hSpace(12),
+                  Text(
+                    '${widget.answer.toUpperCase()}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3!
+                        .copyWith(
+                          fontFamily: 'Rubik',
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          color: _resultColor,
+                        ),
                   ),
-                  UiLib.vSpace(18),
-                  // Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
-                  // const BoardResult(),
+                  UiLib.hSpace(12),
                 ],
               ),
             ),
+          ],
+        ),
+
+        // Content
+        // UiLib.vSpace(6),
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 600),
+          transitionBuilder: (child, animation) => SizeTransition(
+            sizeFactor: animation,
+            child: child,
           ),
-        )
+          child: _isDefinitionValid == false
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _defineWord(widget.answer),
+                      style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                      ),
+                      icon: const Icon(Icons.search),
+                      label: const Text('Define'),
+                    ),
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // Phonetic
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // IconButton(
+                        //   onPressed: () {},
+                        //   icon: const Icon(Icons.volume_up_rounded),
+                        //   color: Colors.lightBlue,
+                        // ),
+                        Flexible(
+                          child: Text(
+                            definition?.phonetic ?? widget.answer,
+                            style: const TextStyle(
+                              fontSize: 21,
+                              letterSpacing: 2,
+                              fontFamily: 'Rubik',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Meanings
+                    // UiLib.vSpace(6),
+                    for (var meaning in definition!.meanings)
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(9.0),
+                            child: Center(
+                              child: Text(
+                                '-- ${meaning.partOfSpeech} --',
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 18,
+                                  // fontFamily: 'Rubik',
+                                  fontWeight: FontWeight.w200,
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                          meaning.definitions!.isEmpty
+                              ? const Text('')
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: _getDefinitionList(
+                                    meaning.definitions!,
+                                  ),
+                                )
+                        ],
+                      )
+                  ],
+                ),
+        ),
+        // Buttons
+        UiLib.vSpace(24),
+        // Share Button
+        _borderedButton(
+          label: "Share Result",
+          icon: const Icon(Icons.share_rounded),
+          action: () => _shareResult(),
+        ),
+        UiLib.vSpace(9),
+        // Play again button
+        SizedBox(
+          width: double.infinity,
+          height: 45,
+          child: ElevatedButton.icon(
+            onPressed: () => _playAgain(),
+            icon: const Icon(
+              Icons.play_arrow_rounded,
+              color: Colors.white,
+            ),
+            label: const Text(
+              "Play Again",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        UiLib.vSpace(9),
+        // Close button
+        _borderedButton(
+          label: "Close",
+          icon: const Icon(Icons.close_rounded),
+          action: () => _close(),
+          noBorder: true,
+        ),
+        UiLib.vSpace(18),
+        // Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
+        // const BoardResult(),
       ],
     );
   }

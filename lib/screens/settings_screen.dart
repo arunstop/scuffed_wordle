@@ -105,28 +105,21 @@ class SettingsScreen extends StatelessWidget {
         subtitle: const Text('Delete current guess when it is INVALID'),
         secondary: const Icon(Icons.keyboard_return_rounded),
       ),
-      SwitchListTile.adaptive(
-        value: settings.useMobileKeyboard,
-        onChanged: !_isMobile
-            ? null
-            : (val) => _changeSettings(SettingsTypes.useMobileKeyboard, val),
-        title: _getTitle('Use device\'s keyboard on mobile'),
-        subtitle: const Text('Use phone\'s default virtual keyboard instead.'),
-        secondary: const Icon(Icons.keyboard_alt_outlined),
-      ),
       ListTile(
         leading: const Icon(Icons.apps_rounded),
-        title: const Text('Word Length'),
+        title: const Text('Game Matrix'),
         subtitle: const Text(
             'Choose word length, between 4-8. The attempts is [word length + 1].'),
         onTap: () {
           print('change');
         },
         trailing: DropdownButton<String>(
-          value: settings.wordLength,
+          value: settings.matrix,
           items: <String>['4x5', '5x6', '6x7', '7x8', '8x9']
-              .map<DropdownMenuItem<String>>(
-                  (e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  ))
               .toList(),
           onChanged: (value) {
             if (_isPlaying) {
@@ -135,10 +128,10 @@ class SettingsScreen extends StatelessWidget {
                 text: 'Cannot change game mode when playing',
               );
             } else {
-              if (value == settings.wordLength) {
+              if (value == settings.matrix) {
                 return;
               }
-              _changeSettings(SettingsTypes.wordLength, value);
+              _changeSettings(SettingsTypes.matrix, value);
               // print(value);
               // print(settings.wordLength);
               dictionaryBloc.add(DictionaryInitialize());
@@ -152,6 +145,15 @@ class SettingsScreen extends StatelessWidget {
             }
           },
         ),
+      ),
+      SwitchListTile.adaptive(
+        value: settings.useMobileKeyboard,
+        onChanged: !_isMobile
+            ? null
+            : (val) => _changeSettings(SettingsTypes.useMobileKeyboard, val),
+        title: _getTitle('Use device\'s keyboard on mobile'),
+        subtitle: const Text('Use phone\'s default virtual keyboard instead.'),
+        secondary: const Icon(Icons.keyboard_alt_outlined),
       ),
       UiLib.vSpace(30),
     ];

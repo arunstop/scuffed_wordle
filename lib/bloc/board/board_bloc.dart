@@ -169,7 +169,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     int wordLength = state.wordLength;
     // Count typed letters
     var typedLetters = [...state.word, event.letter];
-    // if typed letters more than [word length]
+    // if typed letters more than [matrix]
     if (typedLetters.length > wordLength) {
       return;
     }
@@ -199,7 +199,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
-    // if the [current guess] length less than [word length]
+    // if the [current guess] length less than [matrix]
     if (state.word.length < state.wordLength) {
       UiLib.showToast(
         status: Status.error,

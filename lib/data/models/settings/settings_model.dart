@@ -10,7 +10,7 @@ enum SettingsTypes {
   colorBlindMode,
   retypeOnWrongGuess,
   useMobileKeyboard,
-  wordLength,
+  matrix,
 }
 
 @JsonSerializable()
@@ -21,7 +21,7 @@ class Settings {
   final bool colorBlindMode;
   final bool retypeOnWrongGuess;
   final bool useMobileKeyboard;
-  final String wordLength;
+  final String matrix;
 
   Settings({
     this.hardMode = false,
@@ -30,7 +30,7 @@ class Settings {
     this.colorBlindMode = false,
     this.retypeOnWrongGuess = false,
     this.useMobileKeyboard = false,
-    this.wordLength = '5x6',
+    this.matrix = '5x6',
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
@@ -38,7 +38,7 @@ class Settings {
 
   Map<String, dynamic> toJson() => _$SettingsToJson(this);
 
-  int get guessLength => int.parse(wordLength[0]);
+  int get guessLength => int.parse(matrix[0]);
   int get lives => guessLength+1;
 
   Settings copyWith({
@@ -48,7 +48,7 @@ class Settings {
     bool? colorBlindMode,
     bool? retypeOnWrongGuess,
     bool? useMobileKeyboard,
-    String? wordLength,
+    String? matrix,
   }) =>
       Settings( 
         hardMode: hardMode ?? this.hardMode,
@@ -57,7 +57,7 @@ class Settings {
         colorBlindMode: colorBlindMode ?? this.colorBlindMode,
         retypeOnWrongGuess: retypeOnWrongGuess ?? this.retypeOnWrongGuess,
         useMobileKeyboard: useMobileKeyboard ?? this.useMobileKeyboard,
-        wordLength: wordLength ?? this.wordLength,
+        matrix: matrix ?? this.matrix,
       );
 
   // @override

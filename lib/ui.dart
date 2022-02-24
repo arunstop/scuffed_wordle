@@ -90,22 +90,68 @@ class UiLib {
     required BuildContext context,
     required dynamic content,
   }) {
+    Widget makeDismissable({required Widget child}) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Navigator.of(context).pop(),
+          child: GestureDetector(
+            onTap: () {},
+            child: child,
+          ),
+        );
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
+      isScrollControlled: true,
       constraints: const BoxConstraints(
         minWidth: 300,
         maxWidth: 520,
       ),
+      backgroundColor: Colors.transparent,
       // isScrollControlled: true,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 12, bottom: 12),
-        child: content,
+      builder: (BuildContext context) => makeDismissable(
+        child: DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            builder: (context, controller) => Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Center(
+                          child: Container(
+                            height: 6,
+                            width: 60,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6),
+                              ),
+                              color: Colors.grey,
+                            ),
+                            // child: Text('-'),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          controller: controller,
+                          children: [
+                            Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                child: content)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
       ),
     );
   }
@@ -153,19 +199,22 @@ class UiLib {
     } else if (status == Status.error) {
       color = ColorList.error;
       icon = Icons.close_rounded;
-    }else if (status == Status.def) {
+    } else if (status == Status.def) {
       color = Colors.blue;
       icon = Icons.sentiment_satisfied_alt_rounded;
     }
 
     showToastWidget(
       Padding(
-        padding: const EdgeInsets.fromLTRB(12,60,12,0),
+        padding: const EdgeInsets.fromLTRB(12, 60, 12, 0),
         child: FittedBox(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(60.0),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 6,sigmaY: 6,),
+              filter: ImageFilter.blur(
+                sigmaX: 6,
+                sigmaY: 6,
+              ),
               child: Container(
                 color: color.withOpacity(0.6),
                 constraints: BoxConstraints(
@@ -196,13 +245,12 @@ class UiLib {
                           child: Text(
                             text,
                             style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.normal,
-                              letterSpacing: 0.5,
-                              fontFamily: 'RobotoMono'
-                            ),
+                                fontSize: 14,
+                                color: Colors.white,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.normal,
+                                letterSpacing: 0.5,
+                                fontFamily: 'RobotoMono'),
                           ),
                         ),
                       ),

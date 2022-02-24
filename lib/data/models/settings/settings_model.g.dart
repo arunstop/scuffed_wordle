@@ -13,7 +13,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       colorBlindMode: json['colorBlindMode'] as bool? ?? false,
       retypeOnWrongGuess: json['retypeOnWrongGuess'] as bool? ?? true,
       useMobileKeyboard: json['useMobileKeyboard'] as bool? ?? false,
-      wordLength: json['wordLength'] as String? ?? '5x6',
+      matrix: json['wordLength'] as String? ?? '5x6',
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -23,5 +23,5 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'colorBlindMode': instance.colorBlindMode,
       'retypeOnWrongGuess': instance.retypeOnWrongGuess,
       'useMobileKeyboard': instance.useMobileKeyboard,
-      'wordLength': instance.wordLength,
+      'wordLength': instance.matrix,
     };
