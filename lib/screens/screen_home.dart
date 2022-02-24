@@ -6,6 +6,7 @@ import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -13,6 +14,7 @@ import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
+import 'package:scuffed_wordle/widgets/widget_result_panel.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
 import 'package:animations/animations.dart';
 
@@ -113,7 +115,7 @@ class HomeScreen extends StatelessWidget {
         //   );
         // }
         // print('resd');
-        _showResultDialog(context);
+        // _showResultDialog(context);
       }
     }
 
@@ -162,69 +164,67 @@ class HomeScreen extends StatelessWidget {
                 child: boardBloc.state is BoardDefault ||
                         dictionaryBloc.state is DictionaryDefault
                     ? const LoadingIndicator()
-                    : SingleChildScrollView(
+                    : Column(
                         key: ValueKey<String>(
                             dictionaryBloc.state.dictionary.answer),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Text('${boardBloc.state.runtimeType}'),
-                            // ElevatedButton(
-                            //   onPressed: () {
-                            //     dictionaryBloc.add(
-                            //       DictionaryDefine(
-                            //         lang: 'en',
-                            //         word: dictionaryBloc.state.dictionary.answer,
-                            //       ),
-                            //     );
-                            //     // boardBloc.add(BoardRestart());
-                            //   },
-                            //   child:
-                            //       Text('${dictionaryBloc.state.dictionary.answer}'),
-                            // ),
-                            // Text('${dictionaryBloc.state.dictionary.answer}'),
-                            // ElevatedButton(
-                            //     onPressed: () {
-                            //       UiLib.showToast(status: Status.ok, text: 'XXXXXX is not in word list');
-                            //     },
-                            //     child: Text('Toast')),
-                            const Board(),
-                            settings.useMobileKeyboard
-                                ? Container(
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 45,
-                                      child: ElevatedButton.icon(
-                                        style: ButtonStyle(
-                                          foregroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white),
-                                          // padding: EdgeInsets.all(8)
-                                        ),
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                            Icons.keyboard_alt_outlined),
-                                        label: const Text('Toggle Keyboard'),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Text('${boardBloc.state.runtimeType}'),
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     dictionaryBloc.add(
+                          //       DictionaryDefine(
+                          //         lang: 'en',
+                          //         word: dictionaryBloc.state.dictionary.answer,
+                          //       ),
+                          //     );
+                          //     // boardBloc.add(BoardRestart());
+                          //   },
+                          //   child:
+                          //       Text('${dictionaryBloc.state.dictionary.answer}'),
+                          // ),
+                          // Text('${dictionaryBloc.state.dictionary.answer}'),
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //       settingsBloc.add(SettingsChange(type: SettingsTypes.hardMode, value: !settingsBloc.state.settings.hardMode));
+                          //     },
+                          //     child: Text('Toast')),
+                          const Board(),
+                          settings.useMobileKeyboard
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  child: SizedBox(
+                                    height: 45,
+                                    child: ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        // padding: EdgeInsets.all(8)
                                       ),
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                          Icons.keyboard_alt_outlined),
+                                      label: const Text('Toggle Keyboard'),
                                     ),
-                                  )
-                                : Container(
-                                    alignment: Alignment.bottomCenter,
-                                    // color: Theme.of(context).colorScheme.secondary,
-                                    child: AnimatedSwitcher(
-                                      duration: Duration(milliseconds: 600),
-                                      transitionBuilder: (child, animation) =>
-                                          ScaleTransition(
-                                        scale: animation,
-                                        child: child,
-                                      ),
-                                      child: boardBloc.state is BoardGameOver
-                                          ? Container()
-                                          : const Keyboard(),
+                                  ),
+                                )
+                              : Container(
+                                  alignment: Alignment.bottomCenter,
+                                  // color: Theme.of(context).colorScheme.secondary,
+                                  child: AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 600),
+                                    transitionBuilder: (child, animation) =>
+                                        SizeTransition(
+                                      sizeFactor: animation,
+                                      child: child,
                                     ),
-                                  )
-                          ],
-                        ),
+                                    child: boardBloc.state is BoardGameOver
+                                        ? Container()
+                                        : const Keyboard(),
+                                  ),
+                                )
+                        ],
                       ),
               ),
             ),
@@ -243,7 +243,8 @@ class HomeScreen extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                     ),
-                  )
+                  ),
+            boardBloc.state is! BoardGameOver ? Container() : ResultPanel(),
           ],
         ),
       ),

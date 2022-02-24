@@ -62,21 +62,25 @@ class Board extends StatelessWidget {
         )
         .toList();
 
-    return FittedBox(
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            // TextButton(onPressed: ()=> dictionaryBloc.add(DictionaryTest()), child: Text('ENC/DEC')),
-            // Row(children: [
-            //   Text("${_start}"),
-            //   TextButton(
-            //     onPressed: () {},
-            //     child: Text('Start'),
-            //   )
-            // ]),
-            ...wordBoard,
-          ],
+    return Flexible(
+      child: Center(
+        child: FittedBox(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                // TextButton(onPressed: ()=> dictionaryBloc.add(DictionaryTest()), child: Text('ENC/DEC')),
+                // Row(children: [
+                //   Text("${_start}"),
+                //   TextButton(
+                //     onPressed: () {},
+                //     child: Text('Start'),
+                //   )
+                // ]),
+                ...wordBoard,
+              ],
+            ),
+          ),
         ),
       ),
     );

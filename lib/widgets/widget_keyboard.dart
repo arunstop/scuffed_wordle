@@ -115,19 +115,21 @@ class Keyboard extends StatelessWidget {
             ? const Icon(
                 Icons.keyboard_return_rounded,
                 color: Colors.white,
+                size: 30,
               )
             : label;
         label = key == 'BACKSPACE'
             ? const Icon(
                 Icons.backspace_outlined,
                 color: Colors.white,
+                size: 30,
               )
             : label;
       }
       return Expanded(
         flex: nonLetter ? 9 : 6,
         child: SizedBox(
-          height: 48,
+          height: 60,
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3),

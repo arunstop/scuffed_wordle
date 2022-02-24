@@ -115,15 +115,15 @@ class UiLib {
             builder: (context, controller) => Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
+                      topRight: const Radius.circular(16),
                     ),
                   ),
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: Center(
                           child: Container(
                             height: 6,
@@ -217,7 +217,7 @@ class UiLib {
               ),
               child: Container(
                 color: color.withOpacity(0.6),
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minWidth: 90,
                   maxWidth: 300,
                 ),
