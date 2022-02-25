@@ -115,7 +115,7 @@ class HomeScreen extends StatelessWidget {
         //   );
         // }
         // print('resd');
-        // _showResultDialog(context);
+        _showResultDialog(context);
       }
     }
 
@@ -228,23 +228,15 @@ class HomeScreen extends StatelessWidget {
                       ),
               ),
             ),
-            boardBloc.state is! BoardGameOver
-                ? Container()
-                : Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          boardBloc.add(BoardRestart());
-                        },
-                        child: Icon(Icons.replay_rounded),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-            boardBloc.state is! BoardGameOver ? Container() : ResultPanel(),
+            // AnimatedSwitcher(
+            //   duration: Duration(milliseconds: 600),
+            //   transitionBuilder: (child, animation) {
+            //     return SizeTransition(sizeFactor: animation,child: child,);
+            //   },
+            //   child: boardBloc.state is! BoardGameOver
+            //       ? Container()
+            //       : ResultPanel(),
+            // )
           ],
         ),
       ),

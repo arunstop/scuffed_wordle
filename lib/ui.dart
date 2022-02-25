@@ -108,50 +108,54 @@ class UiLib {
       backgroundColor: Colors.transparent,
       // isScrollControlled: true,
       builder: (BuildContext context) => makeDismissable(
-        child: DraggableScrollableSheet(
-            initialChildSize: 0.6,
-            minChildSize: 0.3,
-            maxChildSize: 0.9,
-            builder: (context, controller) => Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: const Radius.circular(16),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 6,sigmaY: 6,),
+          child: DraggableScrollableSheet(
+              initialChildSize: 0.6,
+              minChildSize: 0.3,
+              maxChildSize: 0.9,
+              builder: (context, controller) => Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: const Radius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Center(
-                          child: Container(
-                            height: 6,
-                            width: 60,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(6),
+                    child: Column(
+                      children: [
+                        // Text("${controller.offset}"),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Center(
+                            child: Container(
+                              height: 6,
+                              width: 60,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                                color: Colors.grey,
                               ),
-                              color: Colors.grey,
+                              // child: Text('-'),
                             ),
-                            // child: Text('-'),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView(
-                          controller: controller,
-                          children: [
-                            Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                                child: content)
-                          ],
+                        Expanded(
+                          child: ListView(
+                            controller: controller,
+                            children: [
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                  child: content)
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )),
+                      ],
+                    ),
+                  )),
+        ),
       ),
     );
   }
