@@ -228,6 +228,22 @@ class HomeScreen extends StatelessWidget {
                       ),
               ),
             ),
+            boardBloc.state is! BoardGameOver
+                ? Container()
+                : Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          boardBloc.add(BoardRestart());
+                        },
+                        child: Icon(Icons.replay_rounded),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
             // AnimatedSwitcher(
             //   duration: Duration(milliseconds: 600),
             //   transitionBuilder: (child, animation) {

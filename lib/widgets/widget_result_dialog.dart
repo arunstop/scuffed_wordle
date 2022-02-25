@@ -231,10 +231,7 @@ class _DialogResultState extends State<DialogResult> {
                   UiLib.hSpace(12),
                   Text(
                     '${widget.answer.toUpperCase()}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
                           fontFamily: 'Rubik',
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
@@ -319,8 +316,7 @@ class _DialogResultState extends State<DialogResult> {
                           meaning.definitions!.isEmpty
                               ? const Text('')
                               : Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: _getDefinitionList(
                                     meaning.definitions!,
                                   ),
@@ -331,44 +327,49 @@ class _DialogResultState extends State<DialogResult> {
                 ),
         ),
         // Buttons
-        UiLib.vSpace(24),
-        // Share Button
-        _borderedButton(
-          label: "Share Result",
-          icon: const Icon(Icons.share_rounded),
-          action: () => _shareResult(),
-        ),
-        UiLib.vSpace(9),
-        // Play again button
-        SizedBox(
-          width: double.infinity,
-          height: 45,
-          child: ElevatedButton.icon(
-            onPressed: () => _playAgain(),
-            icon: const Icon(
-              Icons.play_arrow_rounded,
-              color: Colors.white,
-            ),
-            label: const Text(
-              "Play Again",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
+        Padding(
+          padding: EdgeInsets.fromLTRB(18,0,18,18),
+          child: Column(
+            children: [
+              UiLib.vSpace(24),
+              // Share Button
+              _borderedButton(
+                label: "Share Result",
+                icon: const Icon(Icons.share_rounded),
+                action: () => _shareResult(),
               ),
-            ),
+              UiLib.vSpace(9),
+              // Play again button
+              SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: ElevatedButton.icon(
+                  onPressed: () => _playAgain(),
+                  icon: const Icon(
+                    Icons.play_arrow_rounded,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    "Play Again",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              UiLib.vSpace(9),
+              // Close button
+              _borderedButton(
+                label: "Close",
+                icon: const Icon(Icons.close_rounded),
+                action: () => _close(),
+                noBorder: true,
+              ),
+              UiLib.vSpace(18),
+            ],
           ),
-        ),
-        UiLib.vSpace(9),
-        // Close button
-        _borderedButton(
-          label: "Close",
-          icon: const Icon(Icons.close_rounded),
-          action: () => _close(),
-          noBorder: true,
-        ),
-        UiLib.vSpace(18),
-        // Text('You guessed in ${boardBloc.state.attempt} attempts! Be proud!'),
-        // const BoardResult(),
+        )
       ],
     );
   }
