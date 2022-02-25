@@ -118,7 +118,7 @@ class Keyboard extends StatelessWidget {
       double height = 30;
       Widget label = Text(key, style: _getTextStyle());
       bool nonLetter = key == 'BACKSPACE' || key == 'ENTER';
-      Color? color = Colors.red.withAlpha(180);
+      Color? color = Colors.purple[400];
       BorderRadius borderRadius = BorderRadius.circular(6);
       if (nonLetter) {
         // height = height * 2;
