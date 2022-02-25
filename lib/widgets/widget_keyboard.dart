@@ -104,39 +104,55 @@ class Keyboard extends StatelessWidget {
       // print(key);
     }
 
+    BorderRadius _getBorderRadius(double bottomLeft, double topLeft,
+            double topRight, double bottomRight) =>
+        BorderRadius.only(
+          bottomLeft: Radius.circular(bottomLeft),
+          topLeft: Radius.circular(topLeft),
+          topRight: Radius.circular(topRight),
+          bottomRight: Radius.circular(bottomRight),
+        );
+
     Widget getKey(String key) {
       double width = 48;
       double height = 30;
       Widget label = Text(key, style: _getTextStyle());
-      bool nonLetter = key == 'ENTER' || key == 'BACKSPACE';
+      bool nonLetter = key == 'BACKSPACE' || key == 'ENTER';
+      Color? color = Colors.red.withAlpha(180);
+      BorderRadius borderRadius = BorderRadius.circular(6);
       if (nonLetter) {
-        height = height * 2;
-        label = key == 'ENTER'
-            ? const Icon(
-                Icons.keyboard_return_rounded,
-                color: Colors.white,
-                size: 30,
-              )
-            : label;
-        label = key == 'BACKSPACE'
-            ? const Icon(
-                Icons.backspace_outlined,
-                color: Colors.white,
-                size: 30,
-              )
-            : label;
+        // height = height * 2;
+        if (key == 'BACKSPACE') {
+          label = const Icon(
+            Icons.backspace_outlined,
+            color: Colors.white,
+            size: 30,
+          );
+          // borderRadius = _getBorderRadius(60, 60, 12,12);
+        } else if (key == 'ENTER') {
+          label = const Icon(
+            Icons.keyboard_return_rounded,
+            color: Colors.white,
+            size: 30,
+          );
+          // borderRadius = _getBorderRadius(12,12, 60, 60);
+          color = Colors.blue[800];
+        }
+      } else {
+        color = _getColor(key);
       }
       return Expanded(
         flex: nonLetter ? 9 : 6,
-        child: SizedBox(
+        child: Container(
           height: 60,
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: borderRadius,
             ),
-            margin: EdgeInsets.all(3),
-            color: _getColor(key),
+            margin: const EdgeInsets.all(3),
+            color: color,
             child: InkWell(
+              borderRadius: borderRadius,
               onTap:
                   boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
               child: Center(
@@ -167,7 +183,7 @@ class Keyboard extends StatelessWidget {
         .toList();
 
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       child: Column(
         children: [
           // Text('${boardBloc.state.toString()}'),
