@@ -20,11 +20,12 @@ class Board extends StatelessWidget {
     var settingsBloc = context.watch<SettingsBloc>();
     // var dictionaryBloc = context.watch<DictionaryBloc>();
     var boardState = boardBloc.state;
+    bool _isPlaying = boardState is! BoardGameOver;
 
     String _getLetter(int row, int col, String letter) {
       // Show the letter of the current answer if the based on attempt
       // when the board is not submitted
-      if (boardState.attempt == row + 1 && boardState is! BoardGameOver) {
+      if (boardState.attempt == row + 1 && _isPlaying) {
         return boardState.word.length > col ? boardState.word[col] : '';
       }
       return letter;
@@ -33,7 +34,7 @@ class Board extends StatelessWidget {
     Color? _getColor(int row, Color? color) {
       // Change current attempt row's color
       // when the board is not submitted
-      return boardState.attempt == row + 1 && boardState is! BoardGameOver
+      return boardState.attempt == row + 1 && _isPlaying
           ? ColorList.tileActiveRow
           : color;
     }
@@ -41,11 +42,15 @@ class Board extends StatelessWidget {
     Widget _getTile(int row, int col, BoardLetter letter) {
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
+      bool isOnCurrentGuess = row+1 == boardState.attempt && _isPlaying;
       return BoardTile(
               isColorBlind: isColorBlind,
               letter: _getLetter(row, col, letter.letter),
               // null safty
               color: _getColor(row, letter.color)!,
+              onStandBy: row+1 > boardState.attempt,
+              onType:isOnCurrentGuess &&  col == boardState.word.length,
+              isWaitingToBeTyped:isOnCurrentGuess &&  col > boardState.word.length,
             );
     }
 

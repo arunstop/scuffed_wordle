@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
@@ -237,6 +238,7 @@ class HomeScreen extends StatelessWidget {
                       child: FloatingActionButton(
                         onPressed: () {
                           boardBloc.add(BoardRestart());
+                          dictionaryBloc.add(DictionaryRefreshKeyword());
                         },
                         child: Icon(Icons.replay_rounded),
                         backgroundColor: Theme.of(context).colorScheme.primary,

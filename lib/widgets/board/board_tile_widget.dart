@@ -8,11 +8,17 @@ class BoardTile extends StatelessWidget {
   final bool isColorBlind;
   final String letter;
   final Color color;
+  final bool onStandBy;
+  final bool onType;
+  final bool isWaitingToBeTyped;
   const BoardTile({
     Key? key,
     required this.isColorBlind,
     required this.letter,
     required this.color,
+    this.onStandBy = false,
+    this.onType = false,
+    this.isWaitingToBeTyped = false,
   }) : super(key: key);
 
   BoxShape _getShape(Color? color) {
@@ -29,9 +35,27 @@ class BoardTile extends StatelessWidget {
 
   BoxDecoration _getDecoration(Color? color) {
     BoxShape shape = _getShape(color);
+    Color? styledColor = color;
+    Border styledBorder = Border();
+    if (color == ColorList.tileBase && onStandBy) {
+      styledColor = Colors.transparent;
+      styledBorder = Border.all(
+        color: ColorList.tileBase,
+        width: 3,
+      );
+    } else if (onType) {
+      styledColor = Colors.purple[400];
+      // styledBorder = Border.all(
+      //   color: ColorList.tileBase,
+      //   width: 3,
+      // );
+    } else if (isWaitingToBeTyped) {
+      styledColor = ColorList.tileActiveRow.withAlpha(128);
+    }
     return BoxDecoration(
       shape: shape,
-      color: color,
+      color: styledColor,
+      border: styledBorder,
       borderRadius: shape == BoxShape.rectangle
           ? BorderRadius.all(Radius.circular(8.0))
           : null,
