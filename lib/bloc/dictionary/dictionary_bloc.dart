@@ -71,13 +71,11 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
       DictionaryRefreshKeyword event, Emitter<DictionaryState> emit) async {
     // Get answers by randomizing the list
     String getAnswer(String currentAnswer) {
-      List<String> answerList = state.dictionary.answerList;
-      String newAnswer = answerList[Random().nextInt(answerList.length)];
-      if (currentAnswer == newAnswer) {
-        return getAnswer(newAnswer);
-      } else {
-        return newAnswer;
-      }
+      // remove current answer from answer list
+      List<String> answerList = state.dictionary.answerList
+          .where((element) => element != currentAnswer)
+          .toList();
+      return answerList[Random().nextInt(answerList.length)];
     }
 
     // Apply changes to bloc
