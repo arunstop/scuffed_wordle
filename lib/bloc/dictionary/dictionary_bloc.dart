@@ -97,6 +97,8 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     DictionaryDefine event,
     Emitter<DictionaryState> emit,
   ) async {
+    // Change status to loading
+    emit(state.statusLoading());
     Word? wordDefinition = await dictionaryRepo.getWordDefinition(
       lang: 'en',
       word: state.dictionary.answer.toLowerCase(),
@@ -111,6 +113,8 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
           dictionary: state.dictionary.copyWith(
             wordDefinition: wordDefinition,
           ),
+          // done loading
+          status: DictionaryStateStatus.ok,
         ),
       );
 
@@ -118,8 +122,11 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
 
       // print("after: ${state.dictionary.wordDefinition?.phonetic}");
     }
-    // If there is local answer, set it to the state.
+    // If there is local answer, apply state and revert
+    // the type into
     else {
+      //done loading
+      emit(state.statusOk());
       print('none');
       // print('local ${localDictionary.answer}');
     }

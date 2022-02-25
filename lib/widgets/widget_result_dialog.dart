@@ -10,6 +10,7 @@ import 'package:flutter_tts/flutter_tts_web.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
+import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
@@ -256,17 +257,30 @@ class _DialogResultState extends State<DialogResult> {
           child: _isDefinitionValid == false
               ? Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () => _defineWord(widget.answer),
-                      style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                      ),
-                      icon: const Icon(Icons.search),
-                      label: const Text('Define'),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                        child: dictionaryBloc.state.status ==
+                                DictionaryStateStatus.loading
+                            ? SpinKitThreeInOut(
+                                size: 30,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : ElevatedButton.icon(
+                                onPressed: () => _defineWord(widget.answer),
+                                style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                ),
+                                icon: const Icon(Icons.search),
+                                label: const Text('Define'),
+                              ),
+                      )),
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +342,7 @@ class _DialogResultState extends State<DialogResult> {
         ),
         // Buttons
         Padding(
-          padding: EdgeInsets.fromLTRB(18,0,18,18),
+          padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
           child: Column(
             children: [
               UiLib.vSpace(24),
