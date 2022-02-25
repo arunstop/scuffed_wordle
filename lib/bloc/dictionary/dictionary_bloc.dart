@@ -126,7 +126,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     // the type into
     else {
       //done loading
-      emit(state.statusOk());
+      emit(state.statusError());
       print('none');
       // print('local ${localDictionary.answer}');
     }

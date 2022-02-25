@@ -26,17 +26,21 @@ class DictionaryState extends Equatable {
         status: status ?? this.status,
       );
 
-  DictionaryState statusInit() => DictionaryState(
-        dictionary: dictionary,
+  DictionaryState statusInit({Dictionary? dictionary}) => DictionaryState(
+        dictionary: dictionary ?? this.dictionary,
         status: DictionaryStateStatus.init,
       );
-  DictionaryState statusLoading() => DictionaryState(
-        dictionary: dictionary,
+  DictionaryState statusLoading({Dictionary? dictionary}) => DictionaryState(
+        dictionary: dictionary ?? this.dictionary,
         status: DictionaryStateStatus.loading,
       );
-  DictionaryState statusOk() => DictionaryState(
-        dictionary: dictionary,
+  DictionaryState statusOk({Dictionary? dictionary}) => DictionaryState(
+        dictionary: dictionary ?? this.dictionary,
         status: DictionaryStateStatus.ok,
+      );
+      DictionaryState statusError({Dictionary? dictionary}) => DictionaryState(
+        dictionary: dictionary ?? this.dictionary,
+        status: DictionaryStateStatus.error,
       );
 
   @override

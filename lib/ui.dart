@@ -198,10 +198,10 @@ class UiLib {
     IconData icon = Icons.circle_outlined;
 
     if (status == Status.ok) {
-      color = ColorList.ok;
+      color = ColorLib.ok;
       icon = Icons.check_rounded;
     } else if (status == Status.error) {
-      color = ColorList.error;
+      color = ColorLib.error;
       icon = Icons.close_rounded;
     } else if (status == Status.def) {
       color = Colors.blue;
@@ -320,7 +320,7 @@ class UiLib {
       );
 }
 
-class ColorList {
+class ColorLib {
   static Color get tileBase => Colors.grey[800]!;
   static Color get tileActiveRow => Colors.blue[800]!;
   static Color get tileOkLetter => Colors.yellow[700]!;

@@ -76,13 +76,13 @@ class _DialogResultState extends State<DialogResult> {
       var resultClipBoard = state.submittedWordList.map((word) {
         return word.mapIndexed((letterIndex, letter) {
           String lineBreak = letterIndex + 1 == word.length ? "\n" : "";
-          if (letter.color == ColorList.tileBase) {
+          if (letter.color == ColorLib.tileBase) {
             // Black
             return "⬛$lineBreak";
-          } else if (letter.color == ColorList.tileOkLetter) {
+          } else if (letter.color == ColorLib.tileOkLetter) {
             // Yellow
             return "🟨$lineBreak";
-          } else if (letter.color == ColorList.tilePinpoint) {
+          } else if (letter.color == ColorLib.tilePinpoint) {
             // Green
             return "🟩$lineBreak";
           }
@@ -144,7 +144,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Color _resultColor = boardBloc.state.win ? ColorList.ok : ColorList.error;
+    Color _resultColor = boardBloc.state.win ? ColorLib.ok : ColorLib.error;
     bool _isDefinitionValid =
         definition != null && definition.word == widget.answer;
     List<Widget> _getDefinitionList(List<Definition> defList) {
@@ -189,6 +189,34 @@ class _DialogResultState extends State<DialogResult> {
         });
       }
     });
+
+    Widget _defineWordButton() {
+      DictionaryStateStatus status = dictionaryBloc.state.status;
+      if (status == DictionaryStateStatus.loading) {
+        return SpinKitThreeInOut(
+          size: 30,
+          color: Theme.of(context).colorScheme.primary,
+        );
+      } else if (status == DictionaryStateStatus.error) {
+        return Chip(
+          backgroundColor: ColorLib.error,
+          label: Text(
+            'Error: No definition found, sorry :(',
+            style: Theme.of(context).textTheme.caption!.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      return ElevatedButton.icon(
+        onPressed: () => _defineWord(widget.answer),
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(Colors.white),
+        ),
+        icon: const Icon(Icons.search),
+        label: const Text('Define'),
+      );
+    }
 
     return Column(
       children: [
@@ -257,30 +285,16 @@ class _DialogResultState extends State<DialogResult> {
           child: _isDefinitionValid == false
               ? Center(
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: AnimatedSwitcher(
-                        duration: Duration(milliseconds: 300),
-                        transitionBuilder: (child, animation) =>
-                            ScaleTransition(
-                          scale: animation,
-                          child: child,
-                        ),
-                        child: dictionaryBloc.state.status ==
-                                DictionaryStateStatus.loading
-                            ? SpinKitThreeInOut(
-                                size: 30,
-                                color: Theme.of(context).colorScheme.primary,
-                              )
-                            : ElevatedButton.icon(
-                                onPressed: () => _defineWord(widget.answer),
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                ),
-                                icon: const Icon(Icons.search),
-                                label: const Text('Define'),
-                              ),
-                      )),
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) => ScaleTransition(
+                        scale: animation,
+                        child: child,
+                      ),
+                      child: _defineWordButton(),
+                    ),
+                  ),
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

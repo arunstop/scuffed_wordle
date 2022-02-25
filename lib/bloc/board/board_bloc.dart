@@ -221,7 +221,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         latestSubmittedWord.forEachIndexed((element, idx) {
           if (err == true) return;
           // Green hint should be re-used in the current answer
-          if (element.color == ColorList.tilePinpoint) {
+          if (element.color == ColorLib.tilePinpoint) {
             // if not show error and call don't proceed
             if (element.letter != state.word[idx]) {
               UiLib.showToast(
@@ -236,7 +236,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         latestSubmittedWord.forEachIndexed((element, index) {
           if (err == true) return;
           // Yellow hint should be included in the current answer
-          if (element.color == ColorList.tileOkLetter) {
+          if (element.color == ColorLib.tileOkLetter) {
             // if not show error and call don't proceed
             if (!state.word.contains(element.letter)) {
               UiLib.showToast(

@@ -18,54 +18,54 @@ class HowToPlayScreen extends StatelessWidget {
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "T",
-        color: ColorList.tileOkLetter,
+        color: ColorLib.tileOkLetter,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "O",
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "O",
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "L",
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "S",
-        color: ColorList.tileOkLetter,
+        color: ColorLib.tileOkLetter,
       ),
     ];
     List<Widget> _wordExample2 = [
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "S",
-        color: ColorList.tilePinpoint,
+        color: ColorLib.tilePinpoint,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "M",
-        color: ColorList.tilePinpoint,
+        color: ColorLib.tilePinpoint,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "A",
-        color: ColorList.tilePinpoint,
+        color: ColorLib.tilePinpoint,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "L",
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
       ),
       BoardTile(
         isColorBlind: isColorBlind,
         letter: "L",
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
       ),
     ];
 

@@ -79,7 +79,7 @@ class BoardService extends MainService implements BoardRepo {
           // check if the letter is in the answerWord
           // and if the letter is not green arleady
           if (answerWordAsList.contains(coloredLetter.letter) &&
-              coloredLetter.color != ColorList.tilePinpoint) {
+              coloredLetter.color != ColorLib.tilePinpoint) {
             // write off the letter of answerWord if it is checked
             // by finding the index of targeted answerWord letter
             answerWordAsList[answerWordAsList.indexOf(coloredLetter.letter)] =

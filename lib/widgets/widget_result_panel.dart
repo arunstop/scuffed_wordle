@@ -51,7 +51,7 @@ class _ResultPanelState extends State<ResultPanel> {
 
     Widget _panelWidget = Container(
       padding: EdgeInsets.fromLTRB(12, 18, 12, 24),
-      color: boardBloc.state.win == true ? ColorList.ok : ColorList.error,
+      color: boardBloc.state.win == true ? ColorLib.ok : ColorLib.error,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -35,7 +35,7 @@ class Board extends StatelessWidget {
       // Change current attempt row's color
       // when the board is not submitted
       return boardState.attempt == row + 1 && _isPlaying
-          ? ColorList.tileActiveRow
+          ? ColorLib.tileActiveRow
           : color;
     }
 

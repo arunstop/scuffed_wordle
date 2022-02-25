@@ -27,7 +27,7 @@ class BoardTile extends StatelessWidget {
       return BoxShape.rectangle;
       // } else if (boardState.attempt == row + 1) {
       //   return BoxShape.rectangle;
-    } else if (color == ColorList.tilePinpoint) {
+    } else if (color == ColorLib.tilePinpoint) {
       return BoxShape.circle;
     }
     return BoxShape.rectangle;
@@ -37,10 +37,10 @@ class BoardTile extends StatelessWidget {
     BoxShape shape = _getShape(color);
     Color? styledColor = color;
     Border styledBorder = Border();
-    if (color == ColorList.tileBase && onStandBy) {
+    if (color == ColorLib.tileBase && onStandBy) {
       styledColor = Colors.transparent;
       styledBorder = Border.all(
-        color: ColorList.tileBase,
+        color: ColorLib.tileBase,
         width: 3,
       );
     } else if (onType) {
@@ -50,7 +50,7 @@ class BoardTile extends StatelessWidget {
       //   width: 3,
       // );
     } else if (isWaitingToBeTyped) {
-      styledColor = ColorList.tileActiveRow.withAlpha(128);
+      styledColor = ColorLib.tileActiveRow.withAlpha(128);
     }
     return BoxDecoration(
       shape: shape,
@@ -65,7 +65,7 @@ class BoardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if the letter is yellow
-    bool yellowLetter = color == ColorList.tileOkLetter;
+    bool yellowLetter = color == ColorLib.tileOkLetter;
     // Check if colorblind is on
     // bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
     bool yellowAndColorBlind = yellowLetter && isColorBlind;

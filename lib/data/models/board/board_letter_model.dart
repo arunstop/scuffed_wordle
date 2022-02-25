@@ -14,13 +14,13 @@ class BoardLetter {
   BoardLetter({required this.letter, required this.strColor}) {
     switch (strColor) {
       case 'pinpoint':
-        color = ColorList.tilePinpoint;
+        color = ColorLib.tilePinpoint;
         break;
       case 'okLetter':
-        color = ColorList.tileOkLetter;
+        color = ColorLib.tileOkLetter;
         break;
       case 'base':
-        color = ColorList.tileBase;
+        color = ColorLib.tileBase;
         break;
       default:
     }
