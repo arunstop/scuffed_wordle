@@ -59,6 +59,18 @@ class SettingsScreen extends StatelessWidget {
     bool _isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
+    Widget _getDropDown(
+            {required String value,required List<String> items, required Function onChanged,}) =>
+        DropdownButton<String>(
+          value: value,
+          items: items
+              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  ))
+              .toList(),
+          onChanged: (value) => onChanged(value),
+        );
     List<Widget> _settingsList = [
       // Text('$_isPlaying'),
       SwitchListTile.adaptive(
@@ -113,19 +125,14 @@ class SettingsScreen extends StatelessWidget {
         onTap: () {
           print('change');
         },
-        trailing: DropdownButton<String>(
+        trailing: _getDropDown(
           value: settings.matrix,
-          items: <String>['4x5', '5x6', '6x7', '7x8', '8x9']
-              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  ))
-              .toList(),
-          onChanged: (value) {
+          items: <String>['4x5', '5x6', '6x7', '7x8', '8x9'],
+          onChanged: (String value) {
             if (_isPlaying) {
               UiLib.showToast(
                 status: Status.error,
-                text: 'Cannot change game mode when playing',
+                text: 'Cannot change game matrix when playing',
               );
             } else {
               if (value == settings.matrix) {
@@ -141,6 +148,36 @@ class SettingsScreen extends StatelessWidget {
                     // lives: settings.lives,
                     ),
               );
+              Navigator.pop(context);
+            }
+          },
+        ),
+      ),
+      ListTile(
+        leading: const Icon(Icons.apps_rounded),
+        title: const Text('Game Difficulty'),
+        subtitle: const Text('Choose difficulty: Easy, Normal, Hard'),
+        onTap: () {
+          print('diff change');
+        },
+        trailing: _getDropDown(
+          value: settings.difficulty,
+          items: <String>['EASY', 'NORMAL', 'HARD'],
+          onChanged: (String value) {
+            if (_isPlaying) {
+              UiLib.showToast(
+                status: Status.error,
+                text: 'Cannot change game difficulty when playing',
+              );
+            } else {
+              if (value == settings.difficulty) {
+                return;
+              }
+              _changeSettings(SettingsTypes.difficulty, value);
+              // print(value);
+              // print(settings.wordLength);
+              dictionaryBloc.add(DictionaryInitialize());
+              boardBloc.add(BoardRestart());
               Navigator.pop(context);
             }
           },

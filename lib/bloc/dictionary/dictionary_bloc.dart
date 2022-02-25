@@ -49,9 +49,14 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     print('ev : ${settingsLocal.guessLength}');
     // If there is no local dictionary
     if (localDictionary is DictionaryEmpty ||
-        localDictionary.letterCount != settingsLocal.guessLength) {
-      Dictionary dictionary =
-          await dictionaryRepo.getDictionary(length: settingsLocal.guessLength);
+        // Check if length is different/changed
+        localDictionary.letterCount != settingsLocal.guessLength ||
+        // Check if difficulty is different/changed
+        localDictionary.difficulty.toLowerCase() != settingsLocal.difficulty.toLowerCase()) {
+      Dictionary dictionary = await dictionaryRepo.getDictionary(
+        length: settingsLocal.guessLength,
+        difficulty: settingsLocal.difficulty,
+      );
       // Apply changes
       emit(state.copyWith(dictionary: dictionary));
       // Save answer locally
@@ -86,6 +91,7 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
           answer: getAnswer(state.dictionary.answer),
           // wordDefinition: null,
         ),
+        status: DictionaryStateStatus.init,
       ),
     );
     // print(state.dictionary.wordDefinition);

@@ -11,6 +11,7 @@ enum SettingsTypes {
   retypeOnWrongGuess,
   useMobileKeyboard,
   matrix,
+  difficulty,
 }
 
 @JsonSerializable()
@@ -22,6 +23,7 @@ class Settings {
   final bool retypeOnWrongGuess;
   final bool useMobileKeyboard;
   final String matrix;
+  final String difficulty;
 
   Settings({
     this.hardMode = false,
@@ -31,6 +33,7 @@ class Settings {
     this.retypeOnWrongGuess = false,
     this.useMobileKeyboard = false,
     this.matrix = '5x6',
+    this.difficulty = 'EASY',
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
@@ -49,6 +52,7 @@ class Settings {
     bool? retypeOnWrongGuess,
     bool? useMobileKeyboard,
     String? matrix,
+    String? difficulty,
   }) =>
       Settings( 
         hardMode: hardMode ?? this.hardMode,
@@ -58,6 +62,7 @@ class Settings {
         retypeOnWrongGuess: retypeOnWrongGuess ?? this.retypeOnWrongGuess,
         useMobileKeyboard: useMobileKeyboard ?? this.useMobileKeyboard,
         matrix: matrix ?? this.matrix,
+        difficulty: difficulty ?? this.difficulty,
       );
 
   // @override

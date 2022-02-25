@@ -59,12 +59,15 @@ class DictionaryService extends MainService implements DictionaryRepo {
   }
 
   @override
-  Future<Dictionary> getDictionary({required int length}) async {
+  Future<Dictionary> getDictionary({
+    required int length,
+    required String difficulty,
+  }) async {
     http.Response getGameDictionary = await getData(
       apiUri: Constants.api.scuffedWordle.getDictionary(
         params: {
           "length": "${length}",
-          "difficulty": "easy",
+          "difficulty": difficulty.toLowerCase(),
         },
       ),
     );
@@ -75,7 +78,7 @@ class DictionaryService extends MainService implements DictionaryRepo {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      return throw Exception('Failed to load album');
+      return throw Exception('Failed to load data');
     }
   }
 
