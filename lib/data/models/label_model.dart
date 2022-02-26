@@ -71,7 +71,7 @@ class Label {
     "[Crowd applauds]",
     "[People doing standing ovations]",
     "[Singing] We are the champions, my frieeend!",
-    "[Singing] THE CHAMPIOOOOOONS!!",
+    "[Singing] THE CHAMPIOOOONS!!",
     //
     "Now playing: Queen - We Are the Champions",
     "VICTORIOUUUUUUUUUS!!!",

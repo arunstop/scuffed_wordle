@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/data/models/board/board_letter_model.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
@@ -151,6 +152,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       status: Status.def,
       text: 'Good Luck!',
       duration: 3600,
+      icon : Icons.emoji_emotions,
     );
 
     // dictionaryBloc.add(
@@ -384,6 +386,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       status: Status.def,
       text: 'Good Luck!',
       duration: 3600,
+      icon : Icons.emoji_emotions_outlined
     );
   }
 }

@@ -109,7 +109,10 @@ class UiLib {
       // isScrollControlled: true,
       builder: (BuildContext context) => makeDismissable(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 6,sigmaY: 6,),
+          filter: ImageFilter.blur(
+            sigmaX: 6,
+            sigmaY: 6,
+          ),
           child: DraggableScrollableSheet(
               initialChildSize: 0.6,
               minChildSize: 0.3,
@@ -193,9 +196,12 @@ class UiLib {
   // }
 
   static void showToast(
-      {required Status status, required String text, int duration = 2400}) {
+      {required Status status,
+      required String text,
+      int duration = 2400,
+      IconData icon = Icons.info_outline,
+      }) {
     Color color = Colors.grey[800]!;
-    IconData icon = Icons.circle_outlined;
 
     if (status == Status.ok) {
       color = ColorLib.ok;
@@ -203,62 +209,77 @@ class UiLib {
     } else if (status == Status.error) {
       color = ColorLib.error;
       icon = Icons.close_rounded;
-    } else if (status == Status.def) {
+    } 
+    else if (status == Status.def) {
       color = Colors.blue;
-      icon = Icons.sentiment_satisfied_alt_rounded;
+      // icon = Icons.circle;
     }
 
     showToastWidget(
       Padding(
         padding: const EdgeInsets.fromLTRB(12, 60, 12, 0),
-        child: FittedBox(
-          child: ClipRRect(
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60.0),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: 6,
-                sigmaY: 6,
-              ),
-              child: Container(
+            boxShadow: [
+              BoxShadow(
                 color: color.withOpacity(0.6),
-                constraints: const BoxConstraints(
-                  minWidth: 90,
-                  maxWidth: 300,
+                spreadRadius: 3,
+                blurRadius: 6,
+                offset: Offset(-1, 1),
+              ),
+            ],
+          ),
+          child: FittedBox(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(60.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 6,
+                  sigmaY: 6,
                 ),
-                // color: ColorList.error,
-                child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(60.0),
-                        child: Container(
-                          color: Colors.white,
-                          child: Icon(
-                            icon,
-                            size: 42,
-                            color: color,
+                child: Container(
+                  color: color.withOpacity(0.6),
+                  constraints: const BoxConstraints(
+                    minWidth: 90,
+                    maxWidth: 300,
+                  ),
+                  // color: ColorList.error,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(60.0),
+                          child: Container(
+                            color: Colors.white,
+                            child: Icon(
+                              icon,
+                              size: 42,
+                              color: color,
+                            ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(9, 6, 12, 9),
-                          child: Text(
-                            text,
-                            style: const TextStyle(
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(9, 6, 12, 9),
+                            child: Text(
+                              text,
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.white,
                                 decoration: TextDecoration.none,
                                 fontWeight: FontWeight.normal,
                                 letterSpacing: 0.5,
-                                fontFamily: 'RobotoMono'),
+                                fontFamily: 'RobotoMono',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
