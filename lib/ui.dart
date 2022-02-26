@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:ui';
-
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
@@ -343,11 +340,14 @@ class UiLib {
 
 class ColorLib {
   static Color get tileBase => Colors.grey[800]!;
-  static Color get tileActiveRow => Colors.blue[800]!;
+  static Color get tileActiveRow => gameMain;
   static Color get tileOkLetter => Colors.yellow[700]!;
   static Color get tilePinpoint => Colors.green;
   static Color get ok => Colors.green;
   static String get strOk => "#4caf50";
   static Color get error => Colors.red;
   static String get strError => "#f44336";
+  static Color get gameMain => Colors.blue[800]!;
+  static Color get gameAlt => Colors.purple[400]!;
 }
+  

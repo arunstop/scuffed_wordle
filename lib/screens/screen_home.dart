@@ -14,6 +14,7 @@ import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
+import 'package:scuffed_wordle/widgets/widget_mic_input.dart';
 import 'package:scuffed_wordle/widgets/widget_result_dialog.dart';
 import 'package:scuffed_wordle/widgets/widget_result_panel.dart';
 import 'package:scuffed_wordle/widgets/widget_screen_template.dart';
@@ -214,7 +215,7 @@ class HomeScreen extends StatelessWidget {
                                   alignment: Alignment.bottomCenter,
                                   // color: Theme.of(context).colorScheme.secondary,
                                   child: AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 600),
+                                    duration: const Duration(milliseconds: 600),
                                     transitionBuilder: (child, animation) =>
                                         SizeTransition(
                                       sizeFactor: animation,
@@ -222,7 +223,12 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                     child: boardBloc.state is BoardGameOver
                                         ? Container()
-                                        : const Keyboard(),
+                                        : Column(
+                                            children: [
+                                              const Keyboard(),
+                                              const MicInput(),
+                                            ],
+                                          ),
                                   ),
                                 )
                         ],
@@ -240,7 +246,7 @@ class HomeScreen extends StatelessWidget {
                           boardBloc.add(BoardRestart());
                           dictionaryBloc.add(DictionaryRefreshKeyword());
                         },
-                        child: Icon(Icons.replay_rounded),
+                        child: const Icon(Icons.replay_rounded),
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                       ),

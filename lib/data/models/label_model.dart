@@ -53,7 +53,7 @@ class Label {
     "Yeay! You did it!",
     "My god, you are good.",
     "Hooray! Hooray! Hooray!",
-    "Well that was easy right?",
+    "Well that was easy, for you",
     "Come on, it was not that hard right?",
     "Of course you won.",
     "Easy peasy, lemon squeazy",

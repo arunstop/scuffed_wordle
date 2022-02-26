@@ -13,7 +13,7 @@ class Keyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var boardBloc = context.watch<BoardBloc>();
+    BoardBloc boardBloc = context.watch<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.watch<SettingsBloc>();
 
@@ -118,7 +118,7 @@ class Keyboard extends StatelessWidget {
       double height = 30;
       Widget label = Text(key, style: _getTextStyle());
       bool nonLetter = key == 'BACKSPACE' || key == 'ENTER';
-      Color? color = Colors.purple[400];
+      Color? color = ColorLib.gameAlt;
       BorderRadius borderRadius = BorderRadius.circular(6);
       if (nonLetter) {
         // height = height * 2;
@@ -136,7 +136,7 @@ class Keyboard extends StatelessWidget {
             size: 30,
           );
           // borderRadius = _getBorderRadius(12,12, 60, 60);
-          color = Colors.blue[800];
+          color = ColorLib.gameMain;
         }
       } else {
         color = _getColor(key);
@@ -183,7 +183,7 @@ class Keyboard extends StatelessWidget {
         .toList();
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12,0,12,6),
       child: Column(
         children: [
           // Text('${boardBloc.state.toString()}'),

@@ -54,6 +54,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     on<BoardAddLetter>(_onBoardAddLetter);
     // Remove letter when backspace key is pressed
     on<BoardRemoveLetter>(_onBoardRemoveLetter);
+    // Add guess
+    on<BoardAddGuess>(_onBoardAddGuess);
     // Submit word when enter key is pressed
     on<BoardSubmitGuess>(_onBoardSubmitGuess);
     // Restart game
@@ -152,7 +154,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       status: Status.def,
       text: 'Good Luck!',
       duration: 3600,
-      icon : Icons.emoji_emotions,
+      icon: Icons.emoji_emotions,
     );
 
     // dictionaryBloc.add(
@@ -195,6 +197,34 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     typedLetters.removeLast();
     // Apply changes on the bloc
     emit(state.copyWith(word: typedLetters));
+  }
+
+  void _onBoardAddGuess(
+    BoardAddGuess event,
+    Emitter<BoardState> emit,
+  ) {
+    if(state.word.join('') == event.guess || state is BoardGameOver){
+      return;
+    }
+    // print('guess : ${event.guess}');
+    // print('length : ${event.length}');
+    // Remove spaces from guess
+    emit(state.copyWith(
+      word: [],
+    ));
+    String noSpacesGuess = event.guess.replaceAll(" ", '');
+    // Check if guess has reached game word length
+    int length = noSpacesGuess.length >= event.length
+        ? event.length
+        : noSpacesGuess.length;
+    // Trim the guess by game word length
+    String trimmedGuess = noSpacesGuess.substring(0, length);
+    print(trimmedGuess);
+    emit(state.copyWith(
+      word: trimmedGuess.split(''),
+    ));
+    // print('length : ${length}');
+    // print('nsg-length : ${noSpacesGuess.length}');
   }
 
   void _onBoardSubmitGuess(
@@ -383,10 +413,9 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     ));
     // print(state.runtimeType);
     UiLib.showToast(
-      status: Status.def,
-      text: 'Good Luck!',
-      duration: 3600,
-      icon : Icons.emoji_emotions_outlined
-    );
+        status: Status.def,
+        text: 'Good Luck!',
+        duration: 3600,
+        icon: Icons.emoji_emotions_outlined);
   }
 }

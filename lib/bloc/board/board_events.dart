@@ -36,6 +36,12 @@ class BoardAddLetter extends BoardEvent {
 
 class BoardRemoveLetter extends BoardEvent {}
 
+class BoardAddGuess extends BoardEvent {
+  final String guess;
+  final int length;
+  BoardAddGuess({required this.guess,required this.length});
+}
+
 class BoardSubmitGuess extends BoardEvent {
   final Settings settings;
   final List<String> wordList;
