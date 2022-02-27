@@ -15,10 +15,12 @@ class MicInput extends StatefulWidget {
 }
 
 class _MicInputState extends State<MicInput> {
-  SpeechToText _speechToText = SpeechToText();
+  final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   bool _isListening = false;
-  String _listeningLabel = 'Listening...';
+  bool _isError = false;
+  final String _listeningLabel = 'Listening...';
+  final String _micDisabled = "Microphone has been blocked.";
   String _detectedWord = '';
   late BoardBloc boardBloc;
 
@@ -44,12 +46,41 @@ class _MicInputState extends State<MicInput> {
     if (mounted == false) {
       return;
     }
-    _speechEnabled = await _speechToText.initialize();
+    _speechEnabled = await _speechToText.initialize(
+      onStatus: (status) {
+        // print("status ${status}");
+      },
+      // Check if microphone is blocked
+      onError: (errorNotification) {
+        print("error ${errorNotification}");
+        if (errorNotification != null && _isListening) {
+          setState(() {
+            _isError = true;
+            _detectedWord = _micDisabled;
+          });
+        }
+      },
+    );
+    // print(await _speechToText);
     setState(() {});
   }
 
   void _startListening() async {
-    if (mounted == false) {
+    // if (await _speechToText.hasError && _isError) {
+    //   print('error');
+    //   setState(() {
+    //     _isError = true;
+    //     _detectedWord = "Microphone has been blocked.";
+    //   });
+    //   // return;
+    // }else{
+    //   setState(() {
+    //     _isError = false;
+    //     _detectedWord = _listeningLabel;
+    //   });
+    // }
+    // print(await _speechToText.lastError);
+    if (mounted == false && _isError) {
       return;
     }
     setState(() {
@@ -62,11 +93,39 @@ class _MicInputState extends State<MicInput> {
     if (mounted == false) {
       return;
     }
+    // turn off listening, error indicator for ui purposes
     setState(() {
       _isListening = false;
       _detectedWord = _listeningLabel;
+      _isError = false;
     });
     await _speechToText.stop();
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    // check if stt still listening and widget is mounted
+    if (mounted == false || _isListening == false) {
+      return;
+    }
+
+    String lastDetectedWord =
+        result.alternates.last.recognizedWords.toUpperCase().trim();
+    if (_detectedWord == lastDetectedWord &&
+        lastDetectedWord.isNotEmpty &&
+        lastDetectedWord.contains(" ")) {
+      return;
+    }
+    // print(_detectedWord);
+    setState(() {
+      _detectedWord = lastDetectedWord;
+    });
+    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    context.read<BoardBloc>().add(
+          BoardAddGuess(
+            guess: _detectedWord,
+            length: dictionaryBloc.state.dictionary.letterCount,
+          ),
+        );
   }
 
   void _submitGuess() {
@@ -86,30 +145,6 @@ class _MicInputState extends State<MicInput> {
     });
   }
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    // print('${boardBloc.state.attempt}');
-    // print('${_isListening} ${result.recognizedWords}');
-    if (mounted == false || _isListening == false) {
-      return;
-    }
-    String lastDetectedWord =
-        result.alternates.last.recognizedWords.toUpperCase().trim();
-    if (_detectedWord == lastDetectedWord && lastDetectedWord.isNotEmpty) {
-      return;
-    }
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    // print(_detectedWord);
-    setState(() {
-      _detectedWord = lastDetectedWord;
-    });
-    context.read<BoardBloc>().add(
-          BoardAddGuess(
-            guess: _detectedWord,
-            length: dictionaryBloc.state.dictionary.letterCount,
-          ),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     BorderRadius borderRadius = const BorderRadius.horizontal(
@@ -117,41 +152,54 @@ class _MicInputState extends State<MicInput> {
       right: Radius.circular(0),
     );
 
-    Widget leftRoundedButton(
-            {required Color color,
-            required Icon icon,
-            required VoidCallback action}) =>
-        Container(
-          height: 48,
-          width: 60,
-          child: Card(
-            margin: const EdgeInsets.all(0),
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius,
-            ),
-            elevation: 0,
-            color: color,
-            child: InkWell(
-              borderRadius: borderRadius,
-              onTap: action,
-              child: Center(
-                child: icon,
-              ),
+    Color getBarColor() {
+      // Check if listening
+      if (_isListening) {
+        // Check if stt is error
+        if (_isError == true) {
+          return ColorLib.error;
+        } else {
+          return Theme.of(context).colorScheme.primary;
+        }
+      }
+      return ColorLib.tileBase;
+    }
+
+    Widget leftRoundedButton({
+      required Color color,
+      required Icon icon,
+      required VoidCallback action,
+    }) {
+      return Container(
+        height: 48,
+        width: 60,
+        child: Card(
+          margin: const EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(
+            borderRadius: borderRadius,
+          ),
+          elevation: 0,
+          color: color,
+          child: InkWell(
+            borderRadius: borderRadius,
+            onTap: action,
+            child: Center(
+              child: icon,
             ),
           ),
-        );
+        ),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
-      color: _isListening
-          ? Theme.of(context).colorScheme.primary
-          : ColorLib.tileBase,
+      color: getBarColor(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             child: Text(
-              _isListening ? _detectedWord : 'Press the mic button',
+              _isListening ? _detectedWord : 'Use your voice to guess >>',
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     color: Colors.white,
                   ),

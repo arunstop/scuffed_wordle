@@ -212,13 +212,14 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     emit(state.copyWith(
       word: [],
     ));
-    String noSpacesGuess = event.guess.replaceAll(" ", '');
+    // String noSpacesGuess = event.guess.replaceAll(" ", '');
+    String guess = event.guess;
     // Check if guess has reached game word length
-    int length = noSpacesGuess.length >= event.length
+    int length = guess.length >= event.length
         ? event.length
-        : noSpacesGuess.length;
+        : guess.length;
     // Trim the guess by game word length
-    String trimmedGuess = noSpacesGuess.substring(0, length);
+    String trimmedGuess = guess.substring(0, length);
     // print(trimmedGuess);
     emit(state.copyWith(
       word: trimmedGuess.split(''),
