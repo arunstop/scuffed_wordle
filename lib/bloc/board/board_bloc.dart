@@ -219,7 +219,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         : noSpacesGuess.length;
     // Trim the guess by game word length
     String trimmedGuess = noSpacesGuess.substring(0, length);
-    print(trimmedGuess);
+    // print(trimmedGuess);
     emit(state.copyWith(
       word: trimmedGuess.split(''),
     ));

@@ -35,6 +35,7 @@ class _MicInputState extends State<MicInput> {
     super.initState();
     boardBloc = context.read<BoardBloc>();
     _detectedWord = _listeningLabel;
+    // print('12312');
     _initSpeechToText();
   }
 
@@ -51,10 +52,10 @@ class _MicInputState extends State<MicInput> {
     if (mounted == false) {
       return;
     }
-    await _speechToText.listen(onResult: _onSpeechResult);
     setState(() {
       _isListening = true;
     });
+    await _speechToText.listen(onResult: _onSpeechResult);
   }
 
   void _stopListening() async {
@@ -63,6 +64,7 @@ class _MicInputState extends State<MicInput> {
     }
     setState(() {
       _isListening = false;
+      _detectedWord = _listeningLabel;
     });
     await _speechToText.stop();
   }
@@ -85,8 +87,9 @@ class _MicInputState extends State<MicInput> {
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
-    // print(result.recognizedWords);
-    if (mounted == false) {
+    // print('${boardBloc.state.attempt}');
+    // print('${_isListening} ${result.recognizedWords}');
+    if (mounted == false || _isListening == false) {
       return;
     }
     String lastDetectedWord =
@@ -179,7 +182,9 @@ class _MicInputState extends State<MicInput> {
                             _stopListening();
                           },
                         )
-                      : Container(key: ValueKey<String>('mic-input-close-button'),),
+                      : Container(
+                          key: ValueKey<String>('mic-input-close-button'),
+                        ),
                 ),
                 leftRoundedButton(
                   color: ColorLib.gameMain,
