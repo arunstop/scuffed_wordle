@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
@@ -53,11 +54,18 @@ class _MicInputState extends State<MicInput> {
       // Check if microphone is blocked
       onError: (errorNotification) {
         print("error ${errorNotification}");
-        if (errorNotification != null && _isListening) {
+        String msg = errorNotification.errorMsg;
+        if (_isListening && msg == "not-allowed") {
           setState(() {
             _isError = true;
             _detectedWord = _micDisabled;
           });
+        } else if (_isListening && msg == "no-speech") {
+          setState(() {
+            _isError = false;
+            // _detectedWord = _micDisabled;
+          });
+          _stopListening();
         }
       },
     );
@@ -198,13 +206,31 @@ class _MicInputState extends State<MicInput> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-            child: Text(
-              _isListening ? _detectedWord : 'Use your voice to guess >>',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Colors.white,
-                  ),
-            ),
-          ),
+              child: _isListening
+                  ? Row(
+                      children: [
+                        _isError
+                            ? Icon(
+                                Icons.error_outline,
+                                size: 36,
+                                color: Colors.white,
+                              )
+                            : SpinKitDoubleBounce(
+                                color: Colors.white,
+                                size: 42,
+                                // type: SpinKitWaveType.center,
+                                duration: Duration(milliseconds: 1800),
+                              ),
+                        UiLib.hSpace(12),
+                        Text(_detectedWord,style: TextStyle(color: Colors.white),),
+                      ],
+                    )
+                  : Text(
+                      'Use your voice to guess >>',
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Colors.white,
+                          ),
+                    )),
           Container(
             decoration: BoxDecoration(
               borderRadius: borderRadius,
