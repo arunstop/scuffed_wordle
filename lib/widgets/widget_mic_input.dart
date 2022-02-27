@@ -226,7 +226,7 @@ class _MicInputState extends State<MicInput> {
                       ],
                     )
                   : Text(
-                      'Use your voice to guess >>',
+                      'Click to use Speech-to-text >>',
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             color: Colors.white,
                           ),

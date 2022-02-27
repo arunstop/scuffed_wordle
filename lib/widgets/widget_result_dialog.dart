@@ -248,9 +248,13 @@ class _DialogResultState extends State<DialogResult> {
                           ? null
                           : () => _speak(widget.answer),
                       icon: ttsState == TtsState.playing
-                          ? const SpinKitDoubleBounce(
+                          ? const SpinKitWave(
                               color: Colors.lightBlue,
-                              size: 30,
+                              size: 24,
+                              type: SpinKitWaveType.center,
+                              itemCount: 3,
+                              // borderWidth: 12,
+                              duration: Duration(milliseconds: 1200),
                             )
                           : const Icon(Icons.volume_up_rounded),
                       color: Colors.lightBlue,
