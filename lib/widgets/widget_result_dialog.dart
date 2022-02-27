@@ -13,6 +13,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
+import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
@@ -55,6 +56,7 @@ class _DialogResultState extends State<DialogResult> {
       _close();
       await Future.delayed(const Duration(milliseconds: 300));
       Settings settings = settingsBloc.state.settings;
+      dictionaryBloc.add(DictionaryRefreshKeyword());
       boardBloc.add(BoardRestart(
           // length: settings.guessLength,
           // lives: settings.lives,
@@ -65,7 +67,6 @@ class _DialogResultState extends State<DialogResult> {
       //             lives: 6,
       //           ),
       //         );
-      dictionaryBloc.add(DictionaryRefreshKeyword());
       //   // dictionaryBloc.add(DictionaryDefine());
     }
 
@@ -94,11 +95,8 @@ class _DialogResultState extends State<DialogResult> {
           "SCUFFED WORDLE - ${settingsBloc.state.settings.matrix} : ${totalAttempt}/${state.attemptLimit}\n\n${resultClipBoard}";
       Clipboard.setData(ClipboardData(text: text));
       //
-      UiLib.showSnackbar(
-        context: context,
-        message: 'Copied to clipboard',
-      );
-      _close();
+      UiLib.showToast(status: Status.ok, text: "Copied to clipboard");
+      // _close();
     }
 
     void _defineWord(String answer) {
@@ -203,8 +201,8 @@ class _DialogResultState extends State<DialogResult> {
           label: Text(
             'Error: No definition found, sorry :(',
             style: Theme.of(context).textTheme.caption!.copyWith(
-              color: Colors.white,
-            ),
+                  color: Colors.white,
+                ),
           ),
         );
       }

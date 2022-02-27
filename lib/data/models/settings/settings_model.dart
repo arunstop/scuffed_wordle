@@ -41,7 +41,7 @@ class Settings {
 
   Map<String, dynamic> toJson() => _$SettingsToJson(this);
 
-  int get guessLength => int.parse(matrix[0]);
+  int get guessLength => int.parse(matrix.split("x")[0]);
   int get lives => guessLength+1;
 
   Settings copyWith({

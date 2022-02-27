@@ -35,7 +35,9 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
   final SettingsRepo settingsRepo;
 
   FutureOr<void> _onDictionaryInitialize(
-      DictionaryInitialize event, Emitter<DictionaryState> emit) async {
+    DictionaryInitialize event,
+    Emitter<DictionaryState> emit,
+  ) async {
     // check if it is re-initialize
     // or initialize
     // by checking the type
@@ -52,7 +54,8 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
         // Check if length is different/changed
         localDictionary.letterCount != settingsLocal.guessLength ||
         // Check if difficulty is different/changed
-        localDictionary.difficulty.toLowerCase() != settingsLocal.difficulty.toLowerCase()) {
+        localDictionary.difficulty.toLowerCase() !=
+            settingsLocal.difficulty.toLowerCase()) {
       Dictionary dictionary = await dictionaryRepo.getDictionary(
         length: settingsLocal.guessLength,
         difficulty: settingsLocal.difficulty,
@@ -73,7 +76,9 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
   }
 
   FutureOr<void> _onDictionaryRefreshKeyword(
-      DictionaryRefreshKeyword event, Emitter<DictionaryState> emit) async {
+    DictionaryRefreshKeyword event,
+    Emitter<DictionaryState> emit,
+  ) async {
     // Get answers by randomizing the list
     String getAnswer(String currentAnswer) {
       // remove current answer from answer list

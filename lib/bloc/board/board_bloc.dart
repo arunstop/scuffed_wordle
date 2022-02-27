@@ -170,6 +170,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardAddLetter event,
     Emitter<BoardState> emit,
   ) {
+    UiLib.clearToasts();
     int wordLength = state.wordLength;
     // Count typed letters
     var typedLetters = [...state.word, event.letter];
@@ -187,6 +188,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardRemoveLetter event,
     Emitter<BoardState> emit,
   ) {
+    UiLib.clearToasts();
     // Count typed letters
     var typedLetters = [...state.word];
     // Proceed if the word is not empty
@@ -203,6 +205,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardAddGuess event,
     Emitter<BoardState> emit,
   ) {
+    UiLib.clearToasts();
     if(state.word.join('') == event.guess || state is BoardGameOver){
       return;
     }
@@ -232,6 +235,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     BoardSubmitGuess event,
     Emitter<BoardState> emit,
   ) async {
+    UiLib.clearToasts();
     // if the [current guess] length less than [matrix]
     if (state.word.length < state.wordLength) {
       UiLib.showToast(

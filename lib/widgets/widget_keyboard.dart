@@ -155,6 +155,9 @@ class Keyboard extends StatelessWidget {
               borderRadius: borderRadius,
               onTap:
                   boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
+              onLongPress: (){
+                print('skl');
+              },
               child: Center(
                 child: FittedBox(child: label),
               ),

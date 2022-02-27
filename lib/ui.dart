@@ -192,12 +192,12 @@ class UiLib {
   //   );
   // }
 
-  static void showToast(
-      {required Status status,
-      required String text,
-      int duration = 2400,
-      IconData icon = Icons.info_outline,
-      }) {
+  static void showToast({
+    required Status status,
+    required String text,
+    int duration = 2400,
+    IconData icon = Icons.info_outline,
+  }) {
     Color color = Colors.grey[800]!;
 
     if (status == Status.ok) {
@@ -206,8 +206,7 @@ class UiLib {
     } else if (status == Status.error) {
       color = ColorLib.error;
       icon = Icons.close_rounded;
-    } 
-    else if (status == Status.def) {
+    } else if (status == Status.def) {
       color = Colors.blue;
       // icon = Icons.circle;
     }
@@ -292,6 +291,10 @@ class UiLib {
     );
   }
 
+  static void clearToasts() {
+    dismissAllToast(showAnim: true);
+  }
+
   static List<List<String>> get keyboardTemplate => [
         [
           'Q',
@@ -350,4 +353,3 @@ class ColorLib {
   static Color get gameMain => Colors.blue[800]!;
   static Color get gameAlt => Colors.purple[400]!;
 }
-  

@@ -8,6 +8,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
+import 'package:scuffed_wordle/data/constants.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
 // import 'package:scuffed_wordle/data/models/model_settings.dart';
@@ -36,10 +37,14 @@ class SettingsScreen extends StatelessWidget {
         content: 'Do you wish to restore all your settings to default?',
         actionY: () {
           settingsBloc.add(SettingsReset());
-          UiLib.showSnackbar(
-            context: context,
-            message: 'Settings has been reset to default',
-            actionLabel: 'Done',
+          // UiLib.showSnackbar(
+          //   context: context,
+          //   message: 'Settings has been reset to default',
+          //   actionLabel: 'Done',
+          // );
+          UiLib.showToast(
+            status: Status.def,
+            text: "Settings has been reset to default",
           );
         },
       );
@@ -59,8 +64,11 @@ class SettingsScreen extends StatelessWidget {
     bool _isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
-    Widget _getDropDown(
-            {required String value,required List<String> items, required Function onChanged,}) =>
+    Widget _getDropDown({
+      required String value,
+      required List<String> items,
+      required Function onChanged,
+    }) =>
         DropdownButton<String>(
           value: value,
           items: items
@@ -78,8 +86,8 @@ class SettingsScreen extends StatelessWidget {
         onChanged: (val) {
           if (_isPlaying) {
             UiLib.showToast(
-              text: 'Cannot change hard mode when playing',
               status: Status.error,
+              text: 'Cannot change hard mode when playing',
             );
             return;
           }
@@ -127,7 +135,7 @@ class SettingsScreen extends StatelessWidget {
         },
         trailing: _getDropDown(
           value: settings.matrix,
-          items: <String>['4x5', '5x6', '6x7', '7x8', '8x9'],
+          items: Constants.matrixList,
           onChanged: (String value) {
             if (_isPlaying) {
               UiLib.showToast(
@@ -162,7 +170,7 @@ class SettingsScreen extends StatelessWidget {
         },
         trailing: _getDropDown(
           value: settings.difficulty,
-          items: <String>['EASY', 'NORMAL', 'HARD'],
+          items: Constants.difficultyList,
           onChanged: (String value) {
             if (_isPlaying) {
               UiLib.showToast(

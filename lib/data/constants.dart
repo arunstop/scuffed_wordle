@@ -2,10 +2,26 @@ import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
 import 'package:encrypt/encrypt.dart';
 
 class Constants {
-  static LocalStorageKey localStorageKeys= LocalStorageKey();
-  static Api api= Api();
+  static LocalStorageKey localStorageKeys = LocalStorageKey();
+  static Api api = Api();
   // Encryption
-  static EncrypterKey encrypter= EncrypterKey();
+  static EncrypterKey encrypter = EncrypterKey();
+  static List<String> matrixList = [
+    '4x5',
+    '5x6',
+    '6x7',
+    '7x8',
+    '8x9',
+    '9x10',
+    '10x11',
+    '11x12',
+    '12x13'
+  ];
+  static List<String> difficultyList = [
+    'EASY',
+    'NORMAL',
+    'HARD',
+  ];
 }
 
 class EncrypterKey {
@@ -49,7 +65,8 @@ class ApiScuffedWordle extends ApiBaseURL {
 class ApiFreeDictionary extends ApiBaseURL {
   ApiFreeDictionary({required String baseUrl}) : super(baseUrl: baseUrl);
 
-  ApiUri getWordDefinition({required String lang, required String word}) => ApiUri(
+  ApiUri getWordDefinition({required String lang, required String word}) =>
+      ApiUri(
         baseUrl: baseUrl,
         route: "/api/v2/entries/${lang}/${word}",
         params: {},
