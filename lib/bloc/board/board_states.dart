@@ -42,10 +42,16 @@ class BoardState extends Equatable {
       // (attempt > attemptLimit ? attemptLimit : attempt),
       attempt);
   int get wordLength => wordList[0].length;
+
+  // check if guess is empty
+  bool get isGuessEmpty => word.isEmpty;
+  // check if guess is full (same length as matrix)
+  bool get isGuessFull => word.length == wordLength;
+
   // get guesses as string
   List<String> get strGuessList => wordList
       .map((letterList) => letterList.map((letter) => letter.letter).join())
-      .filter((guess)=>guess.isNotEmpty)
+      .filter((guess) => guess.isNotEmpty)
       .toList();
 }
 
@@ -67,7 +73,7 @@ class BoardDefault extends BoardState {
             wordList: wordList,
             attempt: attempt,
             attemptLimit: attemptLimit,
-            win:win);
+            win: win);
 }
 
 class BoardGameOver extends BoardState {
@@ -76,7 +82,6 @@ class BoardGameOver extends BoardState {
   final int attempt;
   final int attemptLimit;
   final bool win;
-  
 
   BoardGameOver({
     this.word = const [],
@@ -89,7 +94,7 @@ class BoardGameOver extends BoardState {
             wordList: wordList,
             attempt: attempt,
             attemptLimit: attemptLimit,
-            win:win);
+            win: win);
 }
 
 // class BoardEmpty extends BoardState {

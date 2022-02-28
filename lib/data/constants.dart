@@ -15,7 +15,11 @@ class Constants {
     '9x10',
     '10x11',
     '11x12',
-    '12x13'
+    '12x13',
+    '9x6',
+    '10x6',
+    '11x6',
+    '12x6'
   ];
   static List<String> difficultyList = [
     'EASY',

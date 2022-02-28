@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
@@ -8,8 +10,27 @@ import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:dartx/dartx.dart';
 
-class Keyboard extends StatelessWidget {
+class Keyboard extends StatefulWidget {
   const Keyboard({Key? key}) : super(key: key);
+
+  @override
+  State<Keyboard> createState() => _KeyboardState();
+}
+
+class _KeyboardState extends State<Keyboard> {
+  bool _onKeyHeld = false;
+  // Timer _initialDelay(VoidCallback callback) {
+  //   return Timer(const Duration(milliseconds: 600), () {
+  //     callback();
+  //   });
+  // }
+  bool _initialHold = true;
+
+  void _setKeyHeld(bool val) {
+    // _initialDelay(() {}).cancel();
+    _initialHold = true;
+    _onKeyHeld = val;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +90,13 @@ class Keyboard extends StatelessWidget {
     // });
 
     // var
-    TextStyle _getTextStyle() => const TextStyle(
+    TextStyle getTextStyle() => const TextStyle(
           // fontWeight: FontWeight.bold,
           color: Colors.white,
           fontSize: 18,
         );
 
-    Color? _getColor(String key) {
+    Color? getColor(String key) {
       var letterTarget = uniqTypedLetterList
           .where((element) => element.letter == key)
           .toList();
@@ -85,26 +106,35 @@ class Keyboard extends StatelessWidget {
       return Colors.blueGrey;
     }
 
-    void _onTap(String key) {
-      // if (boardBloc.state is BoardSubmitted) {
-      //   // print('submitted');
-      //   return;
-      // }
+    void onTap(String key) {
       if (key == "BACKSPACE") {
+        if (boardBloc.state.isGuessEmpty) {
+          return;
+        }
+        print(key);
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
+        // if(!boardBloc.state.isGuessFull){
+        //   return;
+        // }
+        print(key);
         Dictionary dictionary = dictionaryBloc.state.dictionary;
         boardBloc.add(BoardSubmitGuess(
             settings: settingsBloc.state.settings,
             answer: dictionary.answer,
             wordList: dictionary.wordList));
       } else {
+        if (boardBloc.state.isGuessFull) {
+          // print('submitted');
+          return;
+        }
+        print(key);
         boardBloc.add(BoardAddLetter(letter: key));
       }
       // print(key);
     }
 
-    BorderRadius _getBorderRadius(double bottomLeft, double topLeft,
+    BorderRadius getBorderRadius(double bottomLeft, double topLeft,
             double topRight, double bottomRight) =>
         BorderRadius.only(
           bottomLeft: Radius.circular(bottomLeft),
@@ -116,7 +146,7 @@ class Keyboard extends StatelessWidget {
     Widget getKey(String key) {
       double width = 48;
       double height = 30;
-      Widget label = Text(key, style: _getTextStyle());
+      Widget label = Text(key, style: getTextStyle());
       bool nonLetter = key == 'BACKSPACE' || key == 'ENTER';
       Color? color = ColorLib.gameAlt;
       BorderRadius borderRadius = BorderRadius.circular(6);
@@ -139,7 +169,7 @@ class Keyboard extends StatelessWidget {
           color = ColorLib.gameMain;
         }
       } else {
-        color = _getColor(key);
+        color = getColor(key);
       }
       return Expanded(
         flex: nonLetter ? 9 : 6,
@@ -149,18 +179,55 @@ class Keyboard extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: borderRadius,
             ),
-            margin: const EdgeInsets.all(3),
+            margin: const EdgeInsets.all(2),
             color: color,
             child: InkWell(
-              borderRadius: borderRadius,
-              onTap:
-                  boardBloc.state is! BoardGameOver ? () => _onTap(key) : null,
-              onLongPress: (){
-                print('skl');
-              },
               child: Center(
                 child: FittedBox(child: label),
               ),
+              borderRadius: borderRadius,
+              onTap: boardBloc.state is BoardGameOver
+                  ? null
+                  : () {
+                      // if (_onKeyHeld == false) {
+                      // onTap(key);
+                      // }
+                      _setKeyHeld(false);
+                    },
+              // onLongPress: (){
+              //   print('skl');
+              // },
+              onTapDown: (details) async {
+                if (key == "ENTER") {
+                  onTap(key);
+                  return;
+                }
+                // print(details);
+                // await Future.delayed(Duration(milliseconds: 300));
+                // _initialDelay(() {
+                _setKeyHeld(true);
+                // });
+                // if (_onKeyHeld) {
+                //   return;
+                // }
+
+                do {
+                  if (_initialHold) {
+                    await Future.delayed(Duration(milliseconds: 600));
+                    setState(() {
+                      _initialHold = false;
+                    });
+                  }
+                  // print(key);
+                  onTap(key);
+                  await Future.delayed(Duration(milliseconds: 120));
+                } while (_onKeyHeld == true);
+
+                _setKeyHeld(false);
+              },
+              onTapCancel: () {
+                _setKeyHeld(false);
+              },
             ),
           ),
         ),
@@ -186,7 +253,7 @@ class Keyboard extends StatelessWidget {
         .toList();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(12,0,12,6),
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
       child: Column(
         children: [
           // Text('${boardBloc.state.toString()}'),
