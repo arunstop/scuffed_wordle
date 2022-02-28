@@ -66,6 +66,12 @@ class _MicInputState extends State<MicInput> {
             // _detectedWord = _micDisabled;
           });
           _stopListening();
+        }else{
+          setState(() {
+            _isError = false;
+            // _detectedWord = _micDisabled;
+          });
+          _stopListening();
         }
       },
     );

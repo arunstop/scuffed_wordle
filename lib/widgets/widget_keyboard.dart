@@ -190,9 +190,12 @@ class _KeyboardState extends State<Keyboard> {
                   ? null
                   : () {
                       // if (_onKeyHeld == false) {
+                      // if (_onKeyHeld) {
                       // onTap(key);
                       // }
+                      // print('bsp');
                       _setKeyHeld(false);
+                      // }
                     },
               // onLongPress: (){
               //   print('skl');
@@ -201,29 +204,33 @@ class _KeyboardState extends State<Keyboard> {
                 if (key == "ENTER") {
                   onTap(key);
                   return;
-                }
-                // print(details);
-                // await Future.delayed(Duration(milliseconds: 300));
-                // _initialDelay(() {
-                _setKeyHeld(true);
-                // });
-                // if (_onKeyHeld) {
-                //   return;
-                // }
+                } else {
+                  // Enable holding state
+                  _setKeyHeld(true);
+                  // if (_initialHold) {
+                  //   await Future.delayed(Duration(milliseconds: 2000));
+                  //   setState(() {
+                  //     _initialHold = false;
+                  //   });
+                  // }
+                  do {
+                    // initial delay
 
-                do {
-                  if (_initialHold) {
-                    await Future.delayed(Duration(milliseconds: 600));
-                    setState(() {
-                      _initialHold = false;
-                    });
-                  }
-                  // print(key);
-                  onTap(key);
-                  await Future.delayed(Duration(milliseconds: 120));
-                } while (_onKeyHeld == true);
+                    // print(key);
+                    onTap(key);
+                    // delay first
+                    if (_initialHold) {
+                      await Future.delayed(Duration(milliseconds: 600));
+                      setState(() {
+                        _initialHold = false;
+                      });
+                    } else {
+                      await Future.delayed(Duration(milliseconds: 10));
+                    }
+                  } while (_onKeyHeld == true);
 
-                _setKeyHeld(false);
+                  _setKeyHeld(false);
+                } 
               },
               onTapCancel: () {
                 _setKeyHeld(false);
