@@ -242,7 +242,7 @@ class _MicInputState extends State<MicInput> {
                               ),
                         UiLib.hSpace(12),
                         Text(
-                          _listeningLabel,
+                          _isError? _micDisabled : _listeningLabel ,
                           style: TextStyle(color: Colors.white),
                         ),
                       ],

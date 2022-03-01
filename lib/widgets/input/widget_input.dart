@@ -38,8 +38,10 @@ class _InputState extends State<Input> {
               onPressed: () {
                 addGuess(word);
               },
+              backgroundColor: Theme.of(context).colorScheme.primary,
               label: Text(
                 '${word}',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           )
@@ -74,10 +76,7 @@ class _InputState extends State<Input> {
                         topLeft: Radius.circular(18),
                         topRight: Radius.circular(18),
                       ),
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.3),
+                      color: ColorLib.tileBase.withOpacity(0.6),
                     ),
                     key: const ValueKey<String>('voice-input-layout'),
                     alignment: Alignment.center,
@@ -94,7 +93,10 @@ class _InputState extends State<Input> {
                                 padding: const EdgeInsets.all(6.0),
                                 child: _detectedWords.isEmpty
                                     ? Center(
-                                        child: Text('Say something....'),
+                                        child: Text(
+                                          'Say something...',
+                                          style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
+                                        ),
                                       )
                                     : Wrap(
                                         alignment: WrapAlignment.center,
@@ -116,10 +118,10 @@ class _InputState extends State<Input> {
           guessLength: widget.guessLength,
           toggleVoiceInput: (value) {
             setState(() {
-              _onVoiceInput = value;
               if (value == false) {
                 _detectedWords = [];
               }
+              _onVoiceInput = value;
             });
           },
           detectedWords: (value) {
