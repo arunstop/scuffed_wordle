@@ -215,8 +215,6 @@ class _KeyboardState extends State<Keyboard> {
                   // }
                   do {
                     // initial delay
-
-                    // print(key);
                     onTap(key);
                     // delay first
                     if (_initialHold) {
@@ -225,7 +223,7 @@ class _KeyboardState extends State<Keyboard> {
                         _initialHold = false;
                       });
                     } else {
-                      await Future.delayed(Duration(milliseconds: 10));
+                      await Future.delayed(Duration(milliseconds: 1));
                     }
                   } while (_onKeyHeld == true);
 

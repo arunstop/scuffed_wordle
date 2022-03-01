@@ -9,7 +9,15 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MicInput extends StatefulWidget {
-  const MicInput({Key? key}) : super(key: key);
+  final int guessLength;
+  final void Function(bool value) toggleVoiceInput;
+  final void Function(String word) detectedWords;
+  const MicInput({
+    Key? key,
+    required this.guessLength,
+    required this.toggleVoiceInput,
+    required this.detectedWords,
+  }) : super(key: key);
 
   @override
   State<MicInput> createState() => _MicInputState();
@@ -66,7 +74,7 @@ class _MicInputState extends State<MicInput> {
             // _detectedWord = _micDisabled;
           });
           _stopListening();
-        }else{
+        } else {
           setState(() {
             _isError = false;
             // _detectedWord = _micDisabled;
@@ -99,6 +107,7 @@ class _MicInputState extends State<MicInput> {
     }
     setState(() {
       _isListening = true;
+      widget.toggleVoiceInput(true);
     });
     await _speechToText.listen(onResult: _onSpeechResult);
   }
@@ -110,6 +119,8 @@ class _MicInputState extends State<MicInput> {
     // turn off listening, error indicator for ui purposes
     setState(() {
       _isListening = false;
+      widget.toggleVoiceInput(false);
+
       _detectedWord = _listeningLabel;
       _isError = false;
     });
@@ -133,11 +144,13 @@ class _MicInputState extends State<MicInput> {
     setState(() {
       _detectedWord = lastDetectedWord;
     });
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+
+    widget.detectedWords(lastDetectedWord);
+    // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     context.read<BoardBloc>().add(
           BoardAddGuess(
             guess: _detectedWord,
-            length: dictionaryBloc.state.dictionary.letterCount,
+            length: widget.guessLength,
           ),
         );
   }
@@ -228,7 +241,10 @@ class _MicInputState extends State<MicInput> {
                                 duration: Duration(milliseconds: 1800),
                               ),
                         UiLib.hSpace(12),
-                        Text(_detectedWord,style: TextStyle(color: Colors.white),),
+                        Text(
+                          _listeningLabel,
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     )
                   : Text(

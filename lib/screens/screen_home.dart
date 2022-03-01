@@ -11,6 +11,7 @@ import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:scuffed_wordle/widgets/input/widget_input.dart';
 import 'package:scuffed_wordle/widgets/loading_indicator_widget.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_board.dart';
@@ -223,11 +224,9 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                     child: boardBloc.state is BoardGameOver
                                         ? Container()
-                                        : Column(
-                                            children: [
-                                              const Keyboard(),
-                                              const MicInput(),
-                                            ],
+                                        : Input(
+                                            guessLength:
+                                                boardBloc.state.wordLength,
                                           ),
                                   ),
                                 )
