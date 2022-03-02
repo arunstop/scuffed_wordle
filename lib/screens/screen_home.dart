@@ -193,6 +193,10 @@ class HomeScreen extends StatelessWidget {
                           //     },
                           //     child: Text('Toast')),
                           const Board(),
+                          // Spacing when game over so the Fab won't block
+                          boardBloc.state is! BoardGameOver
+                              ? Container()
+                              : UiLib.vSpace(60),
                           settings.useMobileKeyboard
                               ? Container(
                                   alignment: Alignment.center,
