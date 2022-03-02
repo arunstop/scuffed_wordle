@@ -113,16 +113,18 @@ class _InputState extends State<Input> {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1!
+                                              .subtitle1!
                                               .copyWith(
+                                                // fontSize: 16,
                                             color: Colors.white,
+                                            // fontWeight: FontWeight.bold,
                                             // backgroundColor: getLayoutColor()!
                                             //     .withAlpha(128),
                                             shadows: [
                                               Shadow(
                                                 color: Colors.black,
-                                                blurRadius: 1,
-                                                offset: Offset(2,2),
+                                                blurRadius: 3,
+                                                offset: Offset(1,2),
                                               )
                                             ],
                                           ),

@@ -178,13 +178,14 @@ class SettingsScreen extends StatelessWidget {
                 text: 'Cannot change game difficulty when playing',
               );
             } else {
-              if (value == settings.difficulty) {
+              if (value == settings.difficulty){
                 return;
               }
               _changeSettings(SettingsTypes.difficulty, value);
               // print(value);
               // print(settings.wordLength);
               dictionaryBloc.add(DictionaryInitialize());
+              dictionaryBloc.add(DictionaryRefreshKeyword());
               boardBloc.add(BoardRestart());
               Navigator.pop(context);
             }
