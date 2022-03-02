@@ -21,12 +21,22 @@ class _InputState extends State<Input> {
   bool _onVoiceInput = false;
   List<String> _detectedWords = [];
 
+  bool _isError = false;
+
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
 
     void addGuess(String guess) {
       boardBloc.add(BoardAddGuess(guess: guess, length: widget.guessLength));
+    }
+
+    Color? getLayoutColor() {
+      Color color = Theme.of(context).colorScheme.primary;
+      if (_isError) {
+        color = ColorLib.error;
+      }
+      return color.withAlpha(64);
     }
 
     List<Widget> wordChips() {
@@ -38,7 +48,9 @@ class _InputState extends State<Input> {
               onPressed: () {
                 addGuess(word);
               },
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: word.length == widget.guessLength
+                  ? ColorLib.gameMain
+                  : ColorLib.tileBase.withAlpha(192),
               label: Text(
                 '${word}',
                 style: TextStyle(color: Colors.white),
@@ -54,6 +66,7 @@ class _InputState extends State<Input> {
         Column(
           children: [
             // Text('${_onVoiceInput}'),
+            UiLib.vSpace(12),
             const Keyboard(),
             UiLib.vSpace(48)
           ],
@@ -73,10 +86,10 @@ class _InputState extends State<Input> {
                 : Container(
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
                       ),
-                      color: ColorLib.tileBase.withOpacity(0.6),
+                      color: getLayoutColor(),
                     ),
                     key: const ValueKey<String>('voice-input-layout'),
                     alignment: Alignment.center,
@@ -89,22 +102,46 @@ class _InputState extends State<Input> {
                         children: [
                           Expanded(
                             child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: _detectedWords.isEmpty
-                                    ? Center(
+                              child: _detectedWords.isEmpty
+                                  ? Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
                                         child: Text(
-                                          'Say something...',
-                                          style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
+                                          _isError
+                                              ? 'Microphone has been blocked.\nPlease enable the access to continue.'
+                                              : 'Try to guess the answer\nwith your beautiful voice...',
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                            color: Colors.white,
+                                            // backgroundColor: getLayoutColor()!
+                                            //     .withAlpha(128),
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black,
+                                                blurRadius: 1,
+                                                offset: Offset(2,2),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      )
-                                    : Wrap(
-                                        alignment: WrapAlignment.center,
-                                        children: [
-                                          ...wordChips(),
-                                        ],
                                       ),
-                              ),
+                                    )
+                                  : SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Wrap(
+                                          verticalDirection:
+                                              VerticalDirection.up,
+                                          alignment: WrapAlignment.center,
+                                          children: [
+                                            ...wordChips(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ),
                           UiLib.vSpace(48)
@@ -116,12 +153,13 @@ class _InputState extends State<Input> {
         ),
         MicInput(
           guessLength: widget.guessLength,
-          toggleVoiceInput: (value) {
+          toggleVoiceInput: (value, isError) {
             setState(() {
               if (value == false) {
                 _detectedWords = [];
               }
               _onVoiceInput = value;
+              _isError = isError;
             });
           },
           detectedWords: (value) {

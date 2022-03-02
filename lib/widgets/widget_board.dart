@@ -71,7 +71,7 @@ class Board extends StatelessWidget {
       child: Center(
         child: FittedBox(
           child: Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(12,12,12,6),
             child: Column(
               children: [
                 // TextButton(onPressed: ()=> dictionaryBloc.add(DictionaryTest()), child: Text('ENC/DEC')),

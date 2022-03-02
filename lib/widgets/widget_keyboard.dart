@@ -106,18 +106,18 @@ class _KeyboardState extends State<Keyboard> {
       return Colors.blueGrey;
     }
 
-    void onTap(String key) {
+    void pressKey(String key) {
       if (key == "BACKSPACE") {
         if (boardBloc.state.isGuessEmpty) {
           return;
         }
-        print(key);
+        // print(key);
         boardBloc.add(BoardRemoveLetter());
       } else if (key == "ENTER") {
         // if(!boardBloc.state.isGuessFull){
         //   return;
         // }
-        print(key);
+        // print(key);
         Dictionary dictionary = dictionaryBloc.state.dictionary;
         boardBloc.add(BoardSubmitGuess(
             settings: settingsBloc.state.settings,
@@ -128,7 +128,7 @@ class _KeyboardState extends State<Keyboard> {
           // print('submitted');
           return;
         }
-        print(key);
+        // print(key);
         boardBloc.add(BoardAddLetter(letter: key));
       }
       // print(key);
@@ -202,7 +202,7 @@ class _KeyboardState extends State<Keyboard> {
               // },
               onTapDown: (details) async {
                 if (key == "ENTER") {
-                  onTap(key);
+                  pressKey(key);
                   return;
                 } else {
                   // Enable holding state
@@ -215,7 +215,7 @@ class _KeyboardState extends State<Keyboard> {
                   // }
                   do {
                     // initial delay
-                    onTap(key);
+                    pressKey(key);
                     // delay first
                     if (_initialHold) {
                       await Future.delayed(Duration(milliseconds: 600));

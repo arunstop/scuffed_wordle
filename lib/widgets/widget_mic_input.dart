@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MicInput extends StatefulWidget {
   final int guessLength;
-  final void Function(bool value) toggleVoiceInput;
+  final void Function(bool value,bool isError) toggleVoiceInput;
   final void Function(String word) detectedWords;
   const MicInput({
     Key? key,
@@ -29,7 +29,7 @@ class _MicInputState extends State<MicInput> {
   bool _isListening = false;
   bool _isError = false;
   final String _listeningLabel = 'Listening...';
-  final String _micDisabled = "Microphone has been blocked.";
+  final String _micDisabled = "Access denied!";
   String _detectedWord = '';
   late BoardBloc boardBloc;
 
@@ -68,6 +68,7 @@ class _MicInputState extends State<MicInput> {
             _isError = true;
             _detectedWord = _micDisabled;
           });
+      widget.toggleVoiceInput(true,_isError);
         } else if (_isListening && msg == "no-speech") {
           setState(() {
             _isError = false;
@@ -107,7 +108,7 @@ class _MicInputState extends State<MicInput> {
     }
     setState(() {
       _isListening = true;
-      widget.toggleVoiceInput(true);
+      widget.toggleVoiceInput(true,false);
     });
     await _speechToText.listen(onResult: _onSpeechResult);
   }
@@ -119,7 +120,7 @@ class _MicInputState extends State<MicInput> {
     // turn off listening, error indicator for ui purposes
     setState(() {
       _isListening = false;
-      widget.toggleVoiceInput(false);
+      widget.toggleVoiceInput(false,false);
 
       _detectedWord = _listeningLabel;
       _isError = false;
@@ -225,6 +226,7 @@ class _MicInputState extends State<MicInput> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
+            fit: FlexFit.tight,
               child: _isListening
                   ? Row(
                       children: [
@@ -241,9 +243,12 @@ class _MicInputState extends State<MicInput> {
                                 duration: Duration(milliseconds: 1800),
                               ),
                         UiLib.hSpace(12),
-                        Text(
-                          _isError? _micDisabled : _listeningLabel ,
-                          style: TextStyle(color: Colors.white),
+                        Flexible(
+                          child: Text(
+                            _isError ? _micDisabled : _listeningLabel,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     )
@@ -283,7 +288,9 @@ class _MicInputState extends State<MicInput> {
                         ),
                 ),
                 leftRoundedButton(
-                  color: ColorLib.gameMain,
+                  color: _isListening
+                      ? ColorLib.gameMain
+                      : Theme.of(context).colorScheme.primary,
                   icon: Icon(
                     _isListening ? Icons.check : Icons.mic_rounded,
                     color: Colors.white,

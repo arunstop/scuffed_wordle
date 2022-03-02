@@ -128,16 +128,15 @@ class _DialogResultState extends State<DialogResult> {
             ),
           ),
           // give no border coloring if noBorder is true
-          style: noBorder
-              ? null
-              : ButtonStyle(
-                  side: MaterialStateProperty.all(
-                    BorderSide(
-                      width: 2,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+          style: OutlinedButton.styleFrom(
+            shape: StadiumBorder(),
+            side: noBorder
+                ? null
+                : BorderSide(
+                    width: 2,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                ),
+          ),
         ),
       );
     }
@@ -206,13 +205,21 @@ class _DialogResultState extends State<DialogResult> {
           ),
         );
       }
-      return ElevatedButton.icon(
-        onPressed: () => _defineWord(widget.answer),
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(Colors.white),
+      return SizedBox(
+        height: 30,
+        child: ElevatedButton.icon(
+          onPressed: () => _defineWord(widget.answer),
+          style: ElevatedButton.styleFrom(
+            shape: StadiumBorder(),
+          ).copyWith(
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+          ),
+          icon: const Icon(Icons.search),
+          label: const Text('Define', style: TextStyle(
+            letterSpacing: 1,
+            fontSize: 16,
+          ),),
         ),
-        icon: const Icon(Icons.search),
-        label: const Text('Define'),
       );
     }
 
@@ -385,6 +392,9 @@ class _DialogResultState extends State<DialogResult> {
                       fontSize: 20,
                       color: Colors.white,
                     ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    shape: StadiumBorder(),
                   ),
                 ),
               ),
