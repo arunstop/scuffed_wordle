@@ -258,7 +258,7 @@ class _KeyboardState extends State<Keyboard> {
         .toList();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+      padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
       child: Column(
         children: [
           // Text('${boardBloc.state.toString()}'),

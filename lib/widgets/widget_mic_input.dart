@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MicInput extends StatefulWidget {
   final int guessLength;
-  final void Function(bool value,bool isError) toggleVoiceInput;
+  final void Function(bool value, bool isError) toggleVoiceInput;
   final void Function(String word) detectedWords;
   const MicInput({
     Key? key,
@@ -37,7 +37,7 @@ class _MicInputState extends State<MicInput> {
   void dispose() async {
     // TODO: implement dispose
     super.dispose();
-    await _speechToText.stop();
+    _stopListening();
   }
 
   @override
@@ -57,10 +57,25 @@ class _MicInputState extends State<MicInput> {
     }
     _speechEnabled = await _speechToText.initialize(
       onStatus: (status) {
-        // print("status ${status}");
+        // check if mounted
+        print(status);
+        if (!mounted) {
+          return;
+        }
+        // if notListening or done
+        // stop listening
+        if ((status == "notListening" || status == "done") &&
+            _isError == false) {
+          _stopListening();
+        }
       },
       // Check if microphone is blocked
       onError: (errorNotification) {
+        // check if mounted
+        if (!mounted) {
+          return;
+        }
+        // if notListening or done
         print("error ${errorNotification}");
         String msg = errorNotification.errorMsg;
         if (_isListening && msg == "not-allowed") {
@@ -68,12 +83,12 @@ class _MicInputState extends State<MicInput> {
             _isError = true;
             _detectedWord = _micDisabled;
           });
-      widget.toggleVoiceInput(true,_isError);
+          widget.toggleVoiceInput(true, _isError);
         } else if (_isListening && msg == "no-speech") {
-          setState(() {
-            _isError = false;
-            // _detectedWord = _micDisabled;
-          });
+          // setState(() {
+          //   _isError = false;
+          //   // _detectedWord = _micDisabled;
+          // });
           _stopListening();
         } else {
           setState(() {
@@ -108,7 +123,7 @@ class _MicInputState extends State<MicInput> {
     }
     setState(() {
       _isListening = true;
-      widget.toggleVoiceInput(true,false);
+      widget.toggleVoiceInput(true, false);
     });
     await _speechToText.listen(onResult: _onSpeechResult);
   }
@@ -120,7 +135,7 @@ class _MicInputState extends State<MicInput> {
     // turn off listening, error indicator for ui purposes
     setState(() {
       _isListening = false;
-      widget.toggleVoiceInput(false,false);
+      widget.toggleVoiceInput(false, false);
 
       _detectedWord = _listeningLabel;
       _isError = false;
@@ -226,7 +241,7 @@ class _MicInputState extends State<MicInput> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-            fit: FlexFit.tight,
+              fit: FlexFit.tight,
               child: _isListening
                   ? Row(
                       children: [
@@ -253,7 +268,7 @@ class _MicInputState extends State<MicInput> {
                       ],
                     )
                   : Text(
-                      'Guess by voice ->',
+                      'Play with your voice',
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             color: Colors.white,
                           ),
@@ -287,22 +302,24 @@ class _MicInputState extends State<MicInput> {
                           key: ValueKey<String>('mic-input-close-button'),
                         ),
                 ),
-                leftRoundedButton(
-                  color: _isListening
-                      ? ColorLib.gameMain
-                      : Theme.of(context).colorScheme.primary,
-                  icon: Icon(
-                    _isListening ? Icons.check : Icons.mic_rounded,
-                    color: Colors.white,
-                  ),
-                  action: () {
-                    if (_speechToText.isNotListening) {
-                      _startListening();
-                    } else {
-                      _submitGuess();
-                    }
-                  },
-                ),
+                _isError
+                    ? Container()
+                    : leftRoundedButton(
+                        color: _isListening
+                            ? ColorLib.gameMain
+                            : Theme.of(context).colorScheme.primary,
+                        icon: Icon(
+                          _isListening ? Icons.check : Icons.mic_rounded,
+                          color: Colors.white,
+                        ),
+                        action: () {
+                          if (_speechToText.isNotListening) {
+                            _startListening();
+                          } else {
+                            _submitGuess();
+                          }
+                        },
+                      ),
               ],
             ),
           )
