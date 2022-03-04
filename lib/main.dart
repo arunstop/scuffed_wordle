@@ -8,6 +8,8 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_states.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_bloc.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_events.dart';
 import 'package:scuffed_wordle/data/models/dictionary/dictionary_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/repositories/settings_repository.dart';
@@ -20,6 +22,7 @@ import 'package:scuffed_wordle/screens/settings_screen.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_confetti.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() {
@@ -34,6 +37,7 @@ class ScuffedWordleApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SpeechToText _speechToText = SpeechToText();
     String title = 'Scuffed Wordle';
     Map<String, Widget Function(BuildContext)> _routes = {
       '/': (context) => HomeScreen(title: title),
@@ -80,10 +84,21 @@ class ScuffedWordleApp extends StatelessWidget {
                   dictionaryRepo: DictionaryService(prefs: _prefs),
                   settingsRepo: _settingsRepo,
                 )..add(BoardInitialize())),
+        BlocProvider(
+          create: (context) => UiBloc(),
+        ),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, settingsState) {
-          print('board');
+          UiBloc uiBloc = context.read<UiBloc>();
+          _speechToText.initialize(
+            onStatus: (status) {
+              uiBloc.add(UiSttChangeStatus(status: status));
+            },
+            onError: (errorNotification) {
+              uiBloc.add(UiSttErrorOccurs(message: errorNotification.errorMsg));
+            },
+          );
           return MaterialApp(
             title: "Scuffed Wordle - A word guessing game",
             theme: ScuffedWordleTheme.light,
@@ -94,7 +109,8 @@ class ScuffedWordleApp extends StatelessWidget {
             // home: PageHome(title: title),
             initialRoute: '/',
             routes: _routes,
-            builder: (context, child) => OKToast(child: ConfettiLayout(child: child!)),
+            builder: (context, child) =>
+                OKToast(child: ConfettiLayout(child: child!)),
           );
         },
       ),

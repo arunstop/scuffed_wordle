@@ -3,6 +3,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_bloc.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_events.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_states.dart';
+import 'package:scuffed_wordle/data/stt.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -25,19 +29,14 @@ class MicInput extends StatefulWidget {
 
 class _MicInputState extends State<MicInput> {
   final SpeechToText _speechToText = SpeechToText();
-  bool _speechEnabled = false;
-  bool _isListening = false;
-  bool _isError = false;
-  final String _listeningLabel = 'Listening...';
-  final String _micDisabled = "Access denied!";
-  String _detectedWord = '';
+  
   late BoardBloc boardBloc;
 
   @override
   void dispose() async {
     // TODO: implement dispose
     super.dispose();
-    _stopListening();
+    await _speechToText.stop();
   }
 
   @override
@@ -45,7 +44,7 @@ class _MicInputState extends State<MicInput> {
     // TODO: implement initState
     super.initState();
     boardBloc = context.read<BoardBloc>();
-    _detectedWord = _listeningLabel;
+    // _detectedWord = _listeningLabel;
     // print('12312');
     _initSpeechToText();
   }
@@ -55,52 +54,42 @@ class _MicInputState extends State<MicInput> {
     if (mounted == false) {
       return;
     }
-    _speechEnabled = await _speechToText.initialize(
-      onStatus: (status) {
-        // check if mounted
-        print(status);
-        if (!mounted) {
-          return;
-        }
-        // if notListening or done
-        // stop listening
-        if ((status == "notListening" || status == "done") &&
-            _isError == false) {
-          _stopListening();
-        }
-      },
-      // Check if microphone is blocked
-      onError: (errorNotification) {
-        // check if mounted
-        if (!mounted) {
-          return;
-        }
-        // if notListening or done
-        print("error ${errorNotification}");
-        String msg = errorNotification.errorMsg;
-        if (_isListening && msg == "not-allowed") {
-          setState(() {
-            _isError = true;
-            _detectedWord = _micDisabled;
-          });
-          widget.toggleVoiceInput(true, _isError);
-        } else if (_isListening && msg == "no-speech") {
-          // setState(() {
-          //   _isError = false;
-          //   // _detectedWord = _micDisabled;
-          // });
-          _stopListening();
-        } else {
-          setState(() {
-            _isError = false;
-            // _detectedWord = _micDisabled;
-          });
-          _stopListening();
-        }
-      },
-    );
+    // _speechEnabled = await _speechToText.initialize(
+    //   onStatus: (status) {
+    //     print("status ${status}");
+    //     if(status!="listening" && !_isError){
+    //       _stopListening();
+    //     }
+    //   },
+    //   // Check if microphone is blocked
+    //   onError: (errorNotification) {
+    //     print("error ${errorNotification}");
+    //     String msg = errorNotification.errorMsg;
+    //     if (_isListening && msg == "not-allowed") {
+    //       setState(() {
+    //         _isError = true;
+    //         _detectedWord = _micDisabled;
+    //       });
+    //       widget.toggleVoiceInput(true, _isError);
+    //     }
+    //     // else if (_isListening && msg == "no-speech") {
+    //     //   setState(() {
+    //     //     _isError = false;
+    //     //     // _detectedWord = _micDisabled;
+    //     //   });
+    //     //   _stopListening();
+    //     // } else {
+    //     //   setState(() {
+    //     //     _isError = false;
+    //     //     // _detectedWord = _micDisabled;
+    //     //   });
+    //     //   _stopListening();
+    //     // }
+    //   },
+    // );
+    print(_speechToText.isAvailable);
     // print(await _speechToText);
-    setState(() {});
+    // setState(() {});
   }
 
   void _startListening() async {
@@ -118,61 +107,76 @@ class _MicInputState extends State<MicInput> {
     //   });
     // }
     // print(await _speechToText.lastError);
-    if (mounted == false && _isError) {
-      return;
-    }
-    setState(() {
-      _isListening = true;
-      widget.toggleVoiceInput(true, false);
-    });
-    await _speechToText.listen(onResult: _onSpeechResult);
+    // if (mounted == false && _isError) {
+    //   return;
+    // }
+    // setState(() {
+    //   _isListening = true;
+    //   widget.toggleVoiceInput(true, false);
+    // });
+    // var locale = await _speechToText.locales();
+    // // print();
+    // if ((locale).isNotEmpty) {
+    //   print(locale[0].localeId);
+    // }
+    UiBloc uiBloc = context.read<UiBloc>();
+    uiBloc.add(UiSttToggleInput());
+    await _speechToText.listen(
+      onResult: _onSpeechResult,
+      listenFor: Duration(seconds: 30),
+      // pauseFor: Duration(seconds: 5),
+      cancelOnError: true,
+      listenMode: ListenMode.confirmation,
+      localeId: "en-US",
+    );
   }
 
   void _stopListening() async {
+    UiBloc uiBloc = context.read<UiBloc>();
+    uiBloc.add(UiSttToggleInput());
     if (mounted == false) {
       return;
     }
     // turn off listening, error indicator for ui purposes
-    setState(() {
-      _isListening = false;
-      widget.toggleVoiceInput(false, false);
+    // setState(() {
+    //   _isListening = false;
+    //   widget.toggleVoiceInput(false, false);
 
-      _detectedWord = _listeningLabel;
-      _isError = false;
-    });
+    //   _detectedWord = _listeningLabel;
+    //   _isError = false;
+    // });
     await _speechToText.stop();
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     // check if stt still listening and widget is mounted
-    if (mounted == false || _isListening == false) {
-      return;
-    }
+    // if (mounted == false || _isListening == false) {
+    //   return;
+    // }
 
-    String lastDetectedWord =
-        result.alternates.last.recognizedWords.toUpperCase().trim();
-    if (_detectedWord == lastDetectedWord &&
-        lastDetectedWord.isNotEmpty &&
-        lastDetectedWord.contains(" ")) {
-      return;
-    }
-    // print(_detectedWord);
-    setState(() {
-      _detectedWord = lastDetectedWord;
-    });
+    // String lastDetectedWord =
+    //     result.alternates.last.recognizedWords.toUpperCase().trim();
+    // if (_detectedWord == lastDetectedWord &&
+    //     lastDetectedWord.isNotEmpty &&
+    //     lastDetectedWord.contains(" ")) {
+    //   return;
+    // }
+    // // print(_detectedWord);
+    // setState(() {
+    //   _detectedWord = lastDetectedWord;
+    // });
 
-    widget.detectedWords(lastDetectedWord);
-    // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    context.read<BoardBloc>().add(
-          BoardAddGuess(
-            guess: _detectedWord,
-            length: widget.guessLength,
-          ),
-        );
+    // widget.detectedWords(lastDetectedWord);
+    // // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+    // context.read<BoardBloc>().add(
+    //       BoardAddGuess(
+    //         guess: _detectedWord,
+    //         length: widget.guessLength,
+    //       ),
+    //     );
   }
 
   void _submitGuess() {
-    _stopListening();
     DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
 
@@ -183,13 +187,19 @@ class _MicInputState extends State<MicInput> {
         answer: dictionaryBloc.state.dictionary.answer,
       ),
     );
-    setState(() {
-      _detectedWord = _listeningLabel;
-    });
+    // setState(() {
+    //   _detectedWord = _listeningLabel;
+    // });
+    _stopListening();
   }
 
   @override
   Widget build(BuildContext context) {
+    UiBloc uiBloc = context.watch<UiBloc>();
+    Stt uiStt = uiBloc.state.stt;
+    bool isShowingInput = uiStt.isShowingInput;
+    bool isListening = uiStt.status ==  SttStatus.listening;
+    bool isError = uiStt.isError;
     BorderRadius borderRadius = const BorderRadius.horizontal(
       left: Radius.circular(60),
       right: Radius.circular(0),
@@ -197,9 +207,9 @@ class _MicInputState extends State<MicInput> {
 
     Color getBarColor() {
       // Check if listening
-      if (_isListening) {
+      if (isShowingInput) {
         // Check if stt is error
-        if (_isError == true) {
+        if (isError == true) {
           return ColorLib.error;
         } else {
           return Theme.of(context).colorScheme.primary;
@@ -234,6 +244,37 @@ class _MicInputState extends State<MicInput> {
       );
     }
 
+    Widget getIndicator() {
+      return Row(
+        children: [
+          if (isListening)
+            SpinKitDoubleBounce(
+              color: Colors.white,
+              size: 42,
+              // type: SpinKitWaveType.center,
+              duration: Duration(milliseconds: 1800),
+            )
+          else if (isError)
+            Icon(
+              Icons.error_outline,
+              size: 36,
+              color: Colors.white,
+            )
+          else
+            Container(),
+          // give space is not error
+          isShowingInput ? UiLib.hSpace(12) :Container() ,
+          Flexible(
+            child: Text(
+              uiStt.indicatorTxt,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
       color: getBarColor(),
@@ -241,38 +282,9 @@ class _MicInputState extends State<MicInput> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-              fit: FlexFit.tight,
-              child: _isListening
-                  ? Row(
-                      children: [
-                        _isError
-                            ? Icon(
-                                Icons.error_outline,
-                                size: 36,
-                                color: Colors.white,
-                              )
-                            : SpinKitDoubleBounce(
-                                color: Colors.white,
-                                size: 42,
-                                // type: SpinKitWaveType.center,
-                                duration: Duration(milliseconds: 1800),
-                              ),
-                        UiLib.hSpace(12),
-                        Flexible(
-                          child: Text(
-                            _isError ? _micDisabled : _listeningLabel,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Text(
-                      'Play with your voice',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Colors.white,
-                          ),
-                    )),
+            fit: FlexFit.tight,
+            child: getIndicator(),
+          ),
           Container(
             decoration: BoxDecoration(
               borderRadius: borderRadius,
@@ -287,7 +299,7 @@ class _MicInputState extends State<MicInput> {
                     axis: Axis.horizontal,
                     child: child,
                   ),
-                  child: _isListening
+                  child: isShowingInput
                       ? leftRoundedButton(
                           color: ColorLib.gameAlt,
                           icon: const Icon(
@@ -302,14 +314,15 @@ class _MicInputState extends State<MicInput> {
                           key: ValueKey<String>('mic-input-close-button'),
                         ),
                 ),
-                _isError
+                // hide submit button if error
+                isError
                     ? Container()
                     : leftRoundedButton(
-                        color: _isListening
+                        color: isShowingInput
                             ? ColorLib.gameMain
                             : Theme.of(context).colorScheme.primary,
                         icon: Icon(
-                          _isListening ? Icons.check : Icons.mic_rounded,
+                          isShowingInput ? Icons.check : Icons.mic_rounded,
                           color: Colors.white,
                         ),
                         action: () {

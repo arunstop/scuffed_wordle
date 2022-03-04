@@ -172,7 +172,7 @@ class HomeScreen extends StatelessWidget {
                             dictionaryBloc.state.dictionary.answer),
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Text('${boardBloc.state.runtimeType}'),
+                          // Text('${dictionaryBloc.state.dictionary.answer}'),
                           // ElevatedButton(
                           //   onPressed: () {
                           //     dictionaryBloc.add(
