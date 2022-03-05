@@ -206,7 +206,8 @@ class HomeScreen extends StatelessWidget {
                                       style: ButtonStyle(
                                         foregroundColor:
                                             MaterialStateProperty.all(
-                                                Colors.white),
+                                          Colors.white,
+                                        ),
                                         // padding: EdgeInsets.all(8)
                                       ),
                                       onPressed: () {},

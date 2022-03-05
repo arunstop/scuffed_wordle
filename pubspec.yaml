@@ -46,6 +46,7 @@ dependencies:
   confetti: ^0.6.0
   oktoast: ^3.1.5
   speech_to_text: ^5.4.3
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_lints: ^1.0.0

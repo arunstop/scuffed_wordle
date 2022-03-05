@@ -17,6 +17,7 @@ import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DialogResult extends StatefulWidget {
   final String answer;
@@ -97,15 +98,6 @@ class _DialogResultState extends State<DialogResult> {
       //
       UiLib.showToast(status: Status.ok, text: "Copied to clipboard");
       // _close();
-    }
-
-    void _defineWord(String answer) {
-      print('defineword');
-      // _close();
-      dictionaryBloc.add(DictionaryDefine(
-          // lang: 'en',
-          // word: answer,
-          ));
     }
 
     // Bordered button
@@ -194,32 +186,144 @@ class _DialogResultState extends State<DialogResult> {
           size: 30,
           color: Theme.of(context).colorScheme.primary,
         );
-      } else if (status == DictionaryStateStatus.error) {
-        return Chip(
-          backgroundColor: ColorLib.error,
-          label: Text(
-            'Error: No definition found, sorry :(',
-            style: Theme.of(context).textTheme.caption!.copyWith(
-                  color: Colors.white,
-                ),
-          ),
-        );
       }
       return SizedBox(
         height: 30,
         child: ElevatedButton.icon(
-          onPressed: () => _defineWord(widget.answer),
+          onPressed: () => dictionaryBloc.add(DictionaryDefine()),
           style: ElevatedButton.styleFrom(
             shape: StadiumBorder(),
           ).copyWith(
             foregroundColor: MaterialStateProperty.all(Colors.white),
           ),
           icon: const Icon(Icons.search),
-          label: const Text('Define', style: TextStyle(
-            letterSpacing: 1,
-            fontSize: 16,
-          ),),
+          label: const Text(
+            'Define',
+            style: TextStyle(
+              letterSpacing: 1,
+              fontSize: 16,
+            ),
+          ),
         ),
+      );
+    }
+
+    Widget definitionWidgets() {
+      DictionaryStateStatus status = dictionaryBloc.state.status;
+
+      if (_isDefinitionValid == false &&
+          status != DictionaryStateStatus.error) {
+        return Center(
+          key: ValueKey<String>('result-dialog-define-button'),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) => ScaleTransition(
+                scale: animation,
+                child: child,
+              ),
+              child: _defineWordButton(),
+            ),
+          ),
+        );
+      } else if (status == DictionaryStateStatus.error) {
+        return Center(
+          key: ValueKey<String>('result-dialog-error-google-button'),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'No definition found, sorry :(',
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: ColorLib.error,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                UiLib.vSpace(6),
+                // Define with google button
+                SizedBox(
+                  height: 30,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      String url =
+                          'https://www.google.com/search?q=define+${widget.answer}';
+                      if (!await launch(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    icon: Icon(Icons.open_in_new),
+                    label: Text('Define with Google'),
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(StadiumBorder()),
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+      return Column(
+          key: ValueKey<String>('result-dialog-definition-widget'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Phonetic
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.volume_up_rounded),
+              //   color: Colors.lightBlue,
+              // ),
+              Flexible(
+                child: Text(
+                  definition?.phonetic ?? widget.answer,
+                  style: const TextStyle(
+                    fontSize: 21,
+                    letterSpacing: 2,
+                    fontFamily: 'Rubik',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Meanings
+          // UiLib.vSpace(6),
+          for (var meaning in definition!.meanings)
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(9.0),
+                  child: Center(
+                    child: Text(
+                      '-- ${meaning.partOfSpeech} --',
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 18,
+                        // fontFamily: 'Rubik',
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                ),
+                meaning.definitions!.isEmpty
+                    ? const Text('')
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _getDefinitionList(
+                          meaning.definitions!,
+                        ),
+                      )
+              ],
+            )
+        ],
       );
     }
 
@@ -291,77 +395,7 @@ class _DialogResultState extends State<DialogResult> {
             sizeFactor: animation,
             child: child,
           ),
-          child: _isDefinitionValid == false
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: AnimatedSwitcher(
-                      duration: Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation) => ScaleTransition(
-                        scale: animation,
-                        child: child,
-                      ),
-                      child: _defineWordButton(),
-                    ),
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Phonetic
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // IconButton(
-                        //   onPressed: () {},
-                        //   icon: const Icon(Icons.volume_up_rounded),
-                        //   color: Colors.lightBlue,
-                        // ),
-                        Flexible(
-                          child: Text(
-                            definition?.phonetic ?? widget.answer,
-                            style: const TextStyle(
-                              fontSize: 21,
-                              letterSpacing: 2,
-                              fontFamily: 'Rubik',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Meanings
-                    // UiLib.vSpace(6),
-                    for (var meaning in definition!.meanings)
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(9.0),
-                            child: Center(
-                              child: Text(
-                                '-- ${meaning.partOfSpeech} --',
-                                style: const TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 18,
-                                  // fontFamily: 'Rubik',
-                                  fontWeight: FontWeight.w200,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                          meaning.definitions!.isEmpty
-                              ? const Text('')
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: _getDefinitionList(
-                                    meaning.definitions!,
-                                  ),
-                                )
-                        ],
-                      )
-                  ],
-                ),
+          child: definitionWidgets(),
         ),
         // Buttons
         Padding(
