@@ -3,44 +3,41 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:scuffed_wordle/bloc/board/board_bloc.dart';
+import 'package:scuffed_wordle/bloc/ui/ui_bloc.dart';
+import 'package:scuffed_wordle/data/stt.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:scuffed_wordle/widgets/widget_keyboard.dart';
 import 'package:scuffed_wordle/widgets/widget_mic_input.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Input extends StatefulWidget {
+class Input extends StatelessWidget {
   final int guessLength;
-  Input({Key? key, required this.guessLength}) : super(key: key);
+  const Input({
+    Key? key,
+    required this.guessLength,
+  }) : super(key: key);
 
-  @override
-  _InputState createState() => _InputState();
-}
 
-
-class _InputState extends State<Input> {
-  bool _onVoiceInput = false;
-  List<String> _detectedWords = [];
-
-  bool _isError = false;
-
-@override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    UiBloc uiBloc = context.watch<UiBloc>();
+    Stt uiStt = uiBloc.state.stt;
+    bool isError = uiStt.isError;
+    bool isShowingInput = uiStt.isShowingInput;
+    List<String> detectedWords = uiStt.detectedWordList;
+
     BoardBloc boardBloc = context.read<BoardBloc>();
 
     void addGuess(String guess) {
-      boardBloc.add(BoardAddGuess(guess: guess, length: widget.guessLength));
+      boardBloc.add(BoardAddGuess(guess: guess, length: guessLength));
     }
 
     Color? getLayoutColor() {
       Color color = Theme.of(context).colorScheme.primary;
-      if (_isError) {
+      if (isError) {
         color = ColorLib.error;
       }
       return color.withAlpha(64);
@@ -48,14 +45,14 @@ class _InputState extends State<Input> {
 
     List<Widget> wordChips() {
       return <Widget>[
-        for (String word in _detectedWords)
+        for (String word in detectedWords)
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: ActionChip(
               onPressed: () {
                 addGuess(word);
               },
-              backgroundColor: word.length == widget.guessLength
+              backgroundColor: word.length == guessLength
                   ? ColorLib.gameMain
                   : ColorLib.tileBase.withAlpha(192),
               label: Text(
@@ -88,7 +85,7 @@ class _InputState extends State<Input> {
               axisAlignment: 1.0,
               child: child,
             ),
-            child: !_onVoiceInput
+            child: !isShowingInput
                 ? Container()
                 : Container(
                     decoration: BoxDecoration(
@@ -109,14 +106,12 @@ class _InputState extends State<Input> {
                         children: [
                           Expanded(
                             child: Center(
-                              child: _detectedWords.isEmpty
+                              child: detectedWords.isEmpty
                                   ? Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Text(
-                                          _isError
-                                              ? 'Microphone has been blocked.\nPlease enable the access to continue.'
-                                              : 'Try to guess the answer\nwith your beautiful voice...',
+                                          uiStt.placeholderTxt,
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
@@ -147,6 +142,7 @@ class _InputState extends State<Input> {
                                           alignment: WrapAlignment.center,
                                           children: [
                                             ...wordChips(),
+                                            // Text('${uiStt.lastDetectedWord}')
                                           ],
                                         ),
                                       ),
@@ -161,33 +157,33 @@ class _InputState extends State<Input> {
           ),
         ),
         MicInput(
-          guessLength: widget.guessLength,
-          toggleVoiceInput: (value, isError) {
-            setState(() {
-              if (value == false) {
-                _detectedWords = [];
-              }
-              _onVoiceInput = value;
-              _isError = isError;
-            });
-          },
-          detectedWords: (value) {
-            setState(() {
-              // prevent same value
-              if (_detectedWords.contains(value)) {
-                return;
-              } else if (value.contains(' ')) {
-                List<String> splittedValue = value.split(' ');
-                // Concat then distinct
-                _detectedWords = _detectedWords
-                    .followedBy(splittedValue)
-                    .distinct()
-                    .toList();
-                return;
-              }
-              _detectedWords.add(value);
-            });
-          },
+          guessLength: guessLength,
+          // toggleVoiceInput: (value, isError) {
+          //   setState(() {
+          //     if (value == false) {
+          //       _detectedWords = [];
+          //     }
+          //     _onVoiceInput = value;
+          //     _isError = isError;
+          //   });
+          // },
+          // detectedWords: (value) {
+          //   setState(() {
+          //     // prevent same value
+          //     if (_detectedWords.contains(value)) {
+          //       return;
+          //     } else if (value.contains(' ')) {
+          //       List<String> splittedValue = value.split(' ');
+          //       // Concat then distinct
+          //       _detectedWords = _detectedWords
+          //           .followedBy(splittedValue)
+          //           .distinct()
+          //           .toList();
+          //       return;
+          //     }
+          //     _detectedWords.add(value);
+          //   });
+          // },
         ),
       ],
     );

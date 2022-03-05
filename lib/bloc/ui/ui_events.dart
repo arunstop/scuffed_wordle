@@ -7,10 +7,7 @@ class UiEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-
-class UiSttInitialize extends UiEvent{
-
-}
+class UiSttInitialize extends UiEvent {}
 
 class UiSttChangeStatus extends UiEvent {
   String status;
@@ -24,13 +21,17 @@ class UiSttErrorOccurs extends UiEvent {
   UiSttErrorOccurs({
     required this.message,
   });
-
 }
 
-class UiSttStop extends UiEvent{
-  
+class UiSttAddWords extends UiEvent {
+  String words;
+  // List<String> detectedWords;
+  UiSttAddWords({
+    required this.words,
+    // required this.detectedWords,
+  });
 }
 
-class UiSttToggleInput extends UiEvent{
-  
-}
+class UiSttStop extends UiEvent {}
+
+class UiSttToggleInput extends UiEvent {}

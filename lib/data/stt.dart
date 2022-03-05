@@ -12,7 +12,7 @@ class Stt {
   bool isError;
   String indicatorTxt;
   String placeholderTxt;
-  String lastDetectedWord;
+  // String lastDetectedWord;
   List<String> detectedWordList;
 
   Stt({
@@ -21,7 +21,7 @@ class Stt {
     this.isError=false,
     this.indicatorTxt = 'Play with your voice',
     this.placeholderTxt = '',
-    this.lastDetectedWord ='',
+    // this.lastDetectedWord ='',
     this.detectedWordList =const [],
   });
 
@@ -31,7 +31,7 @@ class Stt {
     bool? isError,
     String? indicatorTxt,
     String? placeholderTxt,
-    String? lastDetectedWord,
+    // String? lastDetectedWord,
     List<String>? detectedWordList,
   }) {
     return Stt(
@@ -40,10 +40,12 @@ class Stt {
       isError: isError ?? this.isError,
       indicatorTxt: indicatorTxt ?? this.indicatorTxt,
       placeholderTxt: placeholderTxt ?? this.placeholderTxt,
-      lastDetectedWord: lastDetectedWord ?? this.lastDetectedWord,
+      // lastDetectedWord: lastDetectedWord ?? this.lastDetectedWord,
       detectedWordList: detectedWordList ?? this.detectedWordList,
     );
   }
+
+  String get lastDetectedWord => detectedWordList.isEmpty ? '' : detectedWordList.last;
 
   @override
   String toString() {

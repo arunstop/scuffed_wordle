@@ -14,13 +14,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MicInput extends StatefulWidget {
   final int guessLength;
-  final void Function(bool value, bool isError) toggleVoiceInput;
-  final void Function(String word) detectedWords;
-  const MicInput({
+  // final void Function(bool value, bool isError) toggleVoiceInput;
+  // final void Function(String word) detectedWords;
+  MicInput({
     Key? key,
     required this.guessLength,
-    required this.toggleVoiceInput,
-    required this.detectedWords,
+    // required this.toggleVoiceInput,
+    // required this.detectedWords,
   }) : super(key: key);
 
   @override
@@ -29,181 +29,93 @@ class MicInput extends StatefulWidget {
 
 class _MicInputState extends State<MicInput> {
   final SpeechToText _speechToText = SpeechToText();
-  
-  late BoardBloc boardBloc;
-
   @override
   void dispose() async {
     // TODO: implement dispose
     super.dispose();
-    await _speechToText.stop();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    boardBloc = context.read<BoardBloc>();
-    // _detectedWord = _listeningLabel;
-    // print('12312');
-    _initSpeechToText();
-  }
-
-  void _initSpeechToText() async {
-    // check if the widget is mounted
-    if (mounted == false) {
-      return;
-    }
-    // _speechEnabled = await _speechToText.initialize(
-    //   onStatus: (status) {
-    //     print("status ${status}");
-    //     if(status!="listening" && !_isError){
-    //       _stopListening();
-    //     }
-    //   },
-    //   // Check if microphone is blocked
-    //   onError: (errorNotification) {
-    //     print("error ${errorNotification}");
-    //     String msg = errorNotification.errorMsg;
-    //     if (_isListening && msg == "not-allowed") {
-    //       setState(() {
-    //         _isError = true;
-    //         _detectedWord = _micDisabled;
-    //       });
-    //       widget.toggleVoiceInput(true, _isError);
-    //     }
-    //     // else if (_isListening && msg == "no-speech") {
-    //     //   setState(() {
-    //     //     _isError = false;
-    //     //     // _detectedWord = _micDisabled;
-    //     //   });
-    //     //   _stopListening();
-    //     // } else {
-    //     //   setState(() {
-    //     //     _isError = false;
-    //     //     // _detectedWord = _micDisabled;
-    //     //   });
-    //     //   _stopListening();
-    //     // }
-    //   },
-    // );
-    print(_speechToText.isAvailable);
-    // print(await _speechToText);
-    // setState(() {});
-  }
-
-  void _startListening() async {
-    // if (await _speechToText.hasError && _isError) {
-    //   print('error');
-    //   setState(() {
-    //     _isError = true;
-    //     _detectedWord = "Microphone has been blocked.";
-    //   });
-    //   // return;
-    // }else{
-    //   setState(() {
-    //     _isError = false;
-    //     _detectedWord = _listeningLabel;
-    //   });
-    // }
-    // print(await _speechToText.lastError);
-    // if (mounted == false && _isError) {
-    //   return;
-    // }
-    // setState(() {
-    //   _isListening = true;
-    //   widget.toggleVoiceInput(true, false);
-    // });
-    // var locale = await _speechToText.locales();
-    // // print();
-    // if ((locale).isNotEmpty) {
-    //   print(locale[0].localeId);
-    // }
-    UiBloc uiBloc = context.read<UiBloc>();
-    uiBloc.add(UiSttToggleInput());
-    await _speechToText.listen(
-      onResult: _onSpeechResult,
-      listenFor: Duration(seconds: 30),
-      // pauseFor: Duration(seconds: 5),
-      cancelOnError: true,
-      listenMode: ListenMode.confirmation,
-      localeId: "en-US",
-    );
-  }
-
-  void _stopListening() async {
-    UiBloc uiBloc = context.read<UiBloc>();
-    uiBloc.add(UiSttToggleInput());
-    if (mounted == false) {
-      return;
-    }
-    // turn off listening, error indicator for ui purposes
-    // setState(() {
-    //   _isListening = false;
-    //   widget.toggleVoiceInput(false, false);
-
-    //   _detectedWord = _listeningLabel;
-    //   _isError = false;
-    // });
-    await _speechToText.stop();
-  }
-
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    // check if stt still listening and widget is mounted
-    // if (mounted == false || _isListening == false) {
-    //   return;
-    // }
-
-    // String lastDetectedWord =
-    //     result.alternates.last.recognizedWords.toUpperCase().trim();
-    // if (_detectedWord == lastDetectedWord &&
-    //     lastDetectedWord.isNotEmpty &&
-    //     lastDetectedWord.contains(" ")) {
-    //   return;
-    // }
-    // // print(_detectedWord);
-    // setState(() {
-    //   _detectedWord = lastDetectedWord;
-    // });
-
-    // widget.detectedWords(lastDetectedWord);
-    // // DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    // context.read<BoardBloc>().add(
-    //       BoardAddGuess(
-    //         guess: _detectedWord,
-    //         length: widget.guessLength,
-    //       ),
-    //     );
-  }
-
-  void _submitGuess() {
-    DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
-    SettingsBloc settingsBloc = context.read<SettingsBloc>();
-
-    boardBloc.add(
-      BoardSubmitGuess(
-        settings: settingsBloc.state.settings,
-        wordList: dictionaryBloc.state.dictionary.wordList,
-        answer: dictionaryBloc.state.dictionary.answer,
-      ),
-    );
-    // setState(() {
-    //   _detectedWord = _listeningLabel;
-    // });
-    _stopListening();
+    // await _speechToText.stop();
   }
 
   @override
   Widget build(BuildContext context) {
     UiBloc uiBloc = context.watch<UiBloc>();
+    BoardBloc boardBloc = context.watch<BoardBloc>();
     Stt uiStt = uiBloc.state.stt;
     bool isShowingInput = uiStt.isShowingInput;
-    bool isListening = uiStt.status ==  SttStatus.listening;
+    bool isListening = uiStt.status == SttStatus.listening;
     bool isError = uiStt.isError;
     BorderRadius borderRadius = const BorderRadius.horizontal(
       left: Radius.circular(60),
       right: Radius.circular(0),
     );
+
+    void _onSpeechResult(SpeechRecognitionResult result) {
+      // check if stt still listening and widget is mounted
+      if (uiBloc.state.stt.status != SttStatus.listening) return;
+
+      // check if the word is empty/not valid
+      String lastDetectedWord =
+          result.alternates.last.recognizedWords.toUpperCase().trim();
+      if (uiStt.lastDetectedWord == lastDetectedWord &&
+          lastDetectedWord.isEmpty) {
+        return;
+      }
+      // update the word on speech to text ui
+      uiBloc.add(UiSttAddWords(words: lastDetectedWord));
+      // add guess
+      context.read<BoardBloc>().add(
+            BoardAddGuess(
+              guess: uiBloc.state.stt.lastDetectedWord,
+              length: widget.guessLength,
+            ),
+          );
+    }
+
+    void _startListening() async {
+      UiBloc uiBloc = context.read<UiBloc>();
+      uiBloc.add(UiSttToggleInput());
+      await _speechToText.listen(
+        onResult: _onSpeechResult,
+        listenFor: Duration(seconds: 30),
+        // countdown to stop listening when the user is not speaking anymore when listening
+        pauseFor: Duration(seconds: 12),
+        cancelOnError: true,
+        listenMode: ListenMode.confirmation,
+        localeId: "en-US",
+      );
+    }
+
+    void _stopListening() async {
+      UiBloc uiBloc = context.read<UiBloc>();
+      uiBloc.add(UiSttToggleInput());
+      // if (mounted == false) {
+      //   return;
+      // }
+      // turn off listening, error indicator for ui purposes
+      // setState(() {
+      //   _isListening = false;
+      //   widget.toggleVoiceInput(false, false);
+
+      //   _detectedWord = _listeningLabel;
+      //   _isError = false;
+      // });
+      await _speechToText.stop();
+    }
+
+    void _submitGuess() {
+      DictionaryBloc dictionaryBloc = context.read<DictionaryBloc>();
+      SettingsBloc settingsBloc = context.read<SettingsBloc>();
+
+      boardBloc.add(
+        BoardSubmitGuess(
+          settings: settingsBloc.state.settings,
+          wordList: dictionaryBloc.state.dictionary.wordList,
+          answer: dictionaryBloc.state.dictionary.answer,
+        ),
+      );
+      // stop listening after adding guess
+      _stopListening();
+    }
 
     Color getBarColor() {
       // Check if listening
@@ -247,7 +159,7 @@ class _MicInputState extends State<MicInput> {
     Widget getIndicator() {
       return Row(
         children: [
-          if (isListening)
+          if (isListening && !isError)
             SpinKitDoubleBounce(
               color: Colors.white,
               size: 42,
@@ -263,7 +175,7 @@ class _MicInputState extends State<MicInput> {
           else
             Container(),
           // give space is not error
-          isShowingInput ? UiLib.hSpace(12) :Container() ,
+          isShowingInput ? UiLib.hSpace(12) : Container(),
           Flexible(
             child: Text(
               uiStt.indicatorTxt,
