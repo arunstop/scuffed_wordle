@@ -47,6 +47,7 @@ dependencies:
   oktoast: ^3.1.5
   speech_to_text: ^5.4.3
   url_launcher: ^6.0.20
+  translator: ^0.1.7
 
 dev_dependencies:
   flutter_lints: ^1.0.0

@@ -36,6 +36,7 @@ class DialogResult extends StatefulWidget {
 
 class _DialogResultState extends State<DialogResult> {
   TtsState ttsState = TtsState.stopped;
+  bool translated = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -179,6 +180,125 @@ class _DialogResultState extends State<DialogResult> {
       }
     });
 
+    Widget _headerWidget() {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'The answer was:',
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  // letterSpacing: 1,
+                  // color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+          UiLib.vSpace(60 / 10),
+          // ANSWER
+          FittedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // color: Colors.red,
+                      border: Border.all(color: Colors.lightBlue)),
+                  child: IconButton(
+                    onPressed: ttsState == TtsState.playing
+                        ? null
+                        : () => _speak(widget.answer),
+                    icon: ttsState == TtsState.playing
+                        ? const SpinKitWave(
+                            color: Colors.lightBlue,
+                            size: 24,
+                            type: SpinKitWaveType.center,
+                            itemCount: 3,
+                            // borderWidth: 12,
+                            duration: Duration(milliseconds: 1200),
+                          )
+                        : const Icon(Icons.volume_up_rounded),
+                    color: Colors.lightBlue,
+                    iconSize: 30,
+                  ),
+                ),
+                UiLib.hSpace(12),
+                Text(
+                  '${widget.answer.toUpperCase()}',
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                        fontFamily: 'Rubik',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                        color: _resultColor,
+                      ),
+                ),
+                UiLib.hSpace(12),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget _translatedHeaderWidget() {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          UiLib.vSpace(12),
+          Text(
+            'The answer in ${"Spanish"}:',
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  // letterSpacing: 1,
+                  // color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+          UiLib.vSpace(60 / 10),
+          // ANSWER
+          FittedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // color: Colors.red,
+                      border: Border.all(color: Colors.lightBlue)),
+                  child: IconButton(
+                    onPressed: ttsState == TtsState.playing
+                        ? null
+                        : () => _speak(widget.answer),
+                    icon: ttsState == TtsState.playing
+                        ? const SpinKitWave(
+                            color: Colors.lightBlue,
+                            size: 24,
+                            type: SpinKitWaveType.center,
+                            itemCount: 3,
+                            // borderWidth: 12,
+                            duration: Duration(milliseconds: 1200),
+                          )
+                        : const Icon(Icons.volume_up_rounded),
+                    color: Colors.lightBlue,
+                    iconSize: 30,
+                  ),
+                ),
+                UiLib.hSpace(12),
+                Text(
+                  '${widget.answer.toUpperCase()}',
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                        fontFamily: 'Rubik',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                        color: _resultColor,
+                      ),
+                ),
+                UiLib.hSpace(12),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
     Widget _defineWordButton() {
       DictionaryStateStatus status = dictionaryBloc.state.status;
       if (status == DictionaryStateStatus.loading) {
@@ -208,70 +328,91 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget definitionWidgets() {
-      DictionaryStateStatus status = dictionaryBloc.state.status;
-
-      if (_isDefinitionValid == false &&
-          status != DictionaryStateStatus.error) {
-        return Center(
-          key: ValueKey<String>('result-dialog-define-button'),
-          child: Padding(
+    List<Widget> _defineButtonSection(DictionaryStateStatus status) {
+      return [
+        // Show define button
+        if (_isDefinitionValid == false &&
+            status != DictionaryStateStatus.error)
+          Padding(
             padding: const EdgeInsets.only(top: 12.0),
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) => ScaleTransition(
-                scale: animation,
-                child: child,
+            child: Center(
+              key: ValueKey<String>('result-dialog-define-button'),
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) => ScaleTransition(
+                  scale: animation,
+                  child: child,
+                ),
+                child: _defineWordButton(),
               ),
-              child: _defineWordButton(),
             ),
-          ),
-        );
-      } else if (status == DictionaryStateStatus.error) {
-        return Center(
-          key: ValueKey<String>('result-dialog-error-google-button'),
-          child: Padding(
+          )
+        // Show error text if failed
+        else if (status == DictionaryStateStatus.error)
+          Padding(
             padding: const EdgeInsets.only(top: 12.0),
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'No definition found, sorry :(',
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: ColorLib.error,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                UiLib.vSpace(6),
-                // Define with google button
-                SizedBox(
-                  height: 30,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      String url =
-                          'https://www.google.com/search?q=define+${widget.answer}';
-                      if (!await launch(url)) {
-                        throw 'Could not launch $url';
-                      }
-                    },
-                    icon: Icon(Icons.open_in_new),
-                    label: Text('Define with Google'),
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(StadiumBorder()),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.white)),
-                  ),
-                ),
-              ],
+            child: Center(
+              key: ValueKey<String>('result-dialog-error-google-button'),
+              child: Text(
+                'No definition found, sorry :(',
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: ColorLib.error,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
+          )
+      ];
+    }
+
+    Widget _defineWithGoogleButton() {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: SizedBox(
+          height: 30,
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              String url =
+                  'https://www.google.com/search?q=define+${widget.answer}';
+              if (!await launch(url)) {
+                throw 'Could not launch $url';
+              }
+            },
+            icon: Icon(Icons.open_in_new),
+            label: Text('Define with Google'),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(ColorLib.gameAlt),
+                shape: MaterialStateProperty.all(StadiumBorder()),
+                foregroundColor: MaterialStateProperty.all(Colors.white)),
           ),
-        );
-      }
+        ),
+      );
+    }
+
+    Widget _translateButton() {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: SizedBox(
+          height: 30,
+          child: ElevatedButton.icon(
+            onPressed: () => setState(() {
+              translated = !translated;
+            }),
+            icon: Icon(Icons.translate),
+            label: Text('Translate to ${"Spanish"}'),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(ColorLib.gameMain),
+                shape: MaterialStateProperty.all(StadiumBorder()),
+                foregroundColor: MaterialStateProperty.all(Colors.white)),
+          ),
+        ),
+      );
+    }
+
+    Widget _definitionWidgets() {
       return Column(
-          key: ValueKey<String>('result-dialog-definition-widget'),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          UiLib.vSpace(24),
           // Phonetic
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -327,66 +468,32 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
+    Widget _detailSection() {
+      DictionaryStateStatus status = dictionaryBloc.state.status;
+
+      return Column(
+        key: ValueKey<String>('result-dialog-definition-widget'),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Define and translate buttons
+          Column(
+            children: [
+              ..._defineButtonSection(status),
+              _defineWithGoogleButton(),
+              _translateButton(),
+            ],
+          ),
+          if (_isDefinitionValid) _definitionWidgets()
+        ],
+      );
+    }
+
     return Column(
       children: [
         // Header
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'The answer was:',
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    // letterSpacing: 1,
-                    // color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            UiLib.vSpace(60 / 10),
-            // ANSWER
-            FittedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        // color: Colors.red,
-                        border: Border.all(color: Colors.lightBlue)),
-                    child: IconButton(
-                      onPressed: ttsState == TtsState.playing
-                          ? null
-                          : () => _speak(widget.answer),
-                      icon: ttsState == TtsState.playing
-                          ? const SpinKitWave(
-                              color: Colors.lightBlue,
-                              size: 24,
-                              type: SpinKitWaveType.center,
-                              itemCount: 3,
-                              // borderWidth: 12,
-                              duration: Duration(milliseconds: 1200),
-                            )
-                          : const Icon(Icons.volume_up_rounded),
-                      color: Colors.lightBlue,
-                      iconSize: 30,
-                    ),
-                  ),
-                  UiLib.hSpace(12),
-                  Text(
-                    '${widget.answer.toUpperCase()}',
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                          fontFamily: 'Rubik',
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          color: _resultColor,
-                        ),
-                  ),
-                  UiLib.hSpace(12),
-                ],
-              ),
-            ),
-          ],
-        ),
-
+        _headerWidget(),
+        if (translated) _translatedHeaderWidget(),
         // Content
         // UiLib.vSpace(6),
         AnimatedSwitcher(
@@ -395,7 +502,7 @@ class _DialogResultState extends State<DialogResult> {
             sizeFactor: animation,
             child: child,
           ),
-          child: definitionWidgets(),
+          child: _detailSection(),
         ),
         // Buttons
         Padding(
