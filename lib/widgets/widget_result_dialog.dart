@@ -71,7 +71,7 @@ class _DialogResultState extends State<DialogResult> {
       // });
       // translatedAnswer = (await widget.answer.translate(to: 'pt')).toString();
       Translation translation =
-          await widget.answer.translate(from: 'en', to: 'es');
+          await widget.answer.translate(from: 'en', to: 'id');
       print(translation);
       setState(() {
         translatedAnswer = translation.text;
@@ -272,7 +272,7 @@ class _DialogResultState extends State<DialogResult> {
         children: [
           UiLib.vSpace(12),
           Text(
-            'in ${"Spanish"}:',
+            'in ${"Indonesian"}:',
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   fontWeight: FontWeight.bold,
                   // letterSpacing: 1,
@@ -426,7 +426,7 @@ class _DialogResultState extends State<DialogResult> {
               _translateAnswer();
             },
             icon: Icon(Icons.translate),
-            label: Text('Translate to ${"Spanish"}'),
+            label: Text('Translate to ${"Indonesian"}'),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(ColorLib.gameMain),
                 shape: MaterialStateProperty.all(StadiumBorder()),
@@ -511,7 +511,14 @@ class _DialogResultState extends State<DialogResult> {
               _translateButton(),
             ],
           ),
-          if (_isDefinitionValid) _definitionWidgets()
+          AnimatedSwitcher(
+            duration: Duration(milliseconds: 600),
+            transitionBuilder: (child, animation) => SizeTransition(
+              sizeFactor: animation,
+              child: child,
+            ),
+            child: _isDefinitionValid ? _definitionWidgets() : Container(),
+          ),
         ],
       );
     }
@@ -520,17 +527,20 @@ class _DialogResultState extends State<DialogResult> {
       children: [
         // Header
         _headerWidget(),
-        if (isTranslated) _translatedHeaderWidget(),
-        // Content
-        // UiLib.vSpace(6),
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 600),
+          duration: Duration(milliseconds: 300),
           transitionBuilder: (child, animation) => SizeTransition(
             sizeFactor: animation,
             child: child,
           ),
-          child: _detailSection(),
+          child: (isTranslated)
+              ? Center(child: _translatedHeaderWidget())
+              : Container(),
         ),
+
+        // Content
+        // UiLib.vSpace(6),
+        _detailSection(),
         // Buttons
         Padding(
           padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
@@ -583,45 +593,45 @@ class _DialogResultState extends State<DialogResult> {
   }
 }
 
-class BoardResult extends StatelessWidget {
-  const BoardResult({Key? key}) : super(key: key);
+// class BoardResult extends StatelessWidget {
+//   const BoardResult({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    var bloc = context.read<BoardBloc>();
-    var state = bloc.state;
-    // Get submitted words
-    // bloc.state.wordList.sublist(0,)
-    // var submittedWordList = bloc.state.wordList.where((word) {
-    //   var strWord = word.map((e) => e.letter).join();
-    //   return strWord.isNotEmpty;
-    // });
+//   @override
+//   Widget build(BuildContext context) {
+//     var bloc = context.read<BoardBloc>();
+//     var state = bloc.state;
+//     // Get submitted words
+//     // bloc.state.wordList.sublist(0,)
+//     // var submittedWordList = bloc.state.wordList.where((word) {
+//     //   var strWord = word.map((e) => e.letter).join();
+//     //   return strWord.isNotEmpty;
+//     // });
 
-    // var submittedWordList = state.wordList.sublist(0, state.attempt);
-    // print(submittedWordList);
+//     // var submittedWordList = state.wordList.sublist(0, state.attempt);
+//     // print(submittedWordList);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(
-          height: 12,
-        ),
-        for (var word in state.submittedWordList)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var letter in word)
-                SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Card(
-                    color: letter.color,
-                  ),
-                ),
-            ],
-          )
-      ],
-    );
-  }
-}
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         const SizedBox(
+//           height: 12,
+//         ),
+//         for (var word in state.submittedWordList)
+//           Row(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               for (var letter in word)
+//                 SizedBox(
+//                   width: 40,
+//                   height: 40,
+//                   child: Card(
+//                     color: letter.color,
+//                   ),
+//                 ),
+//             ],
+//           )
+//       ],
+//     );
+//   }
+// }
