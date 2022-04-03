@@ -34,7 +34,7 @@ class _MicInputState extends State<MicInput> {
     // TODO: implement dispose
     super.dispose();
     // await _speechToText.stop();
-      await _speechToText.stop();
+    await _speechToText.stop();
   }
 
   @override

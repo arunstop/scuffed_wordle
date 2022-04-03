@@ -71,7 +71,7 @@ class _DialogResultState extends State<DialogResult> {
       // });
       // translatedAnswer = (await widget.answer.translate(to: 'pt')).toString();
       Translation translation =
-          await widget.answer.translate(from: 'en', to: 'id');
+          await widget.answer.toLowerCase().translate(from: 'en', to: 'id');
       print(translation);
       setState(() {
         translatedAnswer = translation.text;
@@ -207,6 +207,8 @@ class _DialogResultState extends State<DialogResult> {
       }
     });
 
+    bool isTtsPlaying = ttsState == TtsState.playing;
+
     Widget _headerWidget() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -229,17 +231,19 @@ class _DialogResultState extends State<DialogResult> {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       // color: Colors.red,
-                      border: Border.all(color: Colors.lightBlue)),
+                      border: Border.all(
+                          color: isTtsPlaying
+                              ? Colors.transparent
+                              : Colors.lightBlue)),
                   child: IconButton(
-                    onPressed: ttsState == TtsState.playing
-                        ? null
-                        : () => _speak(widget.answer),
-                    icon: ttsState == TtsState.playing
+                    onPressed:
+                        isTtsPlaying ? null : () => _speak(widget.answer),
+                    icon: isTtsPlaying
                         ? const SpinKitWave(
                             color: Colors.lightBlue,
                             size: 24,
                             type: SpinKitWaveType.center,
-                            itemCount: 3,
+                            itemCount: 4,
                             // borderWidth: 12,
                             duration: Duration(milliseconds: 1200),
                           )
