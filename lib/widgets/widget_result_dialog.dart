@@ -18,6 +18,7 @@ import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart
 import 'package:scuffed_wordle/data/models/word_definition/word_model.dart';
 import 'package:scuffed_wordle/ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:translator/translator.dart';
 
 class DialogResult extends StatefulWidget {
   final String answer;
@@ -36,7 +37,15 @@ class DialogResult extends StatefulWidget {
 
 class _DialogResultState extends State<DialogResult> {
   TtsState ttsState = TtsState.stopped;
-  bool translated = false;
+  bool isTranslated = false;
+  String translatedAnswer = "";
+
+  @override
+  void initState() {
+    translatedAnswer = widget.answer;
+    super.initState();
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -53,6 +62,24 @@ class _DialogResultState extends State<DialogResult> {
 
     // Close dialog
     void _close() => Navigator.pop(context);
+
+// Translate answer
+    void _translateAnswer() async {
+      // setState(() async {
+      //   translatedAnswer =
+      //       await widget.answer.translate(from: 'en', to: 'es').toString();
+      // });
+      // translatedAnswer = (await widget.answer.translate(to: 'pt')).toString();
+      Translation translation =
+          await widget.answer.translate(from: 'en', to: 'es');
+      print(translation);
+      setState(() {
+        translatedAnswer = translation.text;
+        isTranslated = !isTranslated;
+      });
+      // print(await "example".translate(to: 'pt'));
+    }
+
     // Play again
     void _playAgain() async {
       _close();
@@ -245,7 +272,7 @@ class _DialogResultState extends State<DialogResult> {
         children: [
           UiLib.vSpace(12),
           Text(
-            'The answer in ${"Spanish"}:',
+            'in ${"Spanish"}:',
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   fontWeight: FontWeight.bold,
                   // letterSpacing: 1,
@@ -258,32 +285,32 @@ class _DialogResultState extends State<DialogResult> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      // color: Colors.red,
-                      border: Border.all(color: Colors.lightBlue)),
-                  child: IconButton(
-                    onPressed: ttsState == TtsState.playing
-                        ? null
-                        : () => _speak(widget.answer),
-                    icon: ttsState == TtsState.playing
-                        ? const SpinKitWave(
-                            color: Colors.lightBlue,
-                            size: 24,
-                            type: SpinKitWaveType.center,
-                            itemCount: 3,
-                            // borderWidth: 12,
-                            duration: Duration(milliseconds: 1200),
-                          )
-                        : const Icon(Icons.volume_up_rounded),
-                    color: Colors.lightBlue,
-                    iconSize: 30,
-                  ),
-                ),
-                UiLib.hSpace(12),
+                // Container(
+                //   decoration: BoxDecoration(
+                //       shape: BoxShape.circle,
+                //       // color: Colors.red,
+                //       border: Border.all(color: Colors.lightBlue)),
+                //   child: IconButton(
+                //     onPressed: ttsState == TtsState.playing
+                //         ? null
+                //         : () => _speak(widget.answer),
+                //     icon: ttsState == TtsState.playing
+                //         ? const SpinKitWave(
+                //             color: Colors.lightBlue,
+                //             size: 24,
+                //             type: SpinKitWaveType.center,
+                //             itemCount: 3,
+                //             // borderWidth: 12,
+                //             duration: Duration(milliseconds: 1200),
+                //           )
+                //         : const Icon(Icons.volume_up_rounded),
+                //     color: Colors.lightBlue,
+                //     iconSize: 30,
+                //   ),
+                // ),
+                // UiLib.hSpace(12),
                 Text(
-                  '${widget.answer.toUpperCase()}',
+                  '${translatedAnswer.toUpperCase()}',
                   style: Theme.of(context).textTheme.headline3!.copyWith(
                         fontFamily: 'Rubik',
                         fontWeight: FontWeight.bold,
@@ -395,9 +422,9 @@ class _DialogResultState extends State<DialogResult> {
         child: SizedBox(
           height: 30,
           child: ElevatedButton.icon(
-            onPressed: () => setState(() {
-              translated = !translated;
-            }),
+            onPressed: () {
+              _translateAnswer();
+            },
             icon: Icon(Icons.translate),
             label: Text('Translate to ${"Spanish"}'),
             style: ButtonStyle(
@@ -493,7 +520,7 @@ class _DialogResultState extends State<DialogResult> {
       children: [
         // Header
         _headerWidget(),
-        if (translated) _translatedHeaderWidget(),
+        if (isTranslated) _translatedHeaderWidget(),
         // Content
         // UiLib.vSpace(6),
         AnimatedSwitcher(
