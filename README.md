@@ -1,6 +1,6 @@
 # scuffed_wordle
 
-- Go to game page : Scuffed Wordle(https://scuffed-wordle.web.app/)
+- [Go to game page : Scuffed Wordle](https://scuffed-wordle.web.app/)
 
 ## Getting Started
 
