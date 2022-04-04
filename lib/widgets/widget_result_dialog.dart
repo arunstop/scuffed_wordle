@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/data/models/language/languange_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
 import 'package:scuffed_wordle/data/models/word_definition/definition_model.dart';
@@ -39,11 +42,23 @@ class _DialogResultState extends State<DialogResult> {
   TtsState ttsState = TtsState.stopped;
   bool isTranslated = false;
   String translatedAnswer = "";
+  late TranslationLanguage lang = TranslationLanguage(
+      language: "Nothing", isoCode: "nothing", flag: "nothing");
 
   @override
   void initState() {
     translatedAnswer = widget.answer;
+    setLang();
     super.initState();
+  }
+
+  void setLang() async {
+    List<TranslationLanguage> langList = await getLangList();
+    int randomIdx = Random().nextInt(langList.length);
+
+    setState(() {
+      lang = langList[randomIdx];
+    });
   }
 
   @override
@@ -52,24 +67,30 @@ class _DialogResultState extends State<DialogResult> {
     super.dispose();
   }
 
+  Future<List<TranslationLanguage>> getLangList() async {
+    // rawData returns string
+    String rawData = await DefaultAssetBundle.of(context)
+        .loadString("assets/GoogleTranslateSupportedLanguages.json");
+    // Decode it with jsonDecode() into List<dynamic>
+    List<dynamic> untypedLangList = jsonDecode(rawData);
+    // Cast it into type TranslationLanguage
+    List<TranslationLanguage> typedLangList = untypedLangList
+        .map((untypedItem) => TranslationLanguage.fromJson(untypedItem))
+        .toList();
+    int randomIdx = Random().nextInt(typedLangList.length);
+    // setState(() {
+    lang = typedLangList[randomIdx];
+    // });
+
+    return typedLangList;
+  }
+
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
     Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
-    Future<List<String>> getKeywordList() async {
-      var data = await DefaultAssetBundle.of(context)
-          .loadString("assets/GoogleTranslateSupportedLanguages.json");
-      // print(jsonDecode(data));
-      // Cast the jsonDecode result which is
-      // List<dynamic> into List<String>
-      print(data);
-      return [];
-      // return DefaultAssetBundle.of(context)
-      //     .loadString("assets/valid5LetterWordList.json")
-      //     .then((value) => jsonDecode(value));
-    }
 
     // Close dialog
     void _close() => Navigator.pop(context);
@@ -81,11 +102,24 @@ class _DialogResultState extends State<DialogResult> {
       //       await widget.answer.translate(from: 'en', to: 'es').toString();
       // });
       // translatedAnswer = (await widget.answer.translate(to: 'pt')).toString();
-      Translation translation =
-          await widget.answer.toLowerCase().translate(from: 'en', to: 'zh-cn');
-      print(translation);
+      String translatedText = "";
+      String isoCode = lang.isoCode.toLowerCase();
+      try {
+        print(lang.isoCode);
+        Translation translation = await widget.answer
+            .toLowerCase()
+            .translate(from: 'en', to: isoCode);
+        print(translation);
+        translatedText = translation.text;
+        if (isTranslated == true) setLang();
+      } catch (e) {
+        // print(e.runtimeType);
+        if (e.runtimeType.toString() == "LanguageNotSupportedException") {
+          print('${lang.language} with code `${isoCode}` is not supported');
+        }
+      }
       setState(() {
-        translatedAnswer = translation.text;
+        translatedAnswer = translatedText;
         isTranslated = !isTranslated;
       });
       // print(await "example".translate(to: 'pt'));
@@ -287,7 +321,7 @@ class _DialogResultState extends State<DialogResult> {
         children: [
           UiLib.vSpace(12),
           Text(
-            'in ${"Indonesian"}:',
+            'in ${lang.language.trim()}:',
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   fontWeight: FontWeight.bold,
                   // letterSpacing: 1,
@@ -300,6 +334,7 @@ class _DialogResultState extends State<DialogResult> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                UiLib.hSpace(12),
                 // Container(
                 //   decoration: BoxDecoration(
                 //       shape: BoxShape.circle,
@@ -441,7 +476,7 @@ class _DialogResultState extends State<DialogResult> {
               _translateAnswer();
             },
             icon: Icon(Icons.translate),
-            label: Text('Translate to ${"Indonesian"}'),
+            label: Text('Translate to ${lang.language}'),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
                     ColorLib.gameMain.withOpacity(isTranslated ? 0.4 : 1.0)),
@@ -542,12 +577,12 @@ class _DialogResultState extends State<DialogResult> {
     return Column(
       children: [
         // Header
-        FutureBuilder<List<String>>(
-          future: getKeywordList(),
-          builder: (context, snapshot) {
-            return Text("${snapshot.data?.length.toString()}");
-          },
-        ),
+        // FutureBuilder<List<TranslationLanguage>>(
+        //   future: getKeywordList(),
+        //   builder: (context, snapshot) {
+        //     return Text("${snapshot.data?.length.toString()}");
+        //   },
+        // ),
         _headerWidget(),
         AnimatedSwitcher(
           duration: Duration(milliseconds: 300),
