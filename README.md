@@ -1,6 +1,6 @@
 # scuffed_wordle
 
-A new Flutter project.
+- Go to game page : Scuffed Wordle(https://scuffed-wordle.web.app/)
 
 ## Getting Started
 
