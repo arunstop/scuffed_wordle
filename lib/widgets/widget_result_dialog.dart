@@ -48,7 +48,6 @@ class _DialogResultState extends State<DialogResult> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     widget.tts.stop();
     super.dispose();
   }
@@ -59,11 +58,23 @@ class _DialogResultState extends State<DialogResult> {
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
     Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
+    Future<List<String>> getKeywordList() async {
+      var data = await DefaultAssetBundle.of(context)
+          .loadString("assets/GoogleTranslateSupportedLanguages.json");
+      // print(jsonDecode(data));
+      // Cast the jsonDecode result which is
+      // List<dynamic> into List<String>
+      print(data);
+      return [];
+      // return DefaultAssetBundle.of(context)
+      //     .loadString("assets/valid5LetterWordList.json")
+      //     .then((value) => jsonDecode(value));
+    }
 
     // Close dialog
     void _close() => Navigator.pop(context);
 
-// Translate answer
+    // Translate answer
     void _translateAnswer() async {
       // setState(() async {
       //   translatedAnswer =
@@ -71,7 +82,7 @@ class _DialogResultState extends State<DialogResult> {
       // });
       // translatedAnswer = (await widget.answer.translate(to: 'pt')).toString();
       Translation translation =
-          await widget.answer.toLowerCase().translate(from: 'en', to: 'id');
+          await widget.answer.toLowerCase().translate(from: 'en', to: 'zh-cn');
       print(translation);
       setState(() {
         translatedAnswer = translation.text;
@@ -243,7 +254,7 @@ class _DialogResultState extends State<DialogResult> {
                             color: Colors.lightBlue,
                             size: 24,
                             type: SpinKitWaveType.center,
-                            itemCount: 4,
+                            itemCount: 3,
                             // borderWidth: 12,
                             duration: Duration(milliseconds: 1200),
                           )
@@ -432,7 +443,8 @@ class _DialogResultState extends State<DialogResult> {
             icon: Icon(Icons.translate),
             label: Text('Translate to ${"Indonesian"}'),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(ColorLib.gameMain),
+                backgroundColor: MaterialStateProperty.all(
+                    ColorLib.gameMain.withOpacity(isTranslated ? 0.4 : 1.0)),
                 shape: MaterialStateProperty.all(StadiumBorder()),
                 foregroundColor: MaterialStateProperty.all(Colors.white)),
           ),
@@ -530,6 +542,12 @@ class _DialogResultState extends State<DialogResult> {
     return Column(
       children: [
         // Header
+        FutureBuilder<List<String>>(
+          future: getKeywordList(),
+          builder: (context, snapshot) {
+            return Text("${snapshot.data?.length.toString()}");
+          },
+        ),
         _headerWidget(),
         AnimatedSwitcher(
           duration: Duration(milliseconds: 300),

@@ -40,7 +40,7 @@ class BoardTile extends StatelessWidget {
     if (color == ColorLib.tileBase && onStandBy) {
       styledColor = Colors.transparent;
       styledBorder = Border.all(
-        color: ColorLib.tileBase,
+        color: ColorLib.tileBase.withOpacity(0.30),
         width: 3,
       );
     } else if (onType) {
