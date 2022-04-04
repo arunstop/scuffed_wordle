@@ -19,12 +19,12 @@ class ScreenTemplate extends StatelessWidget {
         children: [
           SizedBox.expand(
             child: Container(
-                // color: Colors.red,
-                child: Image.asset(
-              'assets/jigsaw.png',
-              repeat: ImageRepeat.repeat,
-              // fit: BoxFit.fitWidth,
-            )),
+              // color: Colors.red,
+              child: Image.asset(
+                'assets/jigsaw.png', repeat: ImageRepeat.repeat,
+                // fit: BoxFit.fitWidth,
+              ),
+            ),
           ),
           Center(
             child: SizedBox(
