@@ -184,7 +184,7 @@ class _DialogResultState extends State<DialogResult> {
           ),
           // give no border coloring if noBorder is true
           style: OutlinedButton.styleFrom(
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             side: noBorder
                 ? null
                 : BorderSide(
@@ -379,7 +379,7 @@ class _DialogResultState extends State<DialogResult> {
         child: ElevatedButton.icon(
           onPressed: () => dictionaryBloc.add(DictionaryDefine()),
           style: ElevatedButton.styleFrom(
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
           ).copyWith(
             foregroundColor: MaterialStateProperty.all(Colors.white),
           ),
@@ -403,9 +403,9 @@ class _DialogResultState extends State<DialogResult> {
           Padding(
             padding: const EdgeInsets.only(top: 12.0),
             child: Center(
-              key: ValueKey<String>('result-dialog-define-button'),
+              key: const ValueKey<String>('result-dialog-define-button'),
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 transitionBuilder: (child, animation) => ScaleTransition(
                   scale: animation,
                   child: child,
@@ -419,7 +419,7 @@ class _DialogResultState extends State<DialogResult> {
           Padding(
             padding: const EdgeInsets.only(top: 12.0),
             child: Center(
-              key: ValueKey<String>('result-dialog-error-google-button'),
+              key: const ValueKey<String>('result-dialog-error-google-button'),
               child: Text(
                 'No definition found, sorry :(',
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(
@@ -445,11 +445,11 @@ class _DialogResultState extends State<DialogResult> {
                 throw 'Could not launch $url';
               }
             },
-            icon: Icon(Icons.open_in_new),
-            label: Text('Define with Google'),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Define with Google'),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(ColorLib.gameAlt),
-                shape: MaterialStateProperty.all(StadiumBorder()),
+                shape: MaterialStateProperty.all(const StadiumBorder()),
                 foregroundColor: MaterialStateProperty.all(Colors.white)),
           ),
         ),
@@ -459,24 +459,44 @@ class _DialogResultState extends State<DialogResult> {
     Widget _translateButton() {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0),
-        child: SizedBox(
-          height: 30,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              _translateAnswer();
-            },
-            icon: Icon(Icons.translate),
-            label: FutureBuilder(
-                future: Constants.getLangList(),
-                builder: (_, snapshot) {
-                  return Text('Translate to ${lang.language}');
-                }),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    ColorLib.gameMain.withOpacity(isTranslated ? 0.4 : 1.0)),
-                shape: MaterialStateProperty.all(StadiumBorder()),
-                foregroundColor: MaterialStateProperty.all(Colors.white)),
-          ),
+        child: Wrap(
+          children: [
+            SizedBox(
+              height: 30,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  _translateAnswer();
+                },
+                icon: const Icon(Icons.translate),
+                label: FutureBuilder(
+                    future: Constants.getLangList(),
+                    builder: (_, snapshot) {
+                      return Text('Translate to ${lang.language}');
+                    }),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(ColorLib.gameMain
+                        .withOpacity(isTranslated ? 0.4 : 1.0)),
+                    shape: MaterialStateProperty.all(const StadiumBorder()),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)),
+              ),
+            ),
+            UiLib.hSpace(6),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/settings');
+              },
+              child: const Text(
+                'Change',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -544,7 +564,7 @@ class _DialogResultState extends State<DialogResult> {
       DictionaryStateStatus status = dictionaryBloc.state.status;
 
       return Column(
-        key: ValueKey<String>('result-dialog-definition-widget'),
+        key: const ValueKey<String>('result-dialog-definition-widget'),
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -557,7 +577,7 @@ class _DialogResultState extends State<DialogResult> {
             ],
           ),
           AnimatedSwitcher(
-            duration: Duration(milliseconds: 600),
+            duration: const Duration(milliseconds: 600),
             transitionBuilder: (child, animation) => SizeTransition(
               sizeFactor: animation,
               child: child,
@@ -579,7 +599,7 @@ class _DialogResultState extends State<DialogResult> {
         // ),
         _headerWidget(),
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           transitionBuilder: (child, animation) => SizeTransition(
             sizeFactor: animation,
             child: child,
@@ -594,7 +614,7 @@ class _DialogResultState extends State<DialogResult> {
         _detailSection(),
         // Buttons
         Padding(
-          padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
+          padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
           child: Column(
             children: [
               UiLib.vSpace(24),
@@ -623,7 +643,7 @@ class _DialogResultState extends State<DialogResult> {
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    shape: StadiumBorder(),
+                    shape: const StadiumBorder(),
                   ),
                 ),
               ),
