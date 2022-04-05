@@ -15,6 +15,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       useMobileKeyboard: json['useMobileKeyboard'] as bool? ?? false,
       matrix: json['matrix'] as String? ?? '5x6',
       difficulty: json['difficulty'] as String? ?? 'EASY',
+      translationLanguage: json['translationLanguage'] as String? ?? 'en',
     );
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'useMobileKeyboard': instance.useMobileKeyboard,
       'matrix': instance.matrix,
       'difficulty': instance.difficulty,
+      'translationLanguage': instance.translationLanguage,
     };

@@ -35,12 +35,13 @@ class ScreenTemplate extends StatelessWidget {
                 child: Scaffold(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: AppBar(
-                      toolbarHeight: 48,
-                      elevation: 0,
-                      // Here we take the value from the PageHome object that was created by
-                      // the App.build method, and use it to set our appbar title.
-                      title: FittedBox(child: Text(title)),
-                      actions: actions),
+                    toolbarHeight: 48,
+                    elevation: 0,
+                    // Here we take the value from the PageHome object that was created by
+                    // the App.build method, and use it to set our appbar title.
+                    title: FittedBox(child: Text(title)),
+                    actions: actions,
+                  ),
                   body: child,
                 ),
               ),

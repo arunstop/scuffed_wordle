@@ -12,6 +12,7 @@ enum SettingsTypes {
   useMobileKeyboard,
   matrix,
   difficulty,
+  translationLanguage
 }
 
 @JsonSerializable()
@@ -24,6 +25,7 @@ class Settings {
   final bool useMobileKeyboard;
   final String matrix;
   final String difficulty;
+  final String translationLanguage;
 
   Settings({
     this.hardMode = false,
@@ -34,6 +36,7 @@ class Settings {
     this.useMobileKeyboard = false,
     this.matrix = '5x6',
     this.difficulty = 'EASY',
+    this.translationLanguage = 'en',
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
@@ -53,8 +56,9 @@ class Settings {
     bool? useMobileKeyboard,
     String? matrix,
     String? difficulty,
+    String? translationLanguage,
   }) =>
-      Settings( 
+      Settings(
         hardMode: hardMode ?? this.hardMode,
         darkTheme: darkTheme ?? this.darkTheme,
         highContrast: highContrast ?? this.highContrast,
@@ -63,6 +67,7 @@ class Settings {
         useMobileKeyboard: useMobileKeyboard ?? this.useMobileKeyboard,
         matrix: matrix ?? this.matrix,
         difficulty: difficulty ?? this.difficulty,
+        translationLanguage: translationLanguage ?? this.translationLanguage,
       );
 
   // @override

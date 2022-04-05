@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:scuffed_wordle/data/models/api_uri/api_uri_model.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:scuffed_wordle/data/models/language/languange_model.dart';
 
 class Constants {
   static LocalStorageKey localStorageKeys = LocalStorageKey();
@@ -26,6 +30,19 @@ class Constants {
     'NORMAL',
     'HARD',
   ];
+
+  static Future<List<TranslationLanguage>> getLangList() async {
+    // rawData returns string
+    String rawData = await rootBundle
+        .loadString("assets/GoogleTranslateSupportedLanguages.json");
+    // Decode it with jsonDecode() into List<dynamic>
+    List<dynamic> untypedLangList = jsonDecode(rawData);
+    // Cast it into type TranslationLanguage
+    List<TranslationLanguage> typedLangList = untypedLangList
+        .map((untypedItem) => TranslationLanguage.fromJson(untypedItem))
+        .toList();
+    return typedLangList;
+  }
 }
 
 class EncrypterKey {

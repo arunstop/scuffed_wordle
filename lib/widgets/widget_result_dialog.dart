@@ -14,6 +14,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_bloc.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/dictionary/dictionary_states.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
+import 'package:scuffed_wordle/data/constants.dart';
 import 'package:scuffed_wordle/data/models/language/languange_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
@@ -43,7 +44,7 @@ class _DialogResultState extends State<DialogResult> {
   bool isTranslated = false;
   String translatedAnswer = "";
   late TranslationLanguage lang = TranslationLanguage(
-      language: "Nothing", isoCode: "nothing", flag: "nothing");
+      language: "[language]", isoCode: "[isoCode]", flag: "-");
 
   @override
   void initState() {
@@ -53,11 +54,14 @@ class _DialogResultState extends State<DialogResult> {
   }
 
   void setLang() async {
-    List<TranslationLanguage> langList = await getLangList();
-    int randomIdx = Random().nextInt(langList.length);
-
+    SettingsBloc settingsBloc = context.read<SettingsBloc>();
+    List<TranslationLanguage> langList = await Constants.getLangList();
+    // Get language by isoCode provided by the settings
+    TranslationLanguage transLangByIsoCode = langList.firstWhere((element) =>
+        element.isoCode.toLowerCase() ==
+        settingsBloc.state.settings.translationLanguage.toLowerCase());
     setState(() {
-      lang = langList[randomIdx];
+      lang = transLangByIsoCode;
     });
   }
 
@@ -67,29 +71,12 @@ class _DialogResultState extends State<DialogResult> {
     super.dispose();
   }
 
-  Future<List<TranslationLanguage>> getLangList() async {
-    // rawData returns string
-    String rawData = await DefaultAssetBundle.of(context)
-        .loadString("assets/GoogleTranslateSupportedLanguages.json");
-    // Decode it with jsonDecode() into List<dynamic>
-    List<dynamic> untypedLangList = jsonDecode(rawData);
-    // Cast it into type TranslationLanguage
-    List<TranslationLanguage> typedLangList = untypedLangList
-        .map((untypedItem) => TranslationLanguage.fromJson(untypedItem))
-        .toList();
-    int randomIdx = Random().nextInt(typedLangList.length);
-    // setState(() {
-    lang = typedLangList[randomIdx];
-    // });
-
-    return typedLangList;
-  }
-
   @override
   Widget build(BuildContext context) {
     BoardBloc boardBloc = context.read<BoardBloc>();
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
+    Settings settings = settingsBloc.state.settings;
     Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
 
     // Close dialog
@@ -110,8 +97,12 @@ class _DialogResultState extends State<DialogResult> {
             .toLowerCase()
             .translate(from: 'en', to: isoCode);
         print(translation);
-        translatedText = translation.text;
-        if (isTranslated == true) setLang();
+        // Do not translate if user's preference already in english
+        if (settings.translationLanguage.toLowerCase() == 'en') {
+          translatedText = widget.answer;
+        } else {
+          translatedText = translation.text;
+        }
       } catch (e) {
         // print(e.runtimeType);
         if (e.runtimeType.toString() == "LanguageNotSupportedException") {
@@ -129,7 +120,6 @@ class _DialogResultState extends State<DialogResult> {
     void _playAgain() async {
       _close();
       await Future.delayed(const Duration(milliseconds: 300));
-      Settings settings = settingsBloc.state.settings;
       dictionaryBloc.add(DictionaryRefreshKeyword());
       boardBloc.add(BoardRestart(
           // length: settings.guessLength,
@@ -476,7 +466,11 @@ class _DialogResultState extends State<DialogResult> {
               _translateAnswer();
             },
             icon: Icon(Icons.translate),
-            label: Text('Translate to ${lang.language}'),
+            label: FutureBuilder(
+                future: Constants.getLangList(),
+                builder: (_, snapshot) {
+                  return Text('Translate to ${lang.language}');
+                }),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
                     ColorLib.gameMain.withOpacity(isTranslated ? 0.4 : 1.0)),
