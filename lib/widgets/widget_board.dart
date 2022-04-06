@@ -41,11 +41,13 @@ class Board extends StatelessWidget {
           : color;
     }
 
-    Widget wTile(int row, int col, BoardLetter letter) {
+    Widget wTile(int row, int col, BoardLetter letter, bool guessed) {
       // Check if colorblind is on
       bool isColorBlind = settingsBloc.state.settings.colorBlindMode;
       bool isOnCurrentGuess = row + 1 == boardState.attempt && isPlaying;
       return BoardTile(
+        key: ValueKey<String>(
+            'tile-${row + 1}-${col + 1}-${guessed ? 'guessed' : 'empty'}'),
         isColorBlind: isColorBlind,
         letter: getLetter(row, col, letter.letter),
         // null safty
@@ -59,34 +61,26 @@ class Board extends StatelessWidget {
     List<Widget> wTileMatrix() {
       return boardBloc.state.wordList
           .mapIndexed(
-            (row, word) => AnimatedSwitcher(
-              duration: Duration(milliseconds: 600),
-              reverseDuration: Duration(milliseconds: 20),
-              transitionBuilder: (child, animation) => ScaleTransition(
-                scale: animation,
-                alignment: Alignment.center,
-                child: child,
-              ),
-              // Check if user attempt is the same as the row
-              child: row < boardBloc.state.attempt - 1
-                  ? Row(
-                      key: ValueKey<String>('board-row-empty-${row + 1}'),
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: word
-                          .mapIndexed(
-                            (col, letter) => wTile(row, col, letter),
-                          )
-                          .toList(),
-                    )
-                  : Row(
-                      key: ValueKey<String>('board-row-guessed-${row + 1}'),
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: word
-                          .mapIndexed(
-                            (col, letter) => wTile(row, col, letter),
-                          )
-                          .toList(),
+            (row, word) => Row(
+              key: ValueKey<String>('board-row-guessed-${row + 1}'),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: word.mapIndexed(
+                (col, letter) {
+                  bool guessed = Helpers.stringifyMatrixRow(word) != "";
+                  return AnimatedSwitcher(
+                    duration: Duration(milliseconds: 600),
+                    reverseDuration: Duration(milliseconds: 300),
+                    // switchInCurve: Curve.,
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      scale: animation,
+                      alignment: Alignment.center,
+                      child: child,
                     ),
+                    // Check if user attempt is the same as the row
+                    child: wTile(row, col, letter, guessed),
+                  );
+                },
+              ).toList(),
             ),
           )
           .toList();
