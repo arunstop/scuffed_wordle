@@ -80,10 +80,10 @@ class _DialogResultState extends State<DialogResult> {
     Word? definition = dictionaryBloc.state.dictionary.wordDefinition;
 
     // Close dialog
-    void _close() => Navigator.pop(context);
+    void close() => Navigator.pop(context);
 
     // Translate answer
-    void _translateAnswer() async {
+    void translateAnswer() async {
       // setState(() async {
       //   translatedAnswer =
       //       await widget.answer.translate(from: 'en', to: 'es').toString();
@@ -117,8 +117,8 @@ class _DialogResultState extends State<DialogResult> {
     }
 
     // Play again
-    void _playAgain() async {
-      _close();
+    void playAgain() async {
+      close();
       await Future.delayed(const Duration(milliseconds: 300));
       dictionaryBloc.add(DictionaryRefreshKeyword());
       boardBloc.add(BoardRestart(
@@ -135,7 +135,7 @@ class _DialogResultState extends State<DialogResult> {
     }
 
     // Share result
-    void _shareResult() {
+    void shareResult() {
       var state = boardBloc.state;
       // Turn the submitted boad into string format
       var resultClipBoard = state.submittedWordList.map((word) {
@@ -164,7 +164,7 @@ class _DialogResultState extends State<DialogResult> {
     }
 
     // Bordered button
-    Widget _borderedButton({
+    Widget borderedButton({
       required String label,
       Icon? icon,
       required void Function()? action,
@@ -199,7 +199,8 @@ class _DialogResultState extends State<DialogResult> {
     Color _resultColor = boardBloc.state.win ? ColorLib.ok : ColorLib.error;
     bool _isDefinitionValid =
         definition != null && definition.word == widget.answer;
-    List<Widget> _getDefinitionList(List<Definition> defList) {
+
+    List<Widget> getDefinitionList(List<Definition> defList) {
       return defList
           .mapIndexed((index, def) => Padding(
                 padding: const EdgeInsets.only(bottom: 3),
@@ -220,7 +221,7 @@ class _DialogResultState extends State<DialogResult> {
           .toList();
     }
 
-    Future _speak(String text) async {
+    Future speak(String text) async {
       setState(() => ttsState = TtsState.playing);
       await widget.tts.speak(text);
     }
@@ -244,7 +245,7 @@ class _DialogResultState extends State<DialogResult> {
 
     bool isTtsPlaying = ttsState == TtsState.playing;
 
-    Widget _headerWidget() {
+    Widget wHeader() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -271,8 +272,7 @@ class _DialogResultState extends State<DialogResult> {
                               ? Colors.transparent
                               : Colors.lightBlue)),
                   child: IconButton(
-                    onPressed:
-                        isTtsPlaying ? null : () => _speak(widget.answer),
+                    onPressed: isTtsPlaying ? null : () => speak(widget.answer),
                     icon: isTtsPlaying
                         ? const SpinKitWave(
                             color: Colors.lightBlue,
@@ -305,7 +305,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget _translatedHeaderWidget() {
+    Widget wHeaderTranslated() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -366,7 +366,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget _defineWordButton() {
+    Widget wDefineButton() {
       DictionaryStateStatus status = dictionaryBloc.state.status;
       if (status == DictionaryStateStatus.loading) {
         return SpinKitThreeInOut(
@@ -395,7 +395,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    List<Widget> _defineButtonSection(DictionaryStateStatus status) {
+    List<Widget> wDefineButtonSection(DictionaryStateStatus status) {
       return [
         // Show define button
         if (_isDefinitionValid == false &&
@@ -410,7 +410,7 @@ class _DialogResultState extends State<DialogResult> {
                   scale: animation,
                   child: child,
                 ),
-                child: _defineWordButton(),
+                child: wDefineButton(),
               ),
             ),
           )
@@ -432,7 +432,7 @@ class _DialogResultState extends State<DialogResult> {
       ];
     }
 
-    Widget _defineWithGoogleButton() {
+    Widget wDefineWithGoogleButton() {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0),
         child: SizedBox(
@@ -456,7 +456,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget _translateButton() {
+    Widget wTranslateButton() {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0),
         child: Wrap(
@@ -465,7 +465,7 @@ class _DialogResultState extends State<DialogResult> {
               height: 30,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  _translateAnswer();
+                  translateAnswer();
                 },
                 icon: const Icon(Icons.translate),
                 label: FutureBuilder(
@@ -501,7 +501,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget _definitionWidgets() {
+    Widget wDefinitionSection() {
       return Column(
         children: [
           UiLib.vSpace(24),
@@ -550,7 +550,7 @@ class _DialogResultState extends State<DialogResult> {
                     ? const Text('')
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _getDefinitionList(
+                        children: getDefinitionList(
                           meaning.definitions!,
                         ),
                       )
@@ -560,7 +560,7 @@ class _DialogResultState extends State<DialogResult> {
       );
     }
 
-    Widget _detailSection() {
+    Widget wDetailSection() {
       DictionaryStateStatus status = dictionaryBloc.state.status;
 
       return Column(
@@ -571,9 +571,9 @@ class _DialogResultState extends State<DialogResult> {
           // Define and translate buttons
           Column(
             children: [
-              ..._defineButtonSection(status),
-              _defineWithGoogleButton(),
-              _translateButton(),
+              ...wDefineButtonSection(status),
+              wDefineWithGoogleButton(),
+              wTranslateButton(),
             ],
           ),
           AnimatedSwitcher(
@@ -582,7 +582,7 @@ class _DialogResultState extends State<DialogResult> {
               sizeFactor: animation,
               child: child,
             ),
-            child: _isDefinitionValid ? _definitionWidgets() : Container(),
+            child: _isDefinitionValid ? wDefinitionSection() : Container(),
           ),
         ],
       );
@@ -597,21 +597,20 @@ class _DialogResultState extends State<DialogResult> {
         //     return Text("${snapshot.data?.length.toString()}");
         //   },
         // ),
-        _headerWidget(),
+        wHeader(),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           transitionBuilder: (child, animation) => SizeTransition(
             sizeFactor: animation,
             child: child,
           ),
-          child: (isTranslated)
-              ? Center(child: _translatedHeaderWidget())
-              : Container(),
+          child:
+              (isTranslated) ? Center(child: wHeaderTranslated()) : Container(),
         ),
 
         // Content
         // UiLib.vSpace(6),
-        _detailSection(),
+        wDetailSection(),
         // Buttons
         Padding(
           padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
@@ -619,10 +618,10 @@ class _DialogResultState extends State<DialogResult> {
             children: [
               UiLib.vSpace(24),
               // Share Button
-              _borderedButton(
+              borderedButton(
                 label: "Share Result",
                 icon: const Icon(Icons.share_rounded),
-                action: () => _shareResult(),
+                action: () => shareResult(),
               ),
               UiLib.vSpace(9),
               // Play again button
@@ -630,7 +629,7 @@ class _DialogResultState extends State<DialogResult> {
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton.icon(
-                  onPressed: () => _playAgain(),
+                  onPressed: () => playAgain(),
                   icon: const Icon(
                     Icons.play_arrow_rounded,
                     color: Colors.white,
@@ -649,10 +648,10 @@ class _DialogResultState extends State<DialogResult> {
               ),
               UiLib.vSpace(9),
               // Close button
-              _borderedButton(
+              borderedButton(
                 label: "Close",
                 icon: const Icon(Icons.close_rounded),
-                action: () => _close(),
+                action: () => close(),
                 noBorder: true,
               ),
               UiLib.vSpace(18),
