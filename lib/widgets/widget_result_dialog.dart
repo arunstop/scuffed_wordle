@@ -460,6 +460,9 @@ class _DialogResultState extends State<DialogResult> {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0),
         child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          runSpacing: 12,
           children: [
             SizedBox(
               height: 30,
@@ -480,7 +483,6 @@ class _DialogResultState extends State<DialogResult> {
                     foregroundColor: MaterialStateProperty.all(Colors.white)),
               ),
             ),
-            UiLib.hSpace(6),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
