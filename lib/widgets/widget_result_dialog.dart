@@ -49,11 +49,11 @@ class _DialogResultState extends State<DialogResult> {
   @override
   void initState() {
     translatedAnswer = widget.answer;
-    setLang();
+    _setLang();
     super.initState();
   }
 
-  void setLang() async {
+  void _setLang() async {
     SettingsBloc settingsBloc = context.read<SettingsBloc>();
     List<TranslationLanguage> langList = await Constants.getLangList();
     // Get language by isoCode provided by the settings
@@ -92,11 +92,11 @@ class _DialogResultState extends State<DialogResult> {
       String translatedText = "";
       String isoCode = lang.isoCode.toLowerCase();
       try {
-        print(lang.isoCode);
+        // print(lang.isoCode);
         Translation translation = await widget.answer
             .toLowerCase()
             .translate(from: 'en', to: isoCode);
-        print(translation);
+        // print(translation);
         // Do not translate if user's preference already in english
         if (settings.translationLanguage.toLowerCase() == 'en') {
           translatedText = widget.answer;
@@ -106,7 +106,7 @@ class _DialogResultState extends State<DialogResult> {
       } catch (e) {
         // print(e.runtimeType);
         if (e.runtimeType.toString() == "LanguageNotSupportedException") {
-          print('${lang.language} with code `${isoCode}` is not supported');
+          // print('${lang.language} with code `${isoCode}` is not supported');
         }
       }
       setState(() {
