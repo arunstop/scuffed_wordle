@@ -20,18 +20,20 @@ Limitless imitation of the infamous Wordle game, with some added feature to make
 ## What i learnt/improved :
 > - **Dart** language
 > - **Flutter** as Multi platform framework development :
-  > - Understanding Workflow
-  > - Applying the design architecture
-  > - Configuring package management
-  > - Applying Google's Material UI in flutter
-  > - Applying custom Material UI to the app
-  > - Applying Speech to text to the app
+>   - Understanding Workflow
+>   - Applying the design architecture
+>   - Configuring package management
+>   - Applying Google's Material UI in flutter
+>   - Applying custom Material UI to the app
+>   - Applying Speech to text to the app
 > - **BLoC** Design pattern :
-  > - Understanding workflow
-  > - Applying State management
-  > - Creating Data Models
+>   - Understanding workflow
+>   - Applying State management
+>   - Creating Data Models
 > - Backend REST API with **Express.js**
 > - Basic **Typescript** for Backend
+> - Deploying & hosting Express.js app through **Heroku**
+> - Deploying & hosting Flutter web app through **Firebase**
 > - Basic SEO from **Google Console**
 
 ### Generated message for nerds!
