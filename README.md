@@ -32,7 +32,7 @@ Limitless imitation of the infamous Wordle game, with some added feature to make
 >   - Creating Data Models
 > - Backend REST API with **Express.js**
 > - Basic **Typescript** for Backend
-> - Deploying & hosting Express.js app through **Heroku**
+> - Deploying & hosting Express.js app through ~~**Heroku**~~ **Cyclic**
 > - Deploying & hosting Flutter web app through **Firebase**
 > - Basic SEO from **Google Console**
 
