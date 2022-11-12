@@ -68,7 +68,8 @@ class ApiBaseURL {
 // GET API URLS
 class Api {
   ApiScuffedWordle scuffedWordle =
-      ApiScuffedWordle(baseUrl: "scuffed-wordle-api.herokuapp.com");
+      ApiScuffedWordle(baseUrl: "scuffed-wordle-api.cyclic.app");
+      // ApiScuffedWordle(baseUrl: "scuffed-wordle-api.herokuapp.com");
   ApiFreeDictionary freeDictionary =
       ApiFreeDictionary(baseUrl: "api.dictionaryapi.dev");
 }
