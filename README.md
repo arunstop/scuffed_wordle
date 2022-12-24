@@ -5,7 +5,7 @@ Limitless imitation of the infamous Wordle game, with some added feature to make
 - Word length levels
 
 ## Play here and have fun! (and don't rage if you lose :D)
-- [Scuffed Wordle!](https://scuffed-wordle.web.app/)
+- [Scuffed Wordle!](https://scuffed-wordle.vercel.app/)
 
 ## Screenshots if you fancy :
 | - | - |
