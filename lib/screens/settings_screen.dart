@@ -9,6 +9,7 @@ import 'package:scuffed_wordle/bloc/dictionary/dictionary_events.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_bloc.dart';
 import 'package:scuffed_wordle/bloc/settings/settings_events.dart';
 import 'package:scuffed_wordle/data/constants.dart';
+import 'package:scuffed_wordle/data/models/language/languange_model.dart';
 import 'package:scuffed_wordle/data/models/settings/settings_model.dart';
 import 'package:scuffed_wordle/data/models/status_model.dart';
 // import 'package:scuffed_wordle/data/models/model_settings.dart';
@@ -26,11 +27,11 @@ class SettingsScreen extends StatelessWidget {
     DictionaryBloc dictionaryBloc = context.watch<DictionaryBloc>();
     Settings settings = settingsBloc.state.settings;
 
-    void _changeSettings(SettingsTypes type, dynamic value) {
+    void changeSettings(SettingsTypes type, dynamic value) {
       settingsBloc.add(SettingsChange(type: type, value: value));
     }
 
-    void _showResetDialog() {
+    void showResetDialog() {
       UiLib.showConfirmationDialog(
         context: context,
         title: 'Reset Settings',
@@ -51,10 +52,10 @@ class SettingsScreen extends StatelessWidget {
     }
 
     // check if user is currently playing by checking submitted word
-    bool _isPlaying =
+    bool isPlaying =
         boardBloc.state is! BoardGameOver && boardBloc.state.attempt > 1;
 
-    Widget _getTitle(String title) => Text(
+    Widget getTitle(String title) => Text(
           title,
           // style: Theme.of(context).textTheme.bodyText1
           style: const TextStyle(
@@ -64,143 +65,210 @@ class SettingsScreen extends StatelessWidget {
     bool _isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
-    Widget _getDropDown({
-      required String value,
-      required List<String> items,
+    Widget wDropDown<T>({
+      required T value,
+      required List<T> items,
       required Function onChanged,
     }) =>
-        DropdownButton<String>(
-          value: value,
-          items: items
-              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  ))
-              .toList(),
-          onChanged: (value) => onChanged(value),
+        Container(
+          // color: Colors.red,
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            border: Border.all(
+                width: 2,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<T>(
+              value: value,
+              items: items.map<DropdownMenuItem<T>>((e) {
+                return DropdownMenuItem<T>(
+                  value: e,
+                  child: Text(e is TranslationLanguage
+                      ? (e as TranslationLanguage).language
+                      : e.toString()),
+                );
+              }).toList(),
+              onChanged: (value) => onChanged(value),
+            ),
+          ),
+        );
+
+    Widget wHardMode() => SwitchListTile.adaptive(
+          value: settings.hardMode,
+          onChanged: (val) {
+            if (isPlaying) {
+              UiLib.showToast(
+                status: Status.error,
+                text: 'Cannot change hard mode when playing',
+              );
+              return;
+            }
+            changeSettings(SettingsTypes.hardMode, val);
+          },
+          title: getTitle('Hard Mode'),
+          subtitle: const Text('User must use the green letters they found'),
+          secondary: const Icon(Icons.whatshot_rounded),
+        );
+
+    Widget wDarkTheme() => SwitchListTile.adaptive(
+          value: settings.darkTheme,
+          onChanged: (val) => changeSettings(SettingsTypes.darkTheme, val),
+          title: getTitle('Dark Theme'),
+          secondary: const Icon(Icons.nightlight_rounded),
+        );
+
+    Widget wColorBlindMode() => SwitchListTile.adaptive(
+          value: settings.colorBlindMode,
+          onChanged: (val) => changeSettings(SettingsTypes.colorBlindMode, val),
+          title: getTitle('Color Blind Mode'),
+          subtitle: const Text(
+              'Give each letter in answer a shape to make it more visible to the one who needs'),
+          secondary: const Icon(Icons.remove_red_eye_rounded),
+        );
+
+    Widget wHighContrast() => SwitchListTile.adaptive(
+          value: settings.highContrast,
+          onChanged: (val) => changeSettings(SettingsTypes.highContrast, val),
+          title: getTitle('High Contrast'),
+          secondary: const Icon(Icons.brightness_6_rounded),
+        );
+
+    Widget wRetypeOnWrongGuess() => SwitchListTile.adaptive(
+          value: settings.retypeOnWrongGuess,
+          onChanged: (val) =>
+              changeSettings(SettingsTypes.retypeOnWrongGuess, val),
+          title: getTitle('Re-type on wrong guess'),
+          subtitle: const Text('Delete current guess when it is INVALID'),
+          secondary: const Icon(Icons.keyboard_return_rounded),
+        );
+
+    Widget wMatrix() => ListTile(
+          leading: const Icon(Icons.apps_rounded),
+          title: const Text('Game Matrix'),
+          subtitle: const Text(
+              'Choose word length, between 4-8. The attempts is [word length + 1].'),
+          onTap: () {
+            print('change');
+          },
+          trailing: wDropDown<String>(
+            value: settings.matrix,
+            items: Constants.matrixList,
+            onChanged: (String value) {
+              if (isPlaying) {
+                UiLib.showToast(
+                  status: Status.error,
+                  text: 'Cannot change game matrix when playing',
+                );
+              } else {
+                if (value == settings.matrix) {
+                  return;
+                }
+                changeSettings(SettingsTypes.matrix, value);
+                // print(value);
+                // print(settings.wordLength);
+                dictionaryBloc.add(DictionaryInitialize());
+                boardBloc.add(
+                  BoardRestart(
+                      // length: settings.guessLength,
+                      // lives: settings.lives,
+                      ),
+                );
+                Navigator.pop(context);
+              }
+            },
+          ),
+        );
+
+    Widget wDifficulty() => ListTile(
+          leading: const Icon(Icons.apps_rounded),
+          title: const Text('Game Difficulty'),
+          subtitle: const Text('Choose difficulty: Easy, Normal, Hard'),
+          onTap: () {
+            print('diff change');
+          },
+          trailing: wDropDown<String>(
+            value: settings.difficulty,
+            items: Constants.difficultyList,
+            onChanged: (String value) {
+              if (isPlaying) {
+                UiLib.showToast(
+                  status: Status.error,
+                  text: 'Cannot change game difficulty when playing',
+                );
+              } else {
+                if (value == settings.difficulty) {
+                  return;
+                }
+                changeSettings(SettingsTypes.difficulty, value);
+                dictionaryBloc.add(DictionaryInitialize());
+                // dictionaryBloc.add(DictionaryRefreshKeyword());
+                boardBloc.add(BoardRestart());
+                Navigator.pop(context);
+              }
+            },
+          ),
+        );
+
+    Widget wUseMobileKeyboard() => SwitchListTile.adaptive(
+          value: settings.useMobileKeyboard,
+          onChanged: !_isMobile
+              ? null
+              : (val) => changeSettings(SettingsTypes.useMobileKeyboard, val),
+          title: getTitle('Use device\'s keyboard on mobile'),
+          subtitle:
+              const Text('Use phone\'s default virtual keyboard instead.'),
+          secondary: const Icon(Icons.keyboard_alt_outlined),
+        );
+
+    Widget wTranslationLanguage() => ListTile(
+          leading: const Icon(Icons.translate_rounded),
+          title: Text('Translation Language'),
+          subtitle: Column(
+            children: [
+              Text(
+                  'Choose a language to translate the answer when the game is over.'),
+              UiLib.vSpace(6),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FutureBuilder<List<TranslationLanguage>>(
+                  future: Constants.getLangList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // find translationLanguage based on string of settings.translationLanguage
+                      var transLanguageByIsoCode = snapshot.data!.firstWhere(
+                          (element) =>
+                              element.isoCode.toLowerCase() ==
+                              settings.translationLanguage);
+                      return wDropDown<TranslationLanguage>(
+                          value: transLanguageByIsoCode,
+                          items: snapshot.data!,
+                          onChanged: (TranslationLanguage value) {
+                            changeSettings(SettingsTypes.translationLanguage,
+                                value.isoCode.toLowerCase());
+                          });
+                    }
+                    return Text(settings.translationLanguage);
+                  },
+                ),
+              ),
+              UiLib.vSpace(6),
+            ],
+          ),
         );
     List<Widget> _settingsList = [
       // Text('$_isPlaying'),
-      SwitchListTile.adaptive(
-        value: settings.hardMode,
-        onChanged: (val) {
-          if (_isPlaying) {
-            UiLib.showToast(
-              status: Status.error,
-              text: 'Cannot change hard mode when playing',
-            );
-            return;
-          }
-          _changeSettings(SettingsTypes.hardMode, val);
-        },
-        title: _getTitle('Hard Mode'),
-        subtitle: const Text('User must use the green letters they found'),
-        secondary: const Icon(Icons.whatshot_rounded),
-      ),
-      SwitchListTile.adaptive(
-        value: settings.darkTheme,
-        onChanged: (val) => _changeSettings(SettingsTypes.darkTheme, val),
-        title: _getTitle('Dark Theme'),
-        secondary: const Icon(Icons.nightlight_rounded),
-      ),
-      SwitchListTile.adaptive(
-        value: settings.colorBlindMode,
-        onChanged: (val) => _changeSettings(SettingsTypes.colorBlindMode, val),
-        title: _getTitle('Color Blind Mode'),
-        subtitle: const Text(
-            'Give each letter in answer a shape to make it more visible to the one who needs'),
-        secondary: const Icon(Icons.remove_red_eye_rounded),
-      ),
-      SwitchListTile.adaptive(
-        value: settings.highContrast,
-        onChanged: (val) => _changeSettings(SettingsTypes.highContrast, val),
-        title: _getTitle('High Contrast'),
-        secondary: const Icon(Icons.brightness_6_rounded),
-      ),
-      SwitchListTile.adaptive(
-        value: settings.retypeOnWrongGuess,
-        onChanged: (val) =>
-            _changeSettings(SettingsTypes.retypeOnWrongGuess, val),
-        title: _getTitle('Re-type on wrong guess'),
-        subtitle: const Text('Delete current guess when it is INVALID'),
-        secondary: const Icon(Icons.keyboard_return_rounded),
-      ),
-      ListTile(
-        leading: const Icon(Icons.apps_rounded),
-        title: const Text('Game Matrix'),
-        subtitle: const Text(
-            'Choose word length, between 4-8. The attempts is [word length + 1].'),
-        onTap: () {
-          print('change');
-        },
-        trailing: _getDropDown(
-          value: settings.matrix,
-          items: Constants.matrixList,
-          onChanged: (String value) {
-            if (_isPlaying) {
-              UiLib.showToast(
-                status: Status.error,
-                text: 'Cannot change game matrix when playing',
-              );
-            } else {
-              if (value == settings.matrix) {
-                return;
-              }
-              _changeSettings(SettingsTypes.matrix, value);
-              // print(value);
-              // print(settings.wordLength);
-              dictionaryBloc.add(DictionaryInitialize());
-              boardBloc.add(
-                BoardRestart(
-                    // length: settings.guessLength,
-                    // lives: settings.lives,
-                    ),
-              );
-              Navigator.pop(context);
-            }
-          },
-        ),
-      ),
-      ListTile(
-        leading: const Icon(Icons.apps_rounded),
-        title: const Text('Game Difficulty'),
-        subtitle: const Text('Choose difficulty: Easy, Normal, Hard'),
-        onTap: () {
-          print('diff change');
-        },
-        trailing: _getDropDown(
-          value: settings.difficulty,
-          items: Constants.difficultyList,
-          onChanged: (String value) {
-            if (_isPlaying) {
-              UiLib.showToast(
-                status: Status.error,
-                text: 'Cannot change game difficulty when playing',
-              );
-            } else {
-              if (value == settings.difficulty){
-                return;
-              }
-              _changeSettings(SettingsTypes.difficulty, value);
-              // print(value);
-              // print(settings.wordLength);
-              dictionaryBloc.add(DictionaryInitialize());
-              dictionaryBloc.add(DictionaryRefreshKeyword());
-              boardBloc.add(BoardRestart());
-              Navigator.pop(context);
-            }
-          },
-        ),
-      ),
-      SwitchListTile.adaptive(
-        value: settings.useMobileKeyboard,
-        onChanged: !_isMobile
-            ? null
-            : (val) => _changeSettings(SettingsTypes.useMobileKeyboard, val),
-        title: _getTitle('Use device\'s keyboard on mobile'),
-        subtitle: const Text('Use phone\'s default virtual keyboard instead.'),
-        secondary: const Icon(Icons.keyboard_alt_outlined),
-      ),
+      wHardMode(),
+      wDarkTheme(),
+      wColorBlindMode(),
+      wHighContrast(),
+      wRetypeOnWrongGuess(),
+      wMatrix(),
+      wDifficulty(),
+      wTranslationLanguage(),
+      wUseMobileKeyboard(),
       UiLib.vSpace(30),
     ];
 
@@ -208,7 +276,7 @@ class SettingsScreen extends StatelessWidget {
       title: title,
       actions: [
         IconButton(
-          onPressed: () => _showResetDialog(),
+          onPressed: () => showResetDialog(),
           icon: const Icon(Icons.refresh),
         )
       ],

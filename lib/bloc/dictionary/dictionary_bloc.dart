@@ -75,10 +75,10 @@ class DictionaryBloc extends Bloc<DictionaryEvent, DictionaryState> {
     // print(await dictionaryRepo.getLocalAnswer());
   }
 
-  FutureOr<void> _onDictionaryRefreshKeyword(
+  void _onDictionaryRefreshKeyword(
     DictionaryRefreshKeyword event,
     Emitter<DictionaryState> emit,
-  ) async {
+  ) {
     // Get answers by randomizing the list
     String getAnswer(String currentAnswer) {
       // remove current answer from answer list

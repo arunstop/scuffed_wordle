@@ -34,7 +34,7 @@ class _MicInputState extends State<MicInput> {
     // TODO: implement dispose
     super.dispose();
     // await _speechToText.stop();
-      await _speechToText.stop();
+    await _speechToText.stop();
   }
 
   @override
@@ -77,7 +77,7 @@ class _MicInputState extends State<MicInput> {
       uiBloc.add(UiSttToggleInput());
       await _speechToText.listen(
         onResult: _onSpeechResult,
-        listenFor: Duration(seconds: 30),
+        listenFor: Duration(seconds: 120),
         // countdown to stop listening when the user is not speaking anymore when listening
         pauseFor: Duration(seconds: 12),
         cancelOnError: true,

@@ -88,6 +88,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             settings: state.settings.copyWith(difficulty: event.value),
           ));
           break;
+        case SettingsTypes.translationLanguage:
+          emit(state.copyWith(
+            settings: state.settings.copyWith(translationLanguage: event.value),
+          ));
+          break;
         default:
       }
       // print("bloc"+jsonEncode(state.settings.toJson()));

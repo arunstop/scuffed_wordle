@@ -100,7 +100,7 @@ class ScuffedWordleApp extends StatelessWidget {
             },
           );
           return MaterialApp(
-            title: "Scuffed Wordle - A word guessing game",
+            title: "Scuffed Wordle - A fun daily/unlimited word game<",
             theme: ScuffedWordleTheme.light,
             darkTheme: ScuffedWordleTheme.dark,
             themeMode: settingsState.settings.darkTheme
